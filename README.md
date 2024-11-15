@@ -50,11 +50,11 @@
       </td>
     </tr>
     <tr>
-      <td style="text-align: center;">
-        <a href="https://github.com/SorrowAddict" style="text-align: center;">정도영</a>
+      <td>
+        <center><a href="https://github.com/SorrowAddict">정도영</a></center>
       </td>
-      <td style="text-align: center;">
-        <a href="https://github.com/Yeseung-Park" style="text-align: center;">박예승</a>
+      <td>
+        <center><a href="https://github.com/Yeseung-Park">박예승</a></center>
       </td>
     </tr>
   </tbody>
