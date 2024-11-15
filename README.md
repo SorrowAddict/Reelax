@@ -29,10 +29,38 @@
 
 ### 👨‍👩‍👧‍👦 팀원 소개
 
-| **BE** | **FE** |
-| :------: | :------: |
-| [<img src="https://avatars.githubusercontent.com/u/154123905?v=4" width="110" > <br/>](https://github.com/SorrowAddict) | [<img src="https://avatars.githubusercontent.com/u/175369181?v=4" width="110">](https://github.com/Yeseung-Park) |
-| [정도영](https://github.com/SorrowAddict) | [박예승](https://github.com/Yeseung-Park) |
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center;"><strong>BE</strong></th>
+      <th style="text-align: center;"><strong>FE</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center;">
+        <a href="https://github.com/SorrowAddict">
+          <img src="https://avatars.githubusercontent.com/u/154123905?v=4" width="110" style="border-radius: 10px;"><br/>
+        </a>
+      </td>
+      <td style="text-align: center;">
+        <a href="https://github.com/Yeseung-Park">
+          <img src="https://avatars.githubusercontent.com/u/175369181?v=4" width="110" style="border-radius: 10px;">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align: center;">
+        <a href="https://github.com/SorrowAddict">정도영</a>
+      </td>
+      <td style="text-align: center;">
+        <a href="https://github.com/Yeseung-Park">박예승</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
 
 ---
 
