@@ -10,7 +10,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/main',
+      path: '/',
       name: 'MainPageView',
       component: MainPageView
     },
