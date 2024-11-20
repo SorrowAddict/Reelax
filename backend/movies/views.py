@@ -1,4 +1,9 @@
 from django.shortcuts import render
+from django.conf import settings
+
+TMDB_API_KEY = settings.TMDB_API_KEY
+TMDB_READ_ACCESS_TOKEN = settings.TMDB_READ_ACCESS_TOKEN
+YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY
 
 # Create your views here.
 def top_rated_movies(request):
