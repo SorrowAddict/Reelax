@@ -4,7 +4,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
+
 import requests
+from datetime import datetime
 
 TMDB_BASE_URL = "https://api.themoviedb.org/3"
 TMDB_API_KEY = settings.TMDB_API_KEY
@@ -49,20 +51,32 @@ class BoxOfficeMoviesView(APIView):
 
 class RecentlyReleasedMoviesView(APIView):
     def get(self, request):
-        # 최근 개봉한 10개 영화 조회
-        url = f"{TMDB_BASE_URL}/discover/movie"
+        # 최근 개봉 영화 10개 조회
+        url = f"{TMDB_BASE_URL}/movie/now_playing"
         params = {
             "api_key": TMDB_API_KEY,
             "language": "ko-KR",
-            "sort_by": "release_date.desc",
+            "region": "KR",
             "page": 1,
         }
         response = requests.get(url, params=params)
         if response.status_code == 200:
-            movies = response.json().get("results", [])[:10]
-            return Response({ 'results': movies }, status=status.HTTP_200_OK)
+            movies = response.json().get("results", [])
+            today = datetime.today().date()
+            
+            # 개봉일 기준 필터링 및 정렬
+            filtered_movies = [
+                movie for movie in movies 
+                if "release_date" in movie and datetime.strptime(movie["release_date"], "%Y-%m-%d").date() <= today
+            ]
+            sorted_movies = sorted(
+                filtered_movies,
+                key=lambda x: x.get("release_date", ""),
+                reverse=True  # 내림차순 정렬
+            )
+            return Response({'results': sorted_movies[:10]}, status=status.HTTP_200_OK)
         return Response(
-            {"error": "Failed to fetch recently released movies"},
+            {"error": "Failed to fetch now playing movies"},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
