@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="container d-flex flex-column align-items-center">
     <h1>회원가입 페이지</h1>
-    <form @submit.prevent="signUp">
-      <input type="text" value="아이디" v-model="username"> <br>
-      <input type="text" value="비밀번호" v-model="password1"> <br>
-      <input type="text" value="비밀번호 확인" v-model="password2"> <br>
-      <button>회원가입</button>
+    <form @submit.prevent="signUp" class="d-flex flex-column align-items-center">
+      <input class="form-control" type="text" placeholder="아이디" v-model="username"> <br>
+      <input class="form-control" type="password" placeholder="비밀번호" v-model="password1"> <br>
+      <input class="form-control" type="password" placeholder="비밀번호 확인" v-model="password2"> <br>
+      <button class="btn">회원가입</button>
     </form>
   </div>
 </template>
