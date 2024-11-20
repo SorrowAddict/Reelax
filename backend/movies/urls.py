@@ -14,7 +14,7 @@ urlpatterns = [
     # movie 좋아요 [완]
     path('user-liked-movies/', UserLikedMovies.as_view()),
     path('like-movie/<int:movie_id>/', LikeMovie.as_view()),
-    # actor 좋아요
+    # actor 좋아요 [완]
     path('user-liked-actor/', UserLikedActor.as_view()),
     path('like-actor/<int:actor_id>/', LikeActor.as_view()),
     # director 좋아요 [완]
