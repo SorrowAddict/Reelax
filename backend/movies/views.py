@@ -14,9 +14,9 @@ TMDB_READ_ACCESS_TOKEN = settings.TMDB_READ_ACCESS_TOKEN
 YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY
 
 # Create your views here.
-class TopRatedMoviesView(APIView):
+# TMDB API에서 평점 상위 10개 영화 조회
+class TopRated(APIView):
     def get(self, request):
-        # TMDB API에서 평점 상위 10개 영화 조회
         url = f"{TMDB_BASE_URL}/movie/top_rated"
         params = { "api_key": TMDB_API_KEY, "language": "ko-KR", "page": 1 }
         response = requests.get(url, params=params)
@@ -29,9 +29,9 @@ class TopRatedMoviesView(APIView):
         )
 
 
-class BoxOfficeMoviesView(APIView):
+# 현재 박스오피스 상위 10개 영화 조회
+class popular(APIView):
     def get(self, request):
-        # 현재 박스오피스 상위 10개 영화 조회
         url = f"{TMDB_BASE_URL}/movie/popular"
         params = {
             "api_key": TMDB_API_KEY,
@@ -49,9 +49,9 @@ class BoxOfficeMoviesView(APIView):
         )
 
 
-class RecentlyReleasedMoviesView(APIView):
+# 최근 개봉 영화 10개 조회
+class NowPlaying(APIView):
     def get(self, request):
-        # 최근 개봉 영화 10개 조회
         url = f"{TMDB_BASE_URL}/movie/now_playing"
         params = {
             "api_key": TMDB_API_KEY,
@@ -63,7 +63,6 @@ class RecentlyReleasedMoviesView(APIView):
         if response.status_code == 200:
             movies = response.json().get("results", [])
             today = datetime.today().date()
-            
             # 개봉일 기준 필터링 및 정렬
             filtered_movies = [
                 movie for movie in movies 
