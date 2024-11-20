@@ -23,7 +23,7 @@ urlpatterns = [
     # genre 좋아요 [완]
     path('user-liked-genre/', UserLikedGenreMovies.as_view()),
     path('like-genre/', LikeGenre.as_view()),
-    # review
+    # review [완]
     path('<int:movie_id>/reviews/', MovieReviews.as_view()),
     path('<int:movie_id>/reviews/<int:review_id>/', UpdateMovieReview.as_view()),
     path('<int:movie_id>/reviews/<int:review_id>/like/', LikeReview.as_view()),

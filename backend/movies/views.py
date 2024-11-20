@@ -427,6 +427,7 @@ class MovieReviews(APIView):
         )
 
 
+# 영화 리뷰 수정 및 삭제 [완]
 class UpdateMovieReview(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -442,12 +443,13 @@ class UpdateMovieReview(APIView):
         return Response({"message": "Review deleted successfully"}, status=status.HTTP_200_OK)
 
 
+# 리뷰 좋아요 기능 [완]
 class LikeReview(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, movie_id, review_id):
         review = Review.objects.get(id=review_id, movie_id=movie_id)
-        review.likes.add(request.user)
+        review.liked_by.add(request.user)
         return Response({"message": "Review liked successfully"}, status=status.HTTP_200_OK)
 
 
