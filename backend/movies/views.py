@@ -156,6 +156,111 @@ class GenreMovies(APIView):
         )
 
 
+# 영화 상세 정보 조회 [완]
+class MovieDetail(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, movie_id):
+        movie_url = f"{TMDB_BASE_URL}/movie/{movie_id}"
+        movie_params = {"api_key": TMDB_API_KEY, "language": "ko-KR"}
+        movie_response = requests.get(movie_url, params=movie_params)
+        if movie_response.status_code == 200:
+            movie_detail = movie_response.json()
+            credits_url = f"{TMDB_BASE_URL}/movie/{movie_id}/credits"
+            credits_response = requests.get(credits_url, params=movie_params)
+            if credits_response.status_code == 200:
+                movie_detail["credits"] = credits_response.json()
+            return Response(movie_detail, status=status.HTTP_200_OK)
+        return Response(
+            {"error": "Failed to fetch movie details"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
+# 배우 상세 조회 [완]
+class ActorDetail(APIView):
+    def get(self, request, actor_id):
+        actor_url = f"{TMDB_BASE_URL}/person/{actor_id}"
+        actor_params = {"api_key": TMDB_API_KEY, "language": "ko-KR"}
+        actor_response = requests.get(actor_url, params=actor_params)
+        if actor_response.status_code == 200:
+            actor_detail = actor_response.json()
+            filmography_url = f"{TMDB_BASE_URL}/person/{actor_id}/movie_credits"
+            filmography_response = requests.get(filmography_url, params=actor_params)
+            if filmography_response.status_code == 200:
+                actor_detail["filmography"] = filmography_response.json().get("cast", [])
+            return Response(actor_detail, status=status.HTTP_200_OK)
+        return Response(
+            {"error": "Failed to fetch actor details"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
+# 감독 상세 조회 [완]
+class DirectorDetail(APIView):
+    def get(self, request, director_id):
+        director_url = f"{TMDB_BASE_URL}/person/{director_id}"
+        director_params = {"api_key": TMDB_API_KEY, "language": "ko-KR"}
+        director_response = requests.get(director_url, params=director_params)
+        if director_response.status_code == 200:
+            director_detail = director_response.json()
+            filmography_url = f"{TMDB_BASE_URL}/person/{director_id}/movie_credits"
+            filmography_response = requests.get(filmography_url, params=director_params)
+            if filmography_response.status_code == 200:
+                director_detail["filmography"] = filmography_response.json().get("crew", [])
+            return Response(director_detail, status=status.HTTP_200_OK)
+        return Response(
+            {"error": "Failed to fetch director details"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
+# 유저가 좋아요 한 영화 조회 [완]
+class UserLikedMovies(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        liked_movies = user.liked_movies.all()[:5]
+        serializer = UserLikedMoviesSerializer(liked_movies, many=True)
+        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
+
+
+# 영화 좋아요 기능 [완]
+class LikeMovie(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, movie_id):
+        user = request.user
+        # 1. Movie 객체 가져오기 또는 생성
+        movie, created = Movie.objects.get_or_create(movieID=movie_id)
+        if created:
+            # 2. TMDB API 호출하여 영화 정보 가져오기
+            movie_url = f"{TMDB_BASE_URL}/movie/{movie_id}"
+            params = {
+                "api_key": TMDB_API_KEY,
+                "language": "ko-KR",
+            }
+            response = requests.get(movie_url, params=params)
+            if response.status_code == 200:
+                movie_data = response.json()
+                movie.poster_path = movie_data.get("poster_path", "")
+                movie.save()
+            else:
+                # TMDB API 호출 실패 시 에러 처리
+                return Response(
+                    {"error": "Failed to fetch movie details from TMDB"},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+        # 3. 중복 좋아요 방지
+        if user.liked_movies.filter(movieID=movie_id).exists():
+            return Response({"message": "You already liked this movie"}, status=status.HTTP_400_BAD_REQUEST)
+        # 4. 좋아요 추가
+        user.liked_movies.add(movie)
+        return Response({"message": "Movie liked successfully"}, status=status.HTTP_200_OK)
+
+
+# 좋아요 한 배우를 기반으로 영화 5개 조회 [완]
 class UserLikedActor(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -164,7 +269,7 @@ class UserLikedActor(APIView):
         liked_actors = user.liked_actors.all()
         if liked_actors:
             random_actor = random.choice(liked_actors)
-            actor_id = random_actor.id
+            actor_id = random_actor.actorID
             movies_url = f"{TMDB_BASE_URL}/discover/movie"
             movies_params = {
                 "api_key": TMDB_API_KEY,
@@ -209,17 +314,6 @@ class UserLikedDirector(APIView):
         )
 
 
-# 유저가 좋아요 한 영화 조회 [완]
-class UserLikedMovies(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        user = request.user
-        liked_movies = user.liked_movies.all()[:5]
-        serializer = UserLikedMoviesSerializer(liked_movies, many=True)
-        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
-
-
 # 유저가 좋아요 한 장르를 기반으로 영화 5개 조회 [완]
 class UserLikedGenreMovies(APIView):
     permission_classes = [IsAuthenticated]
@@ -246,99 +340,6 @@ class UserLikedGenreMovies(APIView):
             {"error": "Failed to fetch liked genre movies"},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-
-
-# 영화 상세 정보 조회 [완]
-class MovieDetail(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, movie_id):
-        movie_url = f"{TMDB_BASE_URL}/movie/{movie_id}"
-        movie_params = {"api_key": TMDB_API_KEY, "language": "ko-KR"}
-        movie_response = requests.get(movie_url, params=movie_params)
-        if movie_response.status_code == 200:
-            movie_detail = movie_response.json()
-            credits_url = f"{TMDB_BASE_URL}/movie/{movie_id}/credits"
-            credits_response = requests.get(credits_url, params=movie_params)
-            if credits_response.status_code == 200:
-                movie_detail["credits"] = credits_response.json()
-            return Response(movie_detail, status=status.HTTP_200_OK)
-        return Response(
-            {"error": "Failed to fetch movie details"},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
-
-
-# 감독 상세 조회 [완]
-class DirectorDetail(APIView):
-    def get(self, request, director_id):
-        director_url = f"{TMDB_BASE_URL}/person/{director_id}"
-        director_params = {"api_key": TMDB_API_KEY, "language": "ko-KR"}
-        director_response = requests.get(director_url, params=director_params)
-        if director_response.status_code == 200:
-            director_detail = director_response.json()
-            filmography_url = f"{TMDB_BASE_URL}/person/{director_id}/movie_credits"
-            filmography_response = requests.get(filmography_url, params=director_params)
-            if filmography_response.status_code == 200:
-                director_detail["filmography"] = filmography_response.json().get("crew", [])
-            return Response(director_detail, status=status.HTTP_200_OK)
-        return Response(
-            {"error": "Failed to fetch director details"},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
-
-
-# 배우 상세 조회 [완]
-class ActorDetail(APIView):
-    def get(self, request, actor_id):
-        actor_url = f"{TMDB_BASE_URL}/person/{actor_id}"
-        actor_params = {"api_key": TMDB_API_KEY, "language": "ko-KR"}
-        actor_response = requests.get(actor_url, params=actor_params)
-        if actor_response.status_code == 200:
-            actor_detail = actor_response.json()
-            filmography_url = f"{TMDB_BASE_URL}/person/{actor_id}/movie_credits"
-            filmography_response = requests.get(filmography_url, params=actor_params)
-            if filmography_response.status_code == 200:
-                actor_detail["filmography"] = filmography_response.json().get("cast", [])
-            return Response(actor_detail, status=status.HTTP_200_OK)
-        return Response(
-            {"error": "Failed to fetch actor details"},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
-
-
-# 영화 좋아요 기능 [완]
-class LikeMovie(APIView):
-    permission_classes = [IsAuthenticated]
-    
-    def post(self, request, movie_id):
-        user = request.user
-        # 1. Movie 객체 가져오기 또는 생성
-        movie, created = Movie.objects.get_or_create(movieID=movie_id)
-        if created:
-            # 2. TMDB API 호출하여 영화 정보 가져오기
-            movie_url = f"{TMDB_BASE_URL}/movie/{movie_id}"
-            params = {
-                "api_key": TMDB_API_KEY,
-                "language": "ko-KR",
-            }
-            response = requests.get(movie_url, params=params)
-            if response.status_code == 200:
-                movie_data = response.json()
-                movie.poster_path = movie_data.get("poster_path", "")
-                movie.save()
-            else:
-                # TMDB API 호출 실패 시 에러 처리
-                return Response(
-                    {"error": "Failed to fetch movie details from TMDB"},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                )
-        # 3. 중복 좋아요 방지
-        if user.liked_movies.filter(movieID=movie_id).exists():
-            return Response({"message": "You already liked this movie"}, status=status.HTTP_400_BAD_REQUEST)
-        # 4. 좋아요 추가
-        user.liked_movies.add(movie)
-        return Response({"message": "Movie liked successfully"}, status=status.HTTP_200_OK)
 
 
 # director 좋아요 기능 [완]
@@ -371,6 +372,7 @@ class LikeDirector(APIView):
         return Response({"message": "Director liked successfully"}, status=status.HTTP_200_OK)
 
 
+# actor 좋아요 기능 [완]
 class LikeActor(APIView):
     permission_classes = [IsAuthenticated]
 
