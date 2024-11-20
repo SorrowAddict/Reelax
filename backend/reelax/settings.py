@@ -20,6 +20,7 @@ import environ
 
 env = environ.Env(DEBUG=(bool, True))
 environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
+TMDB_API_KEY = env('TMDB_API_KEY')
 TMDB_READ_ACCESS_TOKEN = env('TMDB_READ_ACCESS_TOKEN')
 YOUTUBE_API_KEY = env('YOUTUBE_API_KEY')
 
