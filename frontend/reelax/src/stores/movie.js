@@ -6,7 +6,7 @@ export const useMovieStore = defineStore('movie', () => {
   const topRatedMovies = ref(null)
   const boxOfficeMovies = ref(null)
   const recentlyReleasedMovies = ref(null)
-  const BASE_URL = 'http://127.0.0.1:8000/movies'
+  const BASE_URL = 'http://127.0.0.1:8000/api/v1/movies'
   
   const getTopRatedMovies = function () {
     axios({
@@ -24,7 +24,7 @@ export const useMovieStore = defineStore('movie', () => {
   const getBoxOfficeMovies = function () {
     axios({
       method: 'get',
-      url: `${BASE_URL}/box-office/`
+      url: `${BASE_URL}/popular/`
     })
       .then((res) => {
         boxOfficeMovies.value = res.data.results
@@ -37,7 +37,7 @@ export const useMovieStore = defineStore('movie', () => {
   const getRecentlyReleasedMovies = function () {
     axios({
       method: 'get',
-      url: `${BASE_URL}/recently-released/`
+      url: `${BASE_URL}/now-playing/`
     })
       .then((res) => {
         recentlyReleasedMovies.value = res.data.results
