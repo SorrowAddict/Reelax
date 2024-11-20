@@ -1,5 +1,6 @@
-from django.shortcuts import render
+# from django.shortcuts import render
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
@@ -11,32 +12,59 @@ TMDB_READ_ACCESS_TOKEN = settings.TMDB_READ_ACCESS_TOKEN
 YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY
 
 # Create your views here.
-@api_view(['GET'])
-def top_rated_movies(request):
-    # 평점 상위 10개 영화 조회
-    url = f"{TMDB_BASE_URL}/movie/top_rated"
-    params = {"api_key": TMDB_API_KEY, "language": "ko-KR", "page": 1}
-    response = requests.get(url, params=params)
-    if response.status_code == 200:
-        movies = response.json().get("results", [])[:10]
-        return Response({'results': movies}, status=status.HTTP_200_OK)
-    return Response(
-        { "error": "Failed to fetch top-rated movies" },
-        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-    )
+class TopRatedMoviesView(APIView):
+    def get(self, request):
+        # TMDB API에서 평점 상위 10개 영화 조회
+        url = f"{TMDB_BASE_URL}/movie/top_rated"
+        params = { "api_key": TMDB_API_KEY, "language": "ko-KR", "page": 1 }
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            movies = response.json().get("results", [])[:10]
+            return Response({ 'results': movies }, status=status.HTTP_200_OK)
+        return Response(
+            {"error": "Failed to fetch top-rated movies"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
-def box_office_movies(request):
-    # 현재 박스오피스 상위 10개 영화 조회
-    # 사실 TMDB에서는 박스오피스 순위를 제공하지 않는다.
-    # 따라서 현재 상영중인 영화에서 가장 popularity가 높은 영화 10개를 가져오는 것이 좋을 것 같다.
-    pass
+class BoxOfficeMoviesView(APIView):
+    def get(self, request):
+        # 현재 박스오피스 상위 10개 영화 조회
+        url = f"{TMDB_BASE_URL}/movie/popular"
+        params = {
+            "api_key": TMDB_API_KEY,
+            "language": "ko-KR",
+            "page": 1,
+            "region": "KR",
+        }
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            movies = response.json().get("results", [])[:10]
+            return Response({ 'results': movies }, status=status.HTTP_200_OK)
+        return Response(
+            {"error": "Failed to fetch box-office movies"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
-def recently_released_movies(request):
-    # 최근 개봉한 10개 영화 조회
-    # TMDB API의 /discover/movie 엔드포인트를 사용하여 release_date 기준으로 정렬하여 가져오기.
-    pass
+class RecentlyReleasedMoviesView(APIView):
+    def get(self, request):
+        # 최근 개봉한 10개 영화 조회
+        url = f"{TMDB_BASE_URL}/discover/movie"
+        params = {
+            "api_key": TMDB_API_KEY,
+            "language": "ko-KR",
+            "sort_by": "release_date.desc",
+            "page": 1,
+        }
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            movies = response.json().get("results", [])[:10]
+            return Response({ 'results': movies }, status=status.HTTP_200_OK)
+        return Response(
+            {"error": "Failed to fetch recently released movies"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 def genre_movies(request):

@@ -1,10 +1,11 @@
 from django.urls import path
 from . import views
+from .views import *
 
 urlpatterns = [
-    path('top-rated/', views.top_rated_movies, name='top_rated_movies'),
-    path('box-office/', views.box_office_movies, name='box_office_movies'),
-    path('recently-released/', views.recently_released_movies, name='recently_released_movies'),
+    path('top-rated/', TopRatedMoviesView.as_view(), name='top_rated_movies'),
+    path('box-office/', BoxOfficeMoviesView.as_view(), name='box_office_movies'),
+    path('recently-released/', RecentlyReleasedMoviesView.as_view(), name='recently_released_movies'),
     path('genre-movies/', views.genre_movies, name='genre_movies'),
     path('user-liked-actor/', views.user_liked_actor, name='user_liked_actor'),
     path('user-liked-director/', views.user_liked_director, name='user_liked_director'),
