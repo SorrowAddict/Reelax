@@ -1,12 +1,24 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import axios from 'axios'
 
 export const useMovieStore = defineStore('movie', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
+  const topRatedMovies = ref(null)
+  const BASE_URL = 'http://127.0.0.1:8000/movies'
+  
+  const getTopRatedMovies = function () {
+    axios({
+      method: 'get',
+      url: `${BASE_URL}/top-rated/`
+    })
+      .then((res) => {
+        console.log(res)
+        topRatedMovies.value = res.data.results
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
-  return { count, doubleCount, increment }
-})
+  return { getTopRatedMovies, topRatedMovies }
+}, { persist: true })

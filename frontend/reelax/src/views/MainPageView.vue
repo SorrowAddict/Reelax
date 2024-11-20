@@ -6,7 +6,13 @@
     </div>
     <div>
       <h3>좋은 평가를 받은 영화 TOP 10</h3>
-      <MovieCard />
+      <div class="top-rated-movie">
+        <MovieCard
+        v-for="movie in store.topRatedMovies"
+        :key="movie.id"
+        :movie="movie"
+      />
+      </div>
     </div>
     <div>
       <h3>박스오피스 TOP 10</h3>
@@ -21,8 +27,19 @@
 
 <script setup>
 import MovieCard from '@/components/Movie/MovieCard.vue'
+import { useMovieStore } from '@/stores/movie'
+import { onMounted } from 'vue'
+
+const store = useMovieStore()
+
+onMounted(() => {
+  store.getTopRatedMovies()
+})
 </script>
 
 <style scoped>
-
+.top-rated-movie {
+  display: flex;
+  flex-wrap: wrap;
+}
 </style>
