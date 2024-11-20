@@ -4,8 +4,9 @@ import { useRouter } from 'vue-router'
 import axios from 'axios'
 
 export const useAccountStore = defineStore('account', () => {
-  const BASE_URL = 'http://127.0.0.1:8000'
+  const BASE_URL = 'http://127.0.0.1:8000/api/v1'
   const token = ref(null)
+  const userInfo = ref(null)
   const isLogin = computed(() => {
     if (token.value !== null) {
       return true
@@ -27,12 +28,19 @@ export const useAccountStore = defineStore('account', () => {
     })
       .then((res) => {
         console.log('로그인이 완료되었습니다.')
-        router.push({ name: 'MainPageView' })
         token.value = res.data.key
+        router.push({ name: 'MainPageView' })
       })
       .catch((err) => {
         console.log(err)
       })
+  }
+
+  const getUserInfo = function () {
+    axios({
+      method: 'get',
+      url: `${BASE_URL}/accounts/login/`
+    })
   }
 
   const signUp = function (payload) {
