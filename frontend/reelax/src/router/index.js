@@ -25,7 +25,7 @@ const router = createRouter({
       component: SignupPageView
     },
     {
-      path: '/detail',
+      path: '/detail/:id',
       name: 'MovieDetailView',
       component: MovieDetailView,
       children: [

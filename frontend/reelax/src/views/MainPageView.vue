@@ -16,11 +16,23 @@
     </div>
     <div>
       <h3>박스오피스 TOP 10</h3>
-      <MovieCard />
+      <div class="top-rated-movie">
+        <MovieCard
+          v-for="movie in store.boxOfficeMovies"
+          :key="movie.id"
+          :movie="movie"
+        />
+      </div>
     </div>
     <div>
       <h3>최근 개봉한 영화</h3>
-      <MovieCard />
+      <div class="top-rated-movie">
+        <MovieCard
+          v-for="movie in store.recentlyReleasedMovies"
+          :key="movie.id"
+          :movie="movie"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -34,6 +46,8 @@ const store = useMovieStore()
 
 onMounted(() => {
   store.getTopRatedMovies()
+  store.getBoxOfficeMovies()
+  store.getRecentlyReleasedMovies()
 })
 </script>
 
