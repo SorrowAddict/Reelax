@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from .models import Genre, Movie, Director, Actor, Review
 from .serializers import *
 
@@ -157,87 +156,12 @@ class GenreMovies(APIView):
         )
 
 
-def user_liked_actor(request):
-    # 로그인 시 가능
-    # 사용자가 좋아하는 배우 중 하나를 랜덤으로 뽑고 해당 배우의 영화를 랜덤으로 5개 뽑아서 반환
-    pass
-
-
-def user_liked_director(request):
-    # 로그인 시 기능
-    # 사용자가 좋아하는 감독 중 하나를 랜덤으로 뽑고 해당 배우의 영화를 랜덤으로 5개 뽑아서 반환
-    pass
-
-
-def user_liked_movies(request):
-    # 로그인 시 기능
-    # 사용자가 최근 좋아한 영화 5개 이내 조회
-    pass
-
-
-def user_liked_genre(request):
-    # 로그인 시 기능
-    # 사용자가 좋아하는 장르 중 하나를 랜덤으로 뽑고 해당 장르의 영화를 랜덤으로 5개 뽑아서 반환
-    pass
-
-
-def movie_detail(request, movie_id):
-    # 영화 상세 정보 조회
-    # 영화 상세 정보 api 요청이 한 번 있고
-    # 그 후 해당 영화의 출연진에 대한 정보 api 요청이 한 번 있다.
-    # 어느 엔드포인트로 보내야하는지는 GPT한테 물어보면 잘 알려준다.
-    pass
-
-
-def director_detail(request, director_id):
-    # 감독 상세 정보 조회
-    # 영화 상세 정보와 마찬가지로 감독 상세 정보 api 요청이 한 번 있고
-    # 그 후 감독의 필모그래피에 대한 정보 api 요청이 한 번 있다.
-    pass
-
-
-def actor_detail(request, actor_id):
-    # 배우 상세 정보 조회
-    # 감독 상세 정보 조회와 거의 동일
-    pass
-
-
-def like_movie(request, movie_id):
-    # 영화 좋아요 기능
-    pass
-
-
-def like_director(request, director_id):
-    # 감독 좋아요 기능
-    pass
-
-
-def like_actor(request, actor_id):
-    # 배우 좋아요 기능
-    pass
-
-
-def movie_reviews(request, movie_id):
-    # 리뷰 조회 및 작성 기능
-    pass
-
-
-def update_movie_review(request, movie_id, review_id):
-    # 리뷰 수정 및 삭제 기능
-    pass
-
-
-def like_review(request, movie_id, review_id):
-    # 리뷰 좋아요 기능
-    pass
-
-
 class UserLikedActor(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
-        liked_actors = user.profile.liked_actors.all()
+        liked_actors = user.liked_actors.all()
         if liked_actors:
             random_actor = random.choice(liked_actors)
             actor_id = random_actor.id
@@ -258,15 +182,16 @@ class UserLikedActor(APIView):
         )
 
 
+# 유저가 좋아요 한 감독을 기반으로 영화 5개 조회 [완]
 class UserLikedDirector(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
-        liked_directors = user.profile.liked_directors.all()
+        liked_directors = user.liked_directors.all()
         if liked_directors:
             random_director = random.choice(liked_directors)
-            director_id = random_director.id
+            director_id = random_director.directorID
             movies_url = f"{TMDB_BASE_URL}/discover/movie"
             movies_params = {
                 "api_key": TMDB_API_KEY,
@@ -284,25 +209,27 @@ class UserLikedDirector(APIView):
         )
 
 
+# 유저가 좋아요 한 영화 조회 [완]
 class UserLikedMovies(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
-        liked_movies = user.profile.liked_movies.all()[:5]
-        movies = [{"id": movie.id, "title": movie.title} for movie in liked_movies]
-        return Response({'results': movies}, status=status.HTTP_200_OK)
+        liked_movies = user.liked_movies.all()[:5]
+        serializer = UserLikedMoviesSerializer(liked_movies, many=True)
+        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
 
 
-class UserLikedGenre(APIView):
+# 유저가 좋아요 한 장르를 기반으로 영화 5개 조회 [완]
+class UserLikedGenreMovies(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
-        liked_genres = user.profile.liked_genres.all()
+        liked_genres = user.liked_genres.all()
         if liked_genres:
             random_genre = random.choice(liked_genres)
-            genre_id = random_genre.id
+            genre_id = random_genre.genreID
             genre_name = random_genre.name
             movies_url = f"{TMDB_BASE_URL}/discover/movie"
             movies_params = {
@@ -380,7 +307,7 @@ class ActorDetail(APIView):
         )
 
 
-# 영화 좋아요 기능 
+# 영화 좋아요 기능 [완]
 class LikeMovie(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -414,13 +341,33 @@ class LikeMovie(APIView):
         return Response({"message": "Movie liked successfully"}, status=status.HTTP_200_OK)
 
 
+# director 좋아요 기능 [완]
 class LikeDirector(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, director_id):
         user = request.user
-        director, created = Director.objects.get_or_create(id=director_id)
-        user.profile.liked_directors.add(director)
+        director, created = Director.objects.get_or_create(directorID=director_id)
+        if created:
+            director_url = f"{TMDB_BASE_URL}/person/{director_id}"
+            params = {
+                "api_key": TMDB_API_KEY,
+                "language": "ko-KR",
+            }
+            response = requests.get(director_url, params=params)
+            if response.status_code == 200:
+                director_data = response.json()
+                director.name = director_data.get("name", "Unknown Director")
+                director.profile_path = director_data.get("profile_path", "")
+                director.save()
+            else:
+                return Response(
+                    {"error": "Failed to fetch director details from TMDB"},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+        if director in user.liked_directors.all():
+            return Response({"message": "You already liked this director"}, status=status.HTTP_400_BAD_REQUEST)
+        user.liked_directors.add(director)
         return Response({"message": "Director liked successfully"}, status=status.HTTP_200_OK)
 
 
@@ -429,8 +376,8 @@ class LikeActor(APIView):
 
     def post(self, request, actor_id):
         user = request.user
-        actor, created = Actor.objects.get_or_create(id=actor_id)
-        user.profile.liked_actors.add(actor)
+        actor, created = Actor.objects.get_or_create(actorID=actor_id)
+        user.liked_actors.add(actor)
         return Response({"message": "Actor liked successfully"}, status=status.HTTP_200_OK)
 
 
@@ -500,3 +447,16 @@ class LikeReview(APIView):
         review = Review.objects.get(id=review_id, movie_id=movie_id)
         review.likes.add(request.user)
         return Response({"message": "Review liked successfully"}, status=status.HTTP_200_OK)
+
+
+# 장르 좋아요 기능 [완]
+class LikeGenre(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        genre_ids = request.data.get("genre_ids", [])
+        for genre_id in genre_ids:
+            genre, created = Genre.objects.get_or_create(genreID=genre_id)
+            user.liked_genres.add(genre)
+        return Response({"message": "Genres liked successfully"}, status=status.HTTP_200_OK)
