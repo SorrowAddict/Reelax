@@ -226,38 +226,34 @@ class UserLikedMovies(APIView):
         return Response({'results': serializer.data}, status=status.HTTP_200_OK)
 
 
-# 영화 좋아요 기능 [완]
+# 영화 좋아요 및 취소 기능 [완]
 class LikeMovie(APIView):
     permission_classes = [IsAuthenticated]
     
     def post(self, request, movie_id):
         user = request.user
+        movie_data = request.data  # 프론트에서 전송된 데이터
+        movieID = movie_data.get('movieID')  # movieID 필드 사용
         # 1. Movie 객체 가져오기 또는 생성
-        movie, created = Movie.objects.get_or_create(movieID=movie_id)
-        if created:
-            # 2. TMDB API 호출하여 영화 정보 가져오기
-            movie_url = f"{TMDB_BASE_URL}/movie/{movie_id}"
-            params = {
-                "api_key": TMDB_API_KEY,
-                "language": "ko-KR",
-            }
-            response = requests.get(movie_url, params=params)
-            if response.status_code == 200:
-                movie_data = response.json()
-                movie.poster_path = movie_data.get("poster_path", "")
-                movie.save()
-            else:
-                # TMDB API 호출 실패 시 에러 처리
-                return Response(
-                    {"error": "Failed to fetch movie details from TMDB"},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                )
+        movie, created = Movie.objects.get_or_create(movieID=movieID, defaults={
+            'poster_path': movie_data.get('poster_path', '')
+        })
         # 3. 중복 좋아요 방지
-        if user.liked_movies.filter(movieID=movie_id).exists():
+        if user.liked_movies.filter(movieID=movieID).exists():
             return Response({"message": "You already liked this movie"}, status=status.HTTP_400_BAD_REQUEST)
         # 4. 좋아요 추가
         user.liked_movies.add(movie)
         return Response({"message": "Movie liked successfully"}, status=status.HTTP_200_OK)
+    
+    def delete(self, request, movie_id):
+        user = request.user
+        # 사용자가 좋아요한 영화에 있는지 확인
+        movie = user.liked_movies.filter(movieID=movie_id).first()
+        if not movie:
+            return Response({"message": "You have not liked this movie"}, status=status.HTTP_400_BAD_REQUEST)
+        # 좋아요 취소
+        user.liked_movies.remove(movie)
+        return Response({"message": "Movie unliked successfully"}, status=status.HTTP_200_OK)
 
 
 # 좋아요 한 배우를 기반으로 영화 5개 조회 [완]
@@ -348,28 +344,34 @@ class LikeDirector(APIView):
 
     def post(self, request, director_id):
         user = request.user
-        director, created = Director.objects.get_or_create(directorID=director_id)
-        if created:
-            director_url = f"{TMDB_BASE_URL}/person/{director_id}"
-            params = {
-                "api_key": TMDB_API_KEY,
-                "language": "ko-KR",
-            }
-            response = requests.get(director_url, params=params)
-            if response.status_code == 200:
-                director_data = response.json()
-                director.name = director_data.get("name", "Unknown Director")
-                director.profile_path = director_data.get("profile_path", "")
-                director.save()
-            else:
-                return Response(
-                    {"error": "Failed to fetch director details from TMDB"},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                )
-        if director in user.liked_directors.all():
+        director_data = request.data  # 프론트에서 전송된 데이터
+        directorID = director_data.get('directorID')
+
+        # Director 객체 가져오기 또는 생성
+        director, created = Director.objects.get_or_create(directorID=directorID, defaults={
+            'name': director_data.get('name', 'Unknown Director'),
+            'profile_path': director_data.get('profile_path', '')
+        })
+
+        # 중복 좋아요 방지
+        if user.liked_directors.filter(directorID=directorID).exists():
             return Response({"message": "You already liked this director"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 좋아요 추가
         user.liked_directors.add(director)
         return Response({"message": "Director liked successfully"}, status=status.HTTP_200_OK)
+    
+    def delete(self, request, director_id):
+        user = request.user
+
+        # 사용자가 좋아요한 감독인지 확인
+        director = user.liked_directors.filter(directorID=director_id).first()
+        if not director:
+            return Response({"message": "You have not liked this director"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 좋아요 취소
+        user.liked_directors.remove(director)
+        return Response({"message": "Director unliked successfully"}, status=status.HTTP_200_OK)
 
 
 # actor 좋아요 기능 [완]
@@ -378,9 +380,34 @@ class LikeActor(APIView):
 
     def post(self, request, actor_id):
         user = request.user
-        actor, created = Actor.objects.get_or_create(actorID=actor_id)
+        actor_data = request.data  # 프론트에서 전송된 데이터
+        actorID = actor_data.get('actorID')
+
+        # Actor 객체 가져오기 또는 생성
+        actor, created = Actor.objects.get_or_create(actorID=actorID, defaults={
+            'name': actor_data.get('name', 'Unknown Actor'),
+            'profile_path': actor_data.get('profile_path', '')
+        })
+
+        # 중복 좋아요 방지
+        if user.liked_actors.filter(actorID=actorID).exists():
+            return Response({"message": "You already liked this actor"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 좋아요 추가
         user.liked_actors.add(actor)
         return Response({"message": "Actor liked successfully"}, status=status.HTTP_200_OK)
+    
+    def delete(self, request, actor_id):
+        user = request.user
+
+        # 사용자가 좋아요한 배우인지 확인
+        actor = user.liked_actors.filter(actorID=actor_id).first()
+        if not actor:
+            return Response({"message": "You have not liked this actor"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 좋아요 취소
+        user.liked_actors.remove(actor)
+        return Response({"message": "Actor unliked successfully"}, status=status.HTTP_200_OK)
 
 
 # 영화 리뷰 조회 및 작성 [완]
@@ -392,30 +419,15 @@ class MovieReviews(APIView):
 
     def post(self, request, movie_id):
         user = request.user
-        content = request.data.get("content")
-        movie, created = Movie.objects.get_or_create(movieID=movie_id)
+        data = request.data  # 프론트에서 전송된 데이터
+        content = data.get("content")
 
-        if created:
-            # 2. TMDB API 호출하여 영화 정보 가져오기
-            movie_url = f"{TMDB_BASE_URL}/movie/{movie_id}"
-            params = {
-                "api_key": TMDB_API_KEY,
-                "language": "ko-KR",
-            }
-            response = requests.get(movie_url, params=params)
+        # Movie 객체 가져오기 또는 생성
+        movie, created = Movie.objects.get_or_create(movieID=movie_id, defaults={
+            'poster_path': data.get('poster_path', '')
+        })
 
-            if response.status_code == 200:
-                movie_data = response.json()
-                # 3. 영화 데이터를 저장
-                movie.poster_path = movie_data.get("poster_path", "")
-                movie.save()
-            else:
-                return Response(
-                    {"error": "Failed to fetch movie details from TMDB"},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                )
-
-        # 4. 리뷰 작성
+        # 리뷰 작성
         review = Review.objects.create(user=user, movie=movie, content=content)
         return Response(
             {
@@ -459,8 +471,36 @@ class LikeGenre(APIView):
 
     def post(self, request):
         user = request.user
-        genre_ids = request.data.get("genre_ids", [])
-        for genre_id in genre_ids:
-            genre, created = Genre.objects.get_or_create(genreID=genre_id)
-            user.liked_genres.add(genre)
+        genres_data = request.data.get("genres", [])  # 프론트에서 전송된 장르 데이터 리스트
+        
+        for genre_data in genres_data:
+            genre_id = genre_data.get('genreID')
+            name = genre_data.get('name')
+
+            # Genre 객체 가져오기 또는 생성
+            genre, created = Genre.objects.get_or_create(
+                genreID=genre_id,
+                defaults={'name': name}
+            )
+
+            # 좋아요 추가
+            if not user.liked_genres.filter(genreID=genre_id).exists():
+                user.liked_genres.add(genre)
+
         return Response({"message": "Genres liked successfully"}, status=status.HTTP_200_OK)
+    
+    def delete(self, request):
+        user = request.user
+        genre_id = request.data.get("genreID")  # 본문에서 genreID 추출
+
+        if not genre_id:
+            return Response({"message": "genreID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 사용자가 좋아요한 장르인지 확인
+        genre = user.liked_genres.filter(genreID=genre_id).first()
+        if not genre:
+            return Response({"message": "You have not liked this genre"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 좋아요 취소
+        user.liked_genres.remove(genre)
+        return Response({"message": "Genre unliked successfully"}, status=status.HTTP_200_OK)
