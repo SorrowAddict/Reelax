@@ -15,6 +15,14 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+import os
+import environ
+
+env = environ.Env(DEBUG=(bool, True))
+environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
+TMDB_API_KEY = env('TMDB_API_KEY')
+TMDB_READ_ACCESS_TOKEN = env('TMDB_READ_ACCESS_TOKEN')
+YOUTUBE_API_KEY = env('YOUTUBE_API_KEY')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -31,6 +39,24 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # APP
+    'accounts',
+    'movies',
+    'recommends',
+
+    # DRF
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
+
+    # REST_AUTH
+    'dj_rest_auth',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
+    'django.contrib.sites',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,15 +65,44 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+SITE_ID = 1
+
+AUTH_USER_MODEL = 'accounts.User'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",  # django-allauth
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:5173',
+    'http://localhost:5173',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+
+REST_AUTH = {
+    'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer',
+    'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailsSerializer',
+}
+
+ACCOUNT_ADAPTER = 'accounts.models.CustomAccountAdapter'
+
+ACCOUNT_EMAIL_REQUIRED = False  # 이메일 필수 해제
+ACCOUNT_EMAIL_VERIFICATION = "none"  # 이메일 인증 비활성화
+ACCOUNT_AUTHENTICATION_METHOD = "username"  # 사용자 이름 기반 인증
+ACCOUNT_USERNAME_REQUIRED = True  # 사용자 이름 필수
 
 ROOT_URLCONF = 'reelax.urls'
 
