@@ -1,17 +1,19 @@
 <template>
-  <nav v-if="store.isLogin">
-    <LoginNavbar />
-  </nav>
-  <nav v-else>
-    <UnloginNavbar />
-  </nav>
-  <RouterView />
-  <footer>
-    <p>Copyright© REELAX All rights reserved.</p>
-    <p>X 로고</p>
-    <p>인스타 로고</p>
-    <p>gmail 로고</p>
-  </footer>
+  <v-app>
+    <nav v-if="store.isLogin">
+      <LoginNavbar />
+    </nav>
+    <nav v-else>
+      <UnloginNavbar />
+    </nav>
+    <RouterView />
+    <footer>
+      <p>Copyright© REELAX All rights reserved.</p>
+      <p>X 로고</p>
+      <p>인스타 로고</p>
+      <p>gmail 로고</p>
+    </footer>
+  </v-app>
 </template>
 
 <script setup>
@@ -26,7 +28,7 @@ const store = useAccountStore()
 <style scoped>
 footer {
   display: flex;
-  position: absolute;
+  position: fixed;
   bottom: 0px;
 }
 

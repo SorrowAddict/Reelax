@@ -36,19 +36,18 @@ export const useAccountStore = defineStore('account', () => {
   }
 
   const signUp = function (payload) {
-    const { username, password1, password2 } = payload
+    const { username, nickname, password1, password2 } = payload
 
     axios({
       method: 'post',
       url: `${BASE_URL}/accounts/registration/`,
       data: {
-        username, password1, password2
+        username, nickname, password1, password2
       }
     })
       .then((res) => {
         console.log('회원가입이 완료되었습니다.')
         router.push({ name: 'MainPageView' })
-        token.value = res.data.key
       })
       .catch((err) => {
         console.log(err)
@@ -72,4 +71,4 @@ export const useAccountStore = defineStore('account', () => {
   }
 
   return { BASE_URL, signUp, logIn, token, isLogin, logOut }
-})
+}, { persist: true })
