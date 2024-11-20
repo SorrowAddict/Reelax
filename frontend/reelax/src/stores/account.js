@@ -7,13 +7,13 @@ export const useAccountStore = defineStore('account', () => {
   const BASE_URL = 'http://127.0.0.1:8000'
   const token = ref(null)
   const isLogin = computed(() => {
-    
+    if (token.value !== null) {
+      return true
+    } else {
+      return false
+    }
   })
   const router = useRouter()
-
-  if (token !== null) {
-    
-  }
   
   const logIn = function (payload) {
     const { username, password } = payload
@@ -55,5 +55,21 @@ export const useAccountStore = defineStore('account', () => {
       })
   }
 
-  return { BASE_URL, signUp, logIn, token }
+  const logOut = function () {
+    axios({
+      method: 'post',
+      url: `${BASE_URL}/accounts/logout/`
+    })
+      .then((res) => {
+        console.log('로그아웃이 완료되었습니다.')
+        token.value = null
+        console.log(token.value)
+        router.push({ name: 'MainPageView'})
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  return { BASE_URL, signUp, logIn, token, isLogin, logOut }
 })
