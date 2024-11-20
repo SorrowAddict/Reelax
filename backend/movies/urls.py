@@ -22,7 +22,7 @@ urlpatterns = [
     path('like-director/<int:director_id>/', LikeDirector.as_view()),
     # genre 좋아요 [완]
     path('user-liked-genre/', UserLikedGenreMovies.as_view()),
-    path('like-genre/', LikeGenre.as_view()),
+    path('like-genre/<int:genre_id>/', LikeGenre.as_view()),
     # review [완]
     path('<int:movie_id>/reviews/', MovieReviews.as_view()),
     path('<int:movie_id>/reviews/<int:review_id>/', UpdateMovieReview.as_view()),
