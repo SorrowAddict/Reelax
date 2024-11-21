@@ -9,6 +9,12 @@ export const useMovieStore = defineStore('movie', () => {
   const recentlyReleasedMovies = ref(null)
   const genreMovies = ref(null)
   const userLikedGenreMovies = ref(null)
+  const userLikedMovies = ref(null)
+  const userLikedActorMovies = ref(null)
+  const userLikedActor = ref(null)
+  const userLikedDirecMovies = ref(null)
+  const userLikedDirec = ref(null)
+
   const BASE_URL = 'http://127.0.0.1:8000/api/v1/movies'
   const accountStore = useAccountStore()
   
@@ -69,6 +75,7 @@ export const useMovieStore = defineStore('movie', () => {
       })
   }
 
+  // 유저가 좋아한 랜덤 장르 영화 가져오기
   const getUserLikedGenreMovies = function () {
     axios({
       method: 'get',
@@ -85,6 +92,59 @@ export const useMovieStore = defineStore('movie', () => {
       })
   }
 
+  // 유저가 좋아한 영화 5개 가져오기
+  const getUserLikedMovies = function () {
+    axios({
+      method: 'get',
+      url: `${BASE_URL}/user-liked-movies/`,
+      headers: {
+        Authorization: `Token ${accountStore.token}`
+      }
+    })
+      .then((res) => {
+        userLikedMovies.value = res.data.results
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  // 유저가 좋아한 랜덤 배우 영화 가져오기
+  const getUserLikedActorMovies = function () {
+    axios({
+      method: 'get',
+      url: `${BASE_URL}/user-liked-actor/`,
+      headers: {
+        Authorization: `Token ${accountStore.token}`
+      }
+    })
+      .then((res) => {
+        userLikedActorMovies.value = res.data.results
+        userLikedActor.value = res.data.name
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  // 유저가 좋아한 랜덤 감독 영화 가져오기
+  const getUserLikedDirecMovies = function () {
+    axios({
+      method: 'get',
+      url: `${BASE_URL}/user-liked-director/`,
+      headers: {
+        Authorization: `Token ${accountStore.token}`
+      }
+    })
+      .then((res) => {
+        userLikedDirecMovies.value = res.data.results
+        userLikedDirec.value = res.data.name
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   return { 
     getTopRatedMovies,
     topRatedMovies,
@@ -95,6 +155,14 @@ export const useMovieStore = defineStore('movie', () => {
     getGenreMovies,
     genreMovies,
     getUserLikedGenreMovies,
-    userLikedGenreMovies
+    userLikedGenreMovies,
+    getUserLikedMovies,
+    userLikedMovies,
+    getUserLikedActorMovies,
+    userLikedActorMovies,
+    userLikedActor,
+    getUserLikedDirecMovies,
+    userLikedDirecMovies,
+    userLikedDirec
   }
 }, { persist: true })

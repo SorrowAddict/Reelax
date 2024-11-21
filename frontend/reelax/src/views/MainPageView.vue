@@ -36,12 +36,54 @@
 
     <!-- 로그인 한 상태일 때만 보여지는 영화 리스트들 -->
     <div v-if="accountStore.token !== null">
-      <div v-for="(movies, genre) in movieStore.userLikedGenreMovies" :key="genre">
-        <h3>사용자가 좋아한 {{ genre }} 영화</h3>
+      <!-- 사용자가 좋아한 장르의 영화 -->
+      <div v-if="movieStore.userLikedGenreMovies && Object.keys(movieStore.userLikedGenreMovies).length > 0" class="movie">
+        <div v-for="(movies, genre) in movieStore.userLikedGenreMovies" :key="genre">
+          <h3>사용자가 좋아한 {{ genre }} 영화</h3>
+          <MainCarouselSection
+            carousel-id="likedGenreCarousel"
+            :movies="movies"
+          />
+        </div>
+      </div>
+      <div v-else>
+        <h1>아직 좋아한 장르가 없습니다!</h1>
+      </div>
+
+      <!-- 사용자가 좋아한 최근 영화 -->
+      <div v-if="movieStore.userLikedMovies && Object.keys(movieStore.userLikedMovies).length > 0" class="movie">
+        <h3>사용자가 최근 좋아한 영화</h3>
         <MainCarouselSection
-          carousel-id="genreCarousel"
-          :movies="movies"
+          carousel-id="likedMovieCarousel"
+          :movies="movieStore.userLikedMovies"
         />
+      </div>
+      <div v-else>
+        <h1>아직 좋아한 영화가 없습니다!</h1>
+      </div>
+
+      <!-- 유저가 좋아한 배우 중 랜덤으로 하나 뽑아서 필모 5개 표시 -->
+      <div v-if="movieStore.userLikedActorMovies && Object.keys(movieStore.userLikedActorMovies).length > 0" class="movie">
+        <h3>사용자가 좋아한 {{ movieStore.userLikedActor }}의 영화</h3>
+        <MainCarouselSection
+          carousel-id="likedActorCarousel"
+          :movies="movieStore.userLikedActorMovies"
+        />
+      </div>
+      <div v-else>
+        <h1>아직 좋아한 배우가 없습니다!</h1>
+      </div>
+
+      <!-- 유저가 좋아한 감독 중 랜덤으로 하나 뽑아서 필모 5개 표시 -->
+      <div v-if="movieStore.userLikedDirecMovies && Object.keys(movieStore.userLikedDirecMovies).length > 0" class="movie">
+        <h3>사용자가 좋아한 {{ movieStore.userDirecActor }}의 영화</h3>
+        <MainCarouselSection
+          carousel-id="likedDirecCarousel"
+          :movies="movieStore.userLikedDirecMovies"
+        />
+      </div>
+      <div v-else>
+        <h1>아직 좋아한 감독이 없습니다!</h1>
       </div>
     </div>
     
@@ -72,7 +114,7 @@
 
     <div v-if="accountStore.token !== null">
       <!-- 로그인 되어있는 상태 -->
-      <div v-for="(movies, genre) in movieStore.genreMovies" :key="genre">
+      <div v-for="(movies, genre) in movieStore.genreMovies" :key="genre" class="movie">
         <h3>이런 영화는 어떠세요?</h3>
         <MainCarouselSection
           carousel-id="genreCarousel"
@@ -82,7 +124,7 @@
     </div>
     <div v-else>
       <!-- 로그인 되어있지 않은 상태 -->
-      <div v-for="(movies, genre) in movieStore.genreMovies" :key="genre" class="genre-movie">
+      <div v-for="(movies, genre) in movieStore.genreMovies" :key="genre" class="movie">
         <h3>당신이 좋아할만한 {{ genre }} 영화</h3>
         <MainCarouselSection
           carousel-id="genreCarousel"
@@ -114,7 +156,14 @@ onMounted(() => {
   movieStore.getBoxOfficeMovies()
   movieStore.getRecentlyReleasedMovies()
   movieStore.getGenreMovies()
-  movieStore.getUserLikedGenreMovies()
+  if (accountStore.isLogin) {
+    // 로그인 되어있을 경우
+    movieStore.getUserLikedGenreMovies()
+    movieStore.getUserLikedMovies()
+    movieStore.getUserLikedActorMovies()
+    movieStore.getUserLikedDirecMovies()
+  }
+  
 })
 </script>
 
