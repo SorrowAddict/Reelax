@@ -36,8 +36,28 @@ class MovieSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Movie
-        fields = ['movieID', 'poster_path', 'genres']
+        fields = '__all__'
         read_only_fields = ['movieID']
+
+
+class MovieCreateSerializer(serializers.ModelSerializer):
+    genres = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Genre.objects.all()
+    )
+    actors = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Actor.objects.all(), required=False
+    )
+    directors = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Director.objects.all(), required=False
+    )
+
+    class Meta:
+        model = Movie
+        fields = [
+            'movieID', 'title', 'overview', 'release_date', 'popularity',
+            'vote_average', 'vote_count', 'poster_path', 'backdrop_path',
+            'genres', 'actors', 'directors'
+        ]
 
 
 class ActorSerializer(serializers.ModelSerializer):
