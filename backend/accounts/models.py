@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
-from movies.models import Actor, Director, Genre, Movie
+from movies.models import Actor, Director, Genre, Movie, Playlist
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.account.utils import user_username, user_email, user_field
 
@@ -13,6 +13,7 @@ class User(AbstractUser):
     liked_directors = models.ManyToManyField(Director, related_name='liked_by_users')
     liked_genres = models.ManyToManyField(Genre, related_name='liked_by_users')
     liked_movies = models.ManyToManyField(Movie, related_name='liked_by_users')
+    playlists = models.ManyToManyField(Playlist, related_name='user_playlists')
 
 
 class CustomAccountAdapter(DefaultAccountAdapter):

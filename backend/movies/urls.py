@@ -20,9 +20,9 @@ urlpatterns = [
     path('<int:movie_id>/reviews/', MovieReviews.as_view()),
     path('<int:movie_id>/reviews/<int:review_id>/', UpdateMovieReview.as_view()),
     # 커뮤니티 기능 (좋아요)
-    path('like-movie/<int:movie_id>/', LikeMovie.as_view()),
-    path('like-actor/<int:actor_id>/', LikeActor.as_view()),
-    path('like-director/<int:director_id>/', LikeDirector.as_view()),
-    path('like-genre/<int:genre_id>/', LikeGenre.as_view()),
+    path('like-movie/', LikeMovie.as_view()),
+    path('like-actor/', LikeActor.as_view()),
+    path('like-director/', LikeDirector.as_view()),
+    path('like-genre/', LikeGenre.as_view()),
     path('<int:movie_id>/reviews/<int:review_id>/like/', LikeReview.as_view()),
 ]

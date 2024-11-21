@@ -353,7 +353,7 @@ class UpdateMovieReview(APIView):
 class LikeMovie(APIView):
     permission_classes = [IsAuthenticated]
     
-    def post(self, request, movie_id):
+    def post(self, request):
         user = request.user
         movie_data = request.data
         movieID = movie_data.get('movieID')
@@ -368,10 +368,12 @@ class LikeMovie(APIView):
         user.liked_movies.add(movie)
         return Response({"message": "Movie liked successfully"}, status=status.HTTP_200_OK)
     
-    def delete(self, request, movie_id):
+    def delete(self, request):
         user = request.user
+        movie_data = request.data
+        movieID = movie_data.get('movieID')
         # 사용자가 좋아요한 영화에 있는지 확인
-        movie = user.liked_movies.filter(movieID=movie_id).first()
+        movie = user.liked_movies.filter(movieID=movieID).first()
         if not movie:
             return Response({"message": "You have not liked this movie"}, status=status.HTTP_400_BAD_REQUEST)
         # 좋아요 취소
@@ -383,7 +385,7 @@ class LikeMovie(APIView):
 class LikeActor(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, actor_id):
+    def post(self, request):
         user = request.user
         actor_data = request.data  # 프론트에서 전송된 데이터
         actorID = actor_data.get('actorID')
@@ -399,10 +401,11 @@ class LikeActor(APIView):
         user.liked_actors.add(actor)
         return Response({"message": "Actor liked successfully"}, status=status.HTTP_200_OK)
     
-    def delete(self, request, actor_id):
+    def delete(self, request):
         user = request.user
+        actorID = request.data.get('actorID')
         # 사용자가 좋아요한 배우인지 확인
-        actor = user.liked_actors.filter(actorID=actor_id).first()
+        actor = user.liked_actors.filter(actorID=actorID).first()
         if not actor:
             return Response({"message": "You have not liked this actor"}, status=status.HTTP_400_BAD_REQUEST)
         # 좋아요 취소
@@ -410,11 +413,11 @@ class LikeActor(APIView):
         return Response({"message": "Actor unliked successfully"}, status=status.HTTP_200_OK)
 
 
-# director 좋아요 기능 [완]
+# director 좋아요 기능
 class LikeDirector(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, director_id):
+    def post(self, request):
         user = request.user
         director_data = request.data  # 프론트에서 전송된 데이터
         directorID = director_data.get('directorID')
@@ -430,10 +433,11 @@ class LikeDirector(APIView):
         user.liked_directors.add(director)
         return Response({"message": "Director liked successfully"}, status=status.HTTP_200_OK)
     
-    def delete(self, request, director_id):
+    def delete(self, request):
         user = request.user
+        directorID = request.data.get('directorID')
         # 사용자가 좋아요한 감독인지 확인
-        director = user.liked_directors.filter(directorID=director_id).first()
+        director = user.liked_directors.filter(directorID=directorID).first()
         if not director:
             return Response({"message": "You have not liked this director"}, status=status.HTTP_400_BAD_REQUEST)
         # 좋아요 취소
