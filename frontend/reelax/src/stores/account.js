@@ -70,7 +70,6 @@ export const useAccountStore = defineStore('account', () => {
       .then((res) => {
         console.log('로그아웃이 완료되었습니다.')
         token.value = null
-        console.log(token.value)
         router.push({ name: 'MainPageView'})
       })
       .catch((err) => {

@@ -33,13 +33,24 @@
         </button>
       </div>
     </div>
+
+    <!-- 로그인 한 상태일 때만 보여지는 영화 리스트들 -->
+    <div v-if="accountStore.token !== null">
+      <div v-for="(movies, genre) in movieStore.userLikedGenreMovies" :key="genre">
+        <h3>사용자가 좋아한 {{ genre }} 영화</h3>
+        <MainCarouselSection
+          carousel-id="genreCarousel"
+          :movies="movies"
+        />
+      </div>
+    </div>
     
     <!-- Top rated movie -->
     <div class="movie">
       <h3>좋은 평가를 받은 영화 TOP 10</h3>
       <MainCarouselSection
         carousel-id="topRatedCarousel"
-        :movies="store.topRatedMovies"
+        :movies="movieStore.topRatedMovies"
       />
     </div>
 
@@ -47,7 +58,7 @@
       <h3>박스 오피스 TOP 10</h3>
       <MainCarouselSection
         carousel-id="boxOfficeCarousel"
-        :movies="store.boxOfficeMovies"
+        :movies="movieStore.boxOfficeMovies"
       />
     </div>
 
@@ -55,18 +66,41 @@
       <h3>최근 개봉한 영화</h3>
       <MainCarouselSection
         carousel-id="recentlyReleasedCarousel"
-        :movies="store.recentlyReleasedMovies"
+        :movies="movieStore.recentlyReleasedMovies"
       />
+    </div>
+
+    <div v-if="accountStore.token !== null">
+      <!-- 로그인 되어있는 상태 -->
+      <div v-for="(movies, genre) in movieStore.genreMovies" :key="genre">
+        <h3>이런 영화는 어떠세요?</h3>
+        <MainCarouselSection
+          carousel-id="genreCarousel"
+          :movies="movies"
+        />
+      </div>
+    </div>
+    <div v-else>
+      <!-- 로그인 되어있지 않은 상태 -->
+      <div v-for="(movies, genre) in movieStore.genreMovies" :key="genre" class="genre-movie">
+        <h3>당신이 좋아할만한 {{ genre }} 영화</h3>
+        <MainCarouselSection
+          carousel-id="genreCarousel"
+          :movies="movies"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import MainCarouselSection from "@/components/Movie/MainCarouselSection.vue"
+import { useAccountStore } from "@/stores/account"
 import { useMovieStore } from '@/stores/movie'
 import { onMounted, ref } from 'vue'
 
-const store = useMovieStore()
+const movieStore = useMovieStore()
+const accountStore = useAccountStore()
 
 const carouselImages = ref([
   '/image/1.jpg',
@@ -76,9 +110,11 @@ const carouselImages = ref([
 ])
 
 onMounted(() => {
-  store.getTopRatedMovies()
-  store.getBoxOfficeMovies()
-  store.getRecentlyReleasedMovies()
+  movieStore.getTopRatedMovies()
+  movieStore.getBoxOfficeMovies()
+  movieStore.getRecentlyReleasedMovies()
+  movieStore.getGenreMovies()
+  movieStore.getUserLikedGenreMovies()
 })
 </script>
 
@@ -119,5 +155,9 @@ onMounted(() => {
 
 .movie-list {
   margin: 20px 0px;
+}
+
+.genre-movie {
+  margin: 100px 0px;
 }
 </style>
