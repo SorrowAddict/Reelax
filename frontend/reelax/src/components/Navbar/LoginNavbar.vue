@@ -25,6 +25,7 @@ const logOut = function () {
 .nav-bar {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 .account-link {
   display: flex;
