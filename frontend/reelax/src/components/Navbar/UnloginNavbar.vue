@@ -1,11 +1,11 @@
 <template>
   <div class="nav-bar">
     <div class="home-link">
-      <RouterLink :to="{ name: 'MainPageView' }"><h1>REELEX</h1></RouterLink>
+      <RouterLink :to="{ name: 'MainPageView' }"><img src="/image/logo_final.png" alt="" height="60px"></RouterLink>
     </div>
     <div class="account-link">
-      <RouterLink :to="{ name: 'LoginPageView' }"><h1>로그인</h1></RouterLink>
-      <RouterLink :to="{ name: 'SignupPageView' }"><h1>회원가입</h1></RouterLink>
+      <RouterLink :to="{ name: 'LoginPageView' }"><h2>로그인</h2></RouterLink>
+      <RouterLink :to="{ name: 'SignupPageView' }"><h2>회원가입</h2></RouterLink>
     </div>
   </div>
 </template>
@@ -18,15 +18,18 @@
 .nav-bar {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid white;
 }
 .account-link {
   display: flex;
 }
-h1 {
+h2 {
   padding: 0px 10px;
 }
 a {
   text-decoration: none;
-  color: black;
+  color: white;
 }
 </style>
