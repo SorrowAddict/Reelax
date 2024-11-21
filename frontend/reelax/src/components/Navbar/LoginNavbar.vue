@@ -1,7 +1,7 @@
 <template>
   <div class="nav-bar">
     <div class="home-link">
-      <RouterLink :to="{ name: 'MainPageView' }"><h1>REELEX</h1></RouterLink>
+      <RouterLink :to="{ name: 'MainPageView' }"><img src="/image/logo_final.png" alt=""></RouterLink>
     </div>
     <div class="account-link">
       <RouterLink :to="{ name: '' }"><h1>프로필</h1></RouterLink>
@@ -34,6 +34,6 @@ h1 {
 }
 a {
   text-decoration: none;
-  color: black;
+  color: white;
 }
 </style>
