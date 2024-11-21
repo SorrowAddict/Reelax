@@ -11,6 +11,9 @@ export const useMovieStore = defineStore('movie', () => {
   const userLikedGenreMovies = ref(null)
   const userLikedMovies = ref(null)
   const userLikedActorMovies = ref(null)
+  const userLikedActor = ref(null)
+  const userLikedDirecMovies = ref(null)
+  const userLikedDirec = ref(null)
 
   const BASE_URL = 'http://127.0.0.1:8000/api/v1/movies'
   const accountStore = useAccountStore()
@@ -117,6 +120,25 @@ export const useMovieStore = defineStore('movie', () => {
     })
       .then((res) => {
         userLikedActorMovies.value = res.data.results
+        userLikedActor.value = res.data.name
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  // 유저가 좋아한 랜덤 감독 영화 가져오기
+  const getUserLikedDirecMovies = function () {
+    axios({
+      method: 'get',
+      url: `${BASE_URL}/user-liked-director/`,
+      headers: {
+        Authorization: `Token ${accountStore.token}`
+      }
+    })
+      .then((res) => {
+        userLikedDirecMovies.value = res.data.results
+        userLikedDirec.value = res.data.name
       })
       .catch((err) => {
         console.log(err)
@@ -137,6 +159,10 @@ export const useMovieStore = defineStore('movie', () => {
     getUserLikedMovies,
     userLikedMovies,
     getUserLikedActorMovies,
-    userLikedActorMovies
+    userLikedActorMovies,
+    userLikedActor,
+    getUserLikedDirecMovies,
+    userLikedDirecMovies,
+    userLikedDirec
   }
 }, { persist: true })
