@@ -25,4 +25,9 @@ urlpatterns = [
     path('like-director/', LikeDirector.as_view()),
     path('like-genre/', LikeGenre.as_view()),
     path('<int:movie_id>/reviews/<int:review_id>/like/', LikeReview.as_view()),
+    # playlist CRUD
+    path('playlists/', UserPlaylists.as_view()),
+    path('playlists/<int:playlist_id>/', UpdateDeletePlaylist.as_view()),
+    # playlist에 영화 추가 CR
+    path('playlists/<int:playlist_id>/movies/', PlaylistMovies.as_view()),
 ]
