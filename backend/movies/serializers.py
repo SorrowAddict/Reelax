@@ -17,6 +17,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ('__all__')
 
+
 class UserLikedMoviesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
