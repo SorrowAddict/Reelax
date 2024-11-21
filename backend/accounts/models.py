@@ -14,6 +14,12 @@ class User(AbstractUser):
     liked_genres = models.ManyToManyField(Genre, related_name='liked_by_users')
     liked_movies = models.ManyToManyField(Movie, related_name='liked_by_users')
     playlists = models.ManyToManyField(Playlist, related_name='user_playlists')
+    profile_image = models.ImageField(
+        upload_to='profile_images/',  # 저장될 경로
+        default='profile_images/default_profile.jpg',  # 기본 이미지
+        blank=True,
+        null=True
+    )
 
 
 class CustomAccountAdapter(DefaultAccountAdapter):

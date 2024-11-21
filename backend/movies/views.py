@@ -16,6 +16,23 @@ TMDB_API_KEY = settings.TMDB_API_KEY
 TMDB_READ_ACCESS_TOKEN = settings.TMDB_READ_ACCESS_TOKEN
 YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY
 
+def save_movie_from_tmdb(movie_data):
+    movie, created = Movie.objects.update_or_create(
+        movieID=movie_data['id'],
+        defaults={
+            'title': movie_data['title'],
+            'overview': movie_data.get('overview', ''),
+            'release_date': movie_data.get('release_date', None),
+            'popularity': movie_data.get('popularity', 0.0),
+            'vote_average': movie_data.get('vote_average', 0.0),
+            'vote_count': movie_data.get('vote_count', 0),
+            'poster_path': movie_data.get('poster_path', ''),
+            'backdrop_path': movie_data.get('backdrop_path', ''),
+            'additional_data': movie_data,  # 모든 데이터를 추가로 저장
+        }
+    )
+    return movie
+
 # Create your views here.
 # TMDB API에서 평점 상위 10개 영화 조회 [완]
 class TopRated(APIView):
@@ -246,8 +263,8 @@ class UserLikedActor(APIView):
                 movies = movies_response.json().get("results", [])[:5]
                 return Response({'results': movies}, status=status.HTTP_200_OK)
         return Response(
-            {"error": "Failed to fetch liked actor movies"},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            {"results": {}, "error": "Failed to fetch liked actor movies"},
+            status=status.HTTP_200_OK,
         )
 
 
@@ -273,8 +290,8 @@ class UserLikedDirector(APIView):
                 movies = movies_response.json().get("results", [])[:5]
                 return Response({'results': movies}, status=status.HTTP_200_OK)
         return Response(
-            {"error": "Failed to fetch liked director movies"},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            {"results": {}, "error": "Failed to fetch liked director movies"},
+            status=status.HTTP_200_OK,
         )
 
 
@@ -301,8 +318,8 @@ class UserLikedGenreMovies(APIView):
                 movies = movies_response.json().get("results", [])[:5]
                 return Response({'results': {genre_name: movies}}, status=status.HTTP_200_OK)
         return Response(
-            {"error": "Failed to fetch liked genre movies"},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            {"results": {}, "error": "Failed to fetch liked genre movies"},
+            status=status.HTTP_200_OK,
         )
 
 
@@ -487,3 +504,98 @@ class LikeReview(APIView):
         review = Review.objects.get(id=review_id, movie_id=movie_id)
         review.liked_by.add(request.user)
         return Response({"message": "Review liked successfully"}, status=status.HTTP_200_OK)
+
+
+# 플레이리스트 CRUD [완]
+class UserPlaylists(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        playlists = Playlist.objects.filter(user=user)
+        serializer = PlaylistSerializer(playlists, many=True)
+        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        user = request.user  # 요청한 사용자
+        data = request.data
+        serializer = PlaylistSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            # Playlist 생성 및 User와 연결
+            playlist = serializer.save(user=user)
+            user.playlists.add(playlist)  # ManyToMany 관계에 추가
+            # Many-to-Many 관계의 movies 추가
+            movie_ids = data.get('movies', [])
+            if movie_ids:
+                movies = Movie.objects.filter(movieID__in=movie_ids)
+                playlist.movies.set(movies)
+            playlist.save()
+            return Response({'results': PlaylistSerializer(playlist).data}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UpdateDeletePlaylist(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, playlist_id):
+        user = request.user
+        try:
+            playlist = Playlist.objects.get(id=playlist_id, user=user)
+        except Playlist.DoesNotExist:
+            return Response({"error": "Playlist not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = PlaylistSerializer(playlist, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'results': serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, playlist_id):
+        user = request.user
+        try:
+            playlist = Playlist.objects.get(id=playlist_id, user=user)
+        except Playlist.DoesNotExist:
+            return Response({"error": "Playlist not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        playlist.delete()
+        return Response({"message": "Playlist deleted successfully"}, status=status.HTTP_200_OK)
+
+
+# 플레이리스트에 영화 추가 [완]
+class PlaylistMovies(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, playlist_id):
+        user = request.user
+        try:
+            playlist = Playlist.objects.get(id=playlist_id, user=user)
+        except Playlist.DoesNotExist:
+            return Response({"error": "Playlist not found"}, status=status.HTTP_404_NOT_FOUND)
+        movies = playlist.movies.all()
+        serializer = MovieSerializer(movies, many=True)
+        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
+    
+    def post(self, request, playlist_id):
+        user = request.user
+        try:
+            playlist = Playlist.objects.get(id=playlist_id, user=user)
+        except Playlist.DoesNotExist:
+            return Response({"error": "Playlist not found"}, status=status.HTTP_404_NOT_FOUND)
+        data = request.data
+        movie_ids = data.get('movies', [])
+        if movie_ids:
+            movies = Movie.objects.filter(movieID__in=movie_ids)
+            playlist.movies.add(*movies)
+        return Response({"message": "Movies added to playlist successfully"}, status=status.HTTP_200_OK)
+    
+    def delete(self, request, playlist_id):
+        user = request.user
+        try:
+            playlist = Playlist.objects.get(id=playlist_id, user=user)
+        except Playlist.DoesNotExist:
+            return Response({"error": "Playlist not found"}, status=status.HTTP_404_NOT_FOUND)
+        data = request.data
+        movie_ids = data.get('movies', [])
+        if movie_ids:
+            movies = Movie.objects.filter(movieID__in=movie_ids)
+            playlist.movies.remove(*movies)
+        return Response({"message": "Movies removed from playlist successfully"}, status=status.HTTP_200_OK)
