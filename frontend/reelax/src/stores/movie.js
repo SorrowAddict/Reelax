@@ -14,6 +14,7 @@ export const useMovieStore = defineStore('movie', () => {
   const userLikedActor = ref(null)
   const userLikedDirecMovies = ref(null)
   const userLikedDirec = ref(null)
+  const movieDetail = ref(null)
 
   const BASE_URL = 'http://127.0.0.1:8000/api/v1/movies'
   const accountStore = useAccountStore()
@@ -145,6 +146,24 @@ export const useMovieStore = defineStore('movie', () => {
       })
   }
 
+  // 영화 상세 정보 가져오기
+  const getMovieDetail = function (movie_id) {
+    axios({
+      method: 'get',
+      url: `${BASE_URL}/${movie_id}/`,
+      headers: {
+        Authorization: `Token ${accountStore.token}`
+      }
+    })
+      .then((res) => {
+        movieDetail.value = res.data
+        console.log(res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   return { 
     getTopRatedMovies,
     topRatedMovies,
@@ -163,6 +182,8 @@ export const useMovieStore = defineStore('movie', () => {
     userLikedActor,
     getUserLikedDirecMovies,
     userLikedDirecMovies,
-    userLikedDirec
+    userLikedDirec,
+    getMovieDetail,
+    movieDetail
   }
 }, { persist: true })

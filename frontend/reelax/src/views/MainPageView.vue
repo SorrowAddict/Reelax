@@ -46,7 +46,7 @@
           />
         </div>
       </div>
-      <div v-else>
+      <div v-else class="movie">
         <h1>아직 좋아한 장르가 없습니다!</h1>
       </div>
 
@@ -58,7 +58,7 @@
           :movies="movieStore.userLikedMovies"
         />
       </div>
-      <div v-else>
+      <div v-else class="movie">
         <h1>아직 좋아한 영화가 없습니다!</h1>
       </div>
 
@@ -70,7 +70,7 @@
           :movies="movieStore.userLikedActorMovies"
         />
       </div>
-      <div v-else>
+      <div v-else class="movie">
         <h1>아직 좋아한 배우가 없습니다!</h1>
       </div>
 
@@ -82,13 +82,13 @@
           :movies="movieStore.userLikedDirecMovies"
         />
       </div>
-      <div v-else>
+      <div v-else class="movie">
         <h1>아직 좋아한 감독이 없습니다!</h1>
       </div>
     </div>
     
     <!-- Top rated movie -->
-    <div class="movie">
+    <div v-if="movieStore.topRatedMovies" class="movie">
       <h3>좋은 평가를 받은 영화 TOP 10</h3>
       <MainCarouselSection
         carousel-id="topRatedCarousel"
@@ -96,7 +96,7 @@
       />
     </div>
 
-    <div class="movie">
+    <div v-if="movieStore.boxOfficeMovies" class="movie">
       <h3>박스 오피스 TOP 10</h3>
       <MainCarouselSection
         carousel-id="boxOfficeCarousel"
@@ -104,7 +104,7 @@
       />
     </div>
 
-    <div class="movie">
+    <div v-if="movieStore.recentlyReleasedMovies" class="movie">
       <h3>최근 개봉한 영화</h3>
       <MainCarouselSection
         carousel-id="recentlyReleasedCarousel"
@@ -112,7 +112,7 @@
       />
     </div>
 
-    <div v-if="accountStore.token !== null">
+    <div v-if="accountStore.token !== null && movieStore.genreMovies">
       <!-- 로그인 되어있는 상태 -->
       <div v-for="(movies, genre) in movieStore.genreMovies" :key="genre" class="movie">
         <h3>이런 영화는 어떠세요?</h3>
@@ -122,7 +122,7 @@
         />
       </div>
     </div>
-    <div v-else>
+    <div v-else-if="accountStore.token === null && movieStore.genreMovies">
       <!-- 로그인 되어있지 않은 상태 -->
       <div v-for="(movies, genre) in movieStore.genreMovies" :key="genre" class="movie">
         <h3>당신이 좋아할만한 {{ genre }} 영화</h3>
