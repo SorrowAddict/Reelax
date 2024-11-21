@@ -16,6 +16,23 @@ TMDB_API_KEY = settings.TMDB_API_KEY
 TMDB_READ_ACCESS_TOKEN = settings.TMDB_READ_ACCESS_TOKEN
 YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY
 
+def save_movie_from_tmdb(movie_data):
+    movie, created = Movie.objects.update_or_create(
+        movieID=movie_data['id'],
+        defaults={
+            'title': movie_data['title'],
+            'overview': movie_data.get('overview', ''),
+            'release_date': movie_data.get('release_date', None),
+            'popularity': movie_data.get('popularity', 0.0),
+            'vote_average': movie_data.get('vote_average', 0.0),
+            'vote_count': movie_data.get('vote_count', 0),
+            'poster_path': movie_data.get('poster_path', ''),
+            'backdrop_path': movie_data.get('backdrop_path', ''),
+            'additional_data': movie_data,  # 모든 데이터를 추가로 저장
+        }
+    )
+    return movie
+
 # Create your views here.
 # TMDB API에서 평점 상위 10개 영화 조회 [완]
 class TopRated(APIView):
@@ -246,8 +263,8 @@ class UserLikedActor(APIView):
                 movies = movies_response.json().get("results", [])[:5]
                 return Response({'results': movies}, status=status.HTTP_200_OK)
         return Response(
-            {"error": "Failed to fetch liked actor movies"},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            {"results": {}, "error": "Failed to fetch liked actor movies"},
+            status=status.HTTP_200_OK,
         )
 
 
@@ -273,8 +290,8 @@ class UserLikedDirector(APIView):
                 movies = movies_response.json().get("results", [])[:5]
                 return Response({'results': movies}, status=status.HTTP_200_OK)
         return Response(
-            {"error": "Failed to fetch liked director movies"},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            {"results": {}, "error": "Failed to fetch liked director movies"},
+            status=status.HTTP_200_OK,
         )
 
 
@@ -301,8 +318,8 @@ class UserLikedGenreMovies(APIView):
                 movies = movies_response.json().get("results", [])[:5]
                 return Response({'results': {genre_name: movies}}, status=status.HTTP_200_OK)
         return Response(
-            {"error": "Failed to fetch liked genre movies"},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            {"results": {}, "error": "Failed to fetch liked genre movies"},
+            status=status.HTTP_200_OK,
         )
 
 
