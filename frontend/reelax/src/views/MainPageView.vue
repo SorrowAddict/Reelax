@@ -36,12 +36,44 @@
 
     <!-- 로그인 한 상태일 때만 보여지는 영화 리스트들 -->
     <div v-if="accountStore.token !== null">
-      <div v-for="(movies, genre) in movieStore.userLikedGenreMovies" :key="genre">
-        <h3>사용자가 좋아한 {{ genre }} 영화</h3>
+      <!-- 사용자가 좋아한 장르의 영화 -->
+      <div v-if="movieStore.userLikedGenreMovies && Object.keys(movieStore.userLikedGenreMovies).length > 0">
+        <div v-for="(movies, genre) in movieStore.userLikedGenreMovies" :key="genre">
+          <h3>사용자가 좋아한 {{ genre }} 영화</h3>
+          <MainCarouselSection
+            carousel-id="likedGenreCarousel"
+            :movies="movies"
+          />
+        </div>
+      </div>
+      <div v-else>
+        <h1>아직 좋아한 장르가 없습니다!</h1>
+      </div>
+
+      <!-- 사용자가 좋아한 최근 영화 -->
+      <div v-if="movieStore.userLikedMovies && Object.keys(movieStore.userLikedMovies).length > 0">
+        <h3>사용자가 최근 좋아한 영화</h3>
         <MainCarouselSection
-          carousel-id="genreCarousel"
-          :movies="movies"
+          carousel-id="likedMovieCarousel"
+          :movies="movieStore.userLikedMovies"
         />
+      </div>
+      <div v-else>
+        <h1>아직 좋아한 영화가 없습니다!</h1>
+      </div>
+
+      <!-- 유저가 좋아한 배우 중 랜덤으로 하나 뽑아서 필모 5개 표시 -->
+      <div v-if="movieStore.userLikedGenreMovies && Object.keys(movieStore.userLikedGenreMovies).length > 0">
+        <div v-for="movies in movieStore.userLikedGenreMovies">
+          <h3>사용자가 좋아한 {{ genre }} 영화</h3>
+          <MainCarouselSection
+            carousel-id="likedActorCarousel"
+            :movies="movies"
+          />
+        </div>
+      </div>
+      <div v-else>
+        <h1>아직 좋아한 장르가 없습니다!</h1>
       </div>
     </div>
     
@@ -114,7 +146,13 @@ onMounted(() => {
   movieStore.getBoxOfficeMovies()
   movieStore.getRecentlyReleasedMovies()
   movieStore.getGenreMovies()
-  movieStore.getUserLikedGenreMovies()
+  if (accountStore.isLogin) {
+    // 로그인 되어있을 경우
+    movieStore.getUserLikedGenreMovies()
+    movieStore.getUserLikedMovies()
+    movieStore.getUserLikedActorMovies()
+  }
+  
 })
 </script>
 

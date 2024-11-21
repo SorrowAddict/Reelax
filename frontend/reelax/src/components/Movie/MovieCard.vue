@@ -1,7 +1,7 @@
 <template>
   <div v-if="movie" class="movie-card">
     <img
-      @click="movieDetail(movie.id)"
+      @click="movieDetail(getMovieId(movie))"
       :src="`${imgBaseUrl}/${movie.poster_path}`"
       alt="영화 포스터"
       class="movie-poster"
@@ -20,6 +20,10 @@ const router = useRouter()
 defineProps({
   movie: Object
 })
+
+const getMovieId = (movie) => {
+  return movie.id || movie.movieID; // id가 없으면 movieID 반환
+}
 
 const movieDetail = function (movieId) {
   router.push({ name: 'MovieDetailView', params: { id: movieId }})
