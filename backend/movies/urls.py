@@ -30,4 +30,8 @@ urlpatterns = [
     path('playlists/<int:playlist_id>/', UpdateDeletePlaylist.as_view()),
     # playlist에 영화 추가 CR
     path('playlists/<int:playlist_id>/movies/', PlaylistMovies.as_view()),
+    # 영화 검색
+    path('search/', SearchMovies.as_view()),
+    # 장르 DB fetch
+    path('update-genres/', UpdateGenres.as_view()),
 ]
