@@ -4,13 +4,18 @@
       <img :src="getImageUrl(person.profile_path)" alt="프로필 이미지">
       <p>{{ person.name }}</p>
     </div>
-    <div @click="actorLike(person.id, person.name, person.profile_path)">
-      <div v-if="isActorLiked(person)">
-        <font-awesome-icon :icon="['fas', 'heart']" />
+    <div v-if="accountStore.isLogin">
+      <div @click="actorLike(person.id, person.name, person.profile_path)">
+        <div v-if="isActorLiked(person)">
+          <font-awesome-icon :icon="['fas', 'heart']" />
+        </div>
+        <div v-else>
+          <font-awesome-icon :icon="['far', 'heart']" />
+        </div>
       </div>
-      <div v-else>
-        <font-awesome-icon :icon="['far', 'heart']" />
-      </div>
+    </div>
+    <div v-else>
+      <font-awesome-icon :icon="['far', 'heart']" />
     </div>
   </div>
 </template>
@@ -19,9 +24,11 @@
 import { useLikeStore } from '@/stores/like';
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAccountStore } from '@/stores/account'
 
 const router = useRouter()
 const likeStore = useLikeStore()
+const accountStore = useAccountStore()
 
 const props = defineProps({
   people: Object,

@@ -64,7 +64,7 @@
 
       <!-- 유저가 좋아한 배우 중 랜덤으로 하나 뽑아서 필모 5개 표시 -->
       <div v-if="movieStore.userLikedActorMovies && Object.keys(movieStore.userLikedActorMovies).length > 0" class="movie">
-        <h3>사용자가 좋아한 {{ movieStore.userLikedActor }}의 영화</h3>
+        <h3>사용자가 좋아한 배우 {{ movieStore.userLikedActor }}의 영화</h3>
         <MainCarouselSection
           carousel-id="likedActorCarousel"
           :movies="movieStore.userLikedActorMovies"
@@ -76,7 +76,7 @@
 
       <!-- 유저가 좋아한 감독 중 랜덤으로 하나 뽑아서 필모 5개 표시 -->
       <div v-if="movieStore.userLikedDirecMovies && Object.keys(movieStore.userLikedDirecMovies).length > 0" class="movie">
-        <h3>사용자가 좋아한 {{ movieStore.userDirecActor }}의 영화</h3>
+        <h3>사용자가 좋아한 감독 {{ movieStore.userLikedDirec }}의 영화</h3>
         <MainCarouselSection
           carousel-id="likedDirecCarousel"
           :movies="movieStore.userLikedDirecMovies"

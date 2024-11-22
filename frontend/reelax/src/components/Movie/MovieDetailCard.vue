@@ -19,13 +19,19 @@
         />
       </div>
       <p>{{ movie.vote_average }}</p>
-      <div @click="movieLike">
-        <div v-if="isMovieLiked">
-          <font-awesome-icon :icon="['fas', 'heart']" />
+      <div v-if="accountStore.isLogin">
+        <!-- 로그인 상태일 경우 -->
+        <div @click="movieLike">
+          <div v-if="isMovieLiked">
+            <font-awesome-icon :icon="['fas', 'heart']" />
+          </div>
+          <div v-else>
+            <font-awesome-icon :icon="['far', 'heart']" />
+          </div>
         </div>
-        <div v-else>
-          <font-awesome-icon :icon="['far', 'heart']" />
-        </div>
+      </div>
+      <div v-else>
+        <font-awesome-icon :icon="['far', 'heart']" />
       </div>
     </div>
     <div class="movie-overview">
@@ -45,6 +51,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons'
 import { library } from "@fortawesome/fontawesome-svg-core"
 import { useLikeStore } from '@/stores/like'
+import { useAccountStore } from '@/stores/account'
 
 library.add(faStar, faStarHalfAlt)
 
@@ -53,6 +60,7 @@ const props = defineProps({
   userInfo: Object
 })
 const likeStore = useLikeStore()
+const accountStore = useAccountStore()
 
 const liked_movies = computed(() => props.userInfo.liked_movies)
 

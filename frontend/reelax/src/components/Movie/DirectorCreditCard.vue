@@ -5,13 +5,18 @@
       <img :src="getImageUrl(person.profile_path)" alt="프로필 이미지">
       <p>{{ person.name }}</p>
     </div>
-    <div @click="direcLike(person.id, person.name, person.profile_path)">
-      <div v-if="isDirectorLiked(person)">
-        <font-awesome-icon :icon="['fas', 'heart']" />
+    <div v-if="accountStore.isLogin">
+      <div @click="direcLike(person.id, person.name, person.profile_path)">
+        <div v-if="isDirectorLiked(person)">
+          <font-awesome-icon :icon="['fas', 'heart']" />
+        </div>
+        <div v-else>
+          <font-awesome-icon :icon="['far', 'heart']" />
+        </div>
       </div>
-      <div v-else>
-        <font-awesome-icon :icon="['far', 'heart']" />
-      </div>
+    </div>
+    <div v-else>
+      <font-awesome-icon :icon="['far', 'heart']" />
     </div>
   </div>
 </template>
@@ -20,6 +25,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLikeStore } from '@/stores/like'
+import { useAccountStore } from '@/stores/account'
 
 const props = defineProps({
   people: Object,
@@ -27,6 +33,7 @@ const props = defineProps({
 })
 const router = useRouter()
 const likeStore = useLikeStore()
+const accountStore = useAccountStore()
 
 const defaultImage = "/image/basic_profile.png"
 const baseImageUrl = "https://image.tmdb.org/t/p/w200"
