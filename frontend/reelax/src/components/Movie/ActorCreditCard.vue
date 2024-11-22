@@ -4,7 +4,7 @@
       <img :src="getImageUrl(person.profile_path)" alt="프로필 이미지">
       <p>{{ person.name }}</p>
     </div>
-    <div>
+    <div @click="actorLike(person.id, person.name, person.profile_path)">
       <div v-if="isActorLiked(person)">
         <font-awesome-icon :icon="['fas', 'heart']" />
       </div>
@@ -16,10 +16,12 @@
 </template>
 
 <script setup>
+import { useLikeStore } from '@/stores/like';
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const likeStore = useLikeStore()
 
 const props = defineProps({
   people: Object,
@@ -47,6 +49,14 @@ const actorDetail = function (id) {
   router.push({ name: 'ActorDetailView', params: { actor_id: id }})
 }
 
+const actorLike = function (actor_id, name, profile_path) {
+  const payload = {
+    actor_id: actor_id,
+    name: name,
+    profile_path: profile_path
+  }
+  likeStore.actorLike(payload)
+}
 </script>
 
 <style scoped>

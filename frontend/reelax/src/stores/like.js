@@ -28,7 +28,50 @@ export const useLikeStore = defineStore('like', () => {
         console.log(err)
       })
   }
+
+  const direcLike = function(payload) {
+    const { director_id, name, profile_path } = payload
+    axios({
+      method: 'post',
+      url: `${BASE_URL}/like-director/`,
+      headers: {
+        Authorization: `Token ${accountStore.token}`
+      },
+      data: {
+        director_id, name, profile_path
+      }
+    })
+      .then((res) => {
+        accountStore.getUserInfo()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const actorLike = function(payload) {
+    const { actor_id, name, profile_path } = payload
+    axios({
+      method: 'post',
+      url: `${BASE_URL}/like-actor/`,
+      headers: {
+        Authorization: `Token ${accountStore.token}`
+      },
+      data: {
+        actor_id, name, profile_path
+      }
+    })
+      .then((res) => {
+        accountStore.getUserInfo()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   return {
-    movieLike
+    movieLike,
+    direcLike,
+    actorLike
   }
 }, { persist: true })

@@ -52,7 +52,6 @@ const props = defineProps({
   movie: Object,
   userInfo: Object
 })
-
 const likeStore = useLikeStore()
 
 const liked_movies = computed(() => props.userInfo.liked_movies)
