@@ -4,9 +4,9 @@
     <div>여기에 영화 예고편이 들어갑니다.</div>
     <div>
       <!-- 영화 예고편 -->
-      <MovieTrailer
+      <!-- <MovieTrailer
         :title="movieStore.movieDetail.title"
-      />
+      /> -->
     </div>
     <div>
       <!-- 영화 상세 정보 카드 -->
@@ -15,10 +15,11 @@
         :userInfo="accountStore.userInfo"
       />
     </div>
-    <div>영화 상세 정보가 여기 들어갑니다.</div>
-    <RouterLink :to="{ name: 'MovieCredit' }">감독/출연진</RouterLink>
-    <RouterLink :to="{ name: 'MovieReview' }">리뷰</RouterLink>
-    <RouterView />
+    <div v-if="movie_id">
+      <RouterLink :to="{ name: 'MovieCreditDefault', params: { id: movie_id } }">감독/출연진</RouterLink>
+      <RouterLink :to="{ name: 'MovieReview', params: { id: movie_id } }">리뷰</RouterLink>
+      <RouterView />
+    </div>
   </div>
 </template>
 
@@ -38,6 +39,7 @@ const movie_id = route.params.id
 
 onMounted(() => {
   movieStore.getMovieDetail(movie_id)
+  accountStore.getUserInfo()
 })
 
 </script>
