@@ -17,84 +17,6 @@ TMDB_API_KEY = settings.TMDB_API_KEY
 TMDB_READ_ACCESS_TOKEN = settings.TMDB_READ_ACCESS_TOKEN
 YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY
 
-def save_movie_from_tmdb(movie_data):
-    """
-    TMDB에서 가져온 영화 데이터를 받아 Movie 모델에 저장합니다.
-    장르, 출연진, 제작진, 추가 데이터를 포함합니다.
-    """
-    with transaction.atomic():
-        # Step 1: 추가 데이터 추출
-        additional_data = {
-            key: value for key, value in movie_data.items()
-            if key not in [
-                'id', 'title', 'overview', 'release_date', 'popularity',
-                'vote_average', 'vote_count', 'poster_path', 'backdrop_path',
-                'genres', 'credits'
-            ]
-        }
-
-        # Step 2: Movie 기본 데이터 저장
-        movie, created = Movie.objects.update_or_create(
-            movie_id=movie_data['id'],
-            defaults={
-                'title': movie_data.get('title', ''),
-                'overview': movie_data.get('overview', ''),
-                'release_date': movie_data.get('release_date'),
-                'popularity': movie_data.get('popularity', 0.0),
-                'vote_average': movie_data.get('vote_average', 0.0),
-                'vote_count': movie_data.get('vote_count', 0),
-                'poster_path': movie_data.get('poster_path', ''),
-                'backdrop_path': movie_data.get('backdrop_path', ''),
-                'additional_data': additional_data,
-            }
-        )
-
-        # Step 3: 장르 처리
-        if 'genres' in movie_data:
-            genre_instances = []
-            for genre in movie_data['genres']:
-                # 장르를 가져오거나 생성
-                genre_obj, _ = Genre.objects.get_or_create(
-                    genre_id=genre['id'],
-                    defaults={'name': genre['name']}
-                )
-                genre_instances.append(genre_obj)
-            movie.genres.set(genre_instances)
-
-        # Step 4: 출연진 및 제작진 처리
-        credits = movie_data.get('credits', {})
-        cast = credits.get('cast', [])
-        crew = credits.get('crew', [])
-
-        if cast:
-            actor_instances = []
-            for actor in cast[:10]:  # 최대 10명의 배우만 저장
-                actor_obj, _ = Actor.objects.get_or_create(
-                    actor_id=actor['id'],
-                    defaults={
-                        'name': actor['name'],
-                        'profile_path': actor.get('profile_path', '')
-                    }
-                )
-                actor_instances.append(actor_obj)
-            movie.actors.set(actor_instances)
-
-        if crew:
-            director_instances = []
-            for crew_member in crew:
-                if crew_member['job'] == 'Director':
-                    director_obj, _ = Director.objects.get_or_create(
-                        director_id=crew_member['id'],
-                        defaults={
-                            'name': crew_member['name'],
-                            'profile_path': crew_member.get('profile_path', '')
-                        }
-                    )
-                    director_instances.append(director_obj)
-            movie.directors.set(director_instances)
-    return movie
-
-
 # Create your views here.
 # TMDB API에서 평점 상위 10개 영화 조회 [완]
 class TopRated(APIView):
@@ -104,9 +26,7 @@ class TopRated(APIView):
         response = requests.get(url, params=params)
         if response.status_code == 200:
             movies = response.json().get("results", [])[:10]
-            saved_movies = [save_movie_from_tmdb(movie) for movie in movies]
-            serializer = MovieSerializer(saved_movies, many=True)
-            return Response({'results': serializer.data}, status=status.HTTP_200_OK)
+            return Response({'results': movies}, status=status.HTTP_200_OK)
         return Response(
             {"error": "Failed to fetch top-rated movies"},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
