@@ -3,34 +3,33 @@
     <FontAwesomeIcon icon="search" class="search-icon" />
     <input
       type="text"
-      class="form-control"
-      v-model="searchQuery"
+      v-model="searchInput"
       placeholder="Search for movies..."
-      @keyup.enter="performSearch"
+      class="form-control"
     />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-const searchQuery = ref('')
+const searchInput = ref('') // 검색 입력 값
+let debounceTimer = null // 디바운스 타이머
 const router = useRouter()
 
-const performSearch = () => {
-  if (!searchQuery.value.trim()) {
-    alert('Please enter a valid search query!')
-    return
+// 디바운스 처리: 입력 변경 시 일정 시간 후 라우터로 이동
+watch(searchInput, (newQuery) => {
+  if (debounceTimer) {
+    clearTimeout(debounceTimer) // 기존 타이머 취소
   }
-
-  // 라우터를 통해 검색 페이지로 이동
-  router.push({ name: 'SearchPageView', query: { q: searchQuery.value } })
-
-  // 검색 후 검색어 초기화
-  searchQuery.value = ''
-}
+  debounceTimer = setTimeout(() => {
+    if (newQuery.trim()) {
+      router.push({ name: 'SearchPageView', query: { q: newQuery.trim() } }) // 검색 실행
+    }
+  }, 300) // 300ms 디바운스 시간
+})
 </script>
 
 <style scoped>
@@ -48,5 +47,6 @@ const performSearch = () => {
 
 .form-control {
   padding-left: 2rem;
+  width: 100%;
 }
 </style>
