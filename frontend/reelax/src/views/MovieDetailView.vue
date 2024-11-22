@@ -4,9 +4,9 @@
     <div>여기에 영화 예고편이 들어갑니다.</div>
     <div>
       <!-- 영화 예고편 -->
-      <!-- <MovieTrailer
+      <MovieTrailer
         :title="movieStore.movieDetail.title"
-      /> -->
+      />
     </div>
     <div>
       <!-- 영화 상세 정보 카드 -->
