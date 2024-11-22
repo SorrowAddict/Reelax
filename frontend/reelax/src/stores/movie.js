@@ -15,6 +15,8 @@ export const useMovieStore = defineStore('movie', () => {
   const userLikedDirecMovies = ref(null)
   const userLikedDirec = ref(null)
   const movieDetail = ref(null)
+  const movieReview = ref(null)
+  const direcDetail = ref(null)
 
   const BASE_URL = 'http://127.0.0.1:8000/api/v1/movies'
   const accountStore = useAccountStore()
@@ -151,13 +153,40 @@ export const useMovieStore = defineStore('movie', () => {
     axios({
       method: 'get',
       url: `${BASE_URL}/${movie_id}/`,
-      headers: {
-        Authorization: `Token ${accountStore.token}`
-      }
+      headers: accountStore.token ? { Authorization: `Token ${accountStore.token}` } : {}
     })
       .then((res) => {
         movieDetail.value = res.data
         console.log(res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  // 특정 영화 리뷰 가져오기
+  const getMovieReview = function (movie_id) {
+    axios({
+      method: 'get',
+      url: `${BASE_URL}/${movie_id}/reviews/`,
+    })
+      .then((res) => {
+        movieReview.value = res.data.results
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  // 영화 감독 상세 정보 가져오기
+  const getDirectorDetail = function (direc_id) {
+    axios({
+      method: 'get',
+      url: `${BASE_URL}/director/${direc_id}/`
+    })
+      .then((res) => {
+        console.log(res.data)
+        // direcDetail.value = res.data.results
       })
       .catch((err) => {
         console.log(err)
@@ -184,6 +213,9 @@ export const useMovieStore = defineStore('movie', () => {
     userLikedDirecMovies,
     userLikedDirec,
     getMovieDetail,
-    movieDetail
+    movieDetail,
+    getMovieReview,
+    movieReview,
+    getDirectorDetail
   }
 }, { persist: true })
