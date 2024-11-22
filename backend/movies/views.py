@@ -651,7 +651,7 @@ class PlaylistMovies(APIView):
 
 class SearchMovies(APIView):
     def get(self, request):
-        query = request.data.get('query')
+        query = request.query_params.get('query')
         if not query:
             return Response({"error": "Query parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
         

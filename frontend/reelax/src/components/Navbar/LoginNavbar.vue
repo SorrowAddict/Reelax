@@ -1,11 +1,11 @@
 <template>
   <div class="nav-bar">
     <div class="home-link">
-      <RouterLink :to="{ name: 'MainPageView' }"><img src="/image/logo_final.png" alt=""></RouterLink>
+      <RouterLink :to="{ name: 'MainPageView' }"><img src="/image/logo_final.png" alt="" height="60px"></RouterLink>
     </div>
     <div class="account-link">
-      <RouterLink :to="{ name: '' }"><h1>프로필</h1></RouterLink>
-      <h1 @click="logOut">로그아웃</h1>
+      <RouterLink :to="{ name: '' }"><h3>프로필</h3></RouterLink>
+      <h3 @click="logOut">로그아웃</h3>
     </div>
   </div>
 
@@ -26,6 +26,8 @@ const logOut = function () {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid white;
 }
 .account-link {
   display: flex;

@@ -48,6 +48,13 @@ class DirectorSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     liked_by_count = serializers.IntegerField(source='liked_by.count', read_only=True)
 
+    class ReviewUserSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = User
+            fields = ['id', 'nickname', 'username', 'profile_image', 'email']
+    
+    user = ReviewUserSerializer(read_only=True)
+
     class Meta:
         model = Review
         fields = ['id', 'movie', 'user', 'content', 'liked_by_count']

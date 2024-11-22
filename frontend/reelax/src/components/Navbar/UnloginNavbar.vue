@@ -4,8 +4,8 @@
       <RouterLink :to="{ name: 'MainPageView' }"><img src="/image/logo_final.png" alt="" height="60px"></RouterLink>
     </div>
     <div class="account-link">
-      <RouterLink :to="{ name: 'LoginPageView' }"><h2>로그인</h2></RouterLink>
-      <RouterLink :to="{ name: 'SignupPageView' }"><h2>회원가입</h2></RouterLink>
+      <RouterLink :to="{ name: 'LoginPageView' }"><h3>로그인</h3></RouterLink>
+      <RouterLink :to="{ name: 'SignupPageView' }"><h3>회원가입</h3></RouterLink>
     </div>
   </div>
 </template>
