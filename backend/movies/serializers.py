@@ -27,51 +27,22 @@ class UserLikedMoviesSerializer(serializers.ModelSerializer):
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = ['genreID', 'name']
-        read_only_fields = ['genreID']
-
-
-class MovieSerializer(serializers.ModelSerializer):
-    genres = GenreSerializer(many=True, read_only=True)  # M:N 관계 (장르)
-
-    class Meta:
-        model = Movie
-        fields = '__all__'
-        read_only_fields = ['movieID']
-
-
-class MovieCreateSerializer(serializers.ModelSerializer):
-    genres = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Genre.objects.all()
-    )
-    actors = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Actor.objects.all(), required=False
-    )
-    directors = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Director.objects.all(), required=False
-    )
-
-    class Meta:
-        model = Movie
-        fields = [
-            'movieID', 'title', 'overview', 'release_date', 'popularity',
-            'vote_average', 'vote_count', 'poster_path', 'backdrop_path',
-            'genres', 'actors', 'directors'
-        ]
+        fields = ['genre_id', 'name']
+        read_only_fields = ['genre_id']
 
 
 class ActorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Actor
-        fields = ['actorID', 'name', 'profile_path']
-        read_only_fields = ['actorID']
+        fields = ['actor_id', 'name', 'profile_path']
+        read_only_fields = ['actor_id']
 
 
 class DirectorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Director
-        fields = ['directorID', 'name', 'profile_path']
-        read_only_fields = ['directorID']
+        fields = ['director_id', 'name', 'profile_path']
+        read_only_fields = ['director_id']
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -81,6 +52,24 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ['id', 'movie', 'user', 'content', 'liked_by_count']
         read_only_fields = ['id', 'user', 'liked_by_count']
+
+
+class MovieSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Movie
+        fields = '__all__'  # 모든 필드 반환
+        # read_only_fields = ['movieID']  # movieID는 읽기 전용
+
+
+class MovieCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        fields = [
+            'movie_id', 'title', 'overview', 'release_date', 'popularity',
+            'vote_average', 'vote_count', 'poster_path', 'backdrop_path',
+            'genres', 'actors', 'directors', 'additional_data'
+        ]
 
 
 class PlaylistSerializer(serializers.ModelSerializer):
