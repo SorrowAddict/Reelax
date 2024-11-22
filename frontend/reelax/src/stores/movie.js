@@ -158,7 +158,6 @@ export const useMovieStore = defineStore('movie', () => {
     })
       .then((res) => {
         movieDetail.value = res.data
-        console.log(res.data)
       })
       .catch((err) => {
         console.log(err)

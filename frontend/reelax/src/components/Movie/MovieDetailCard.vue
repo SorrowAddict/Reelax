@@ -19,11 +19,13 @@
         />
       </div>
       <p>{{ movie.vote_average }}</p>
-      <div v-if="isMovieLiked">
-        <font-awesome-icon :icon="['fas', 'heart']" />
-      </div>
-      <div v-else>
-        <font-awesome-icon :icon="['far', 'heart']" />
+      <div @click="movieLike">
+        <div v-if="isMovieLiked">
+          <font-awesome-icon :icon="['fas', 'heart']" />
+        </div>
+        <div v-else>
+          <font-awesome-icon :icon="['far', 'heart']" />
+        </div>
       </div>
     </div>
     <div class="movie-overview">
@@ -42,6 +44,7 @@ import { ref, computed } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons'
 import { library } from "@fortawesome/fontawesome-svg-core"
+import { useLikeStore } from '@/stores/like'
 
 library.add(faStar, faStarHalfAlt)
 
@@ -49,6 +52,8 @@ const props = defineProps({
   movie: Object,
   userInfo: Object
 })
+
+const likeStore = useLikeStore()
 
 const liked_movies = computed(() => props.userInfo.liked_movies)
 
@@ -78,6 +83,14 @@ const release_year = computed(() => {
 const convertedRating = computed(() => {
   return Math.min((props.movie.vote_average / 10) * 5, 5)
 })
+
+const movieLike = function () {
+  const payload = {
+    movie_id: props.movie.movie_id,
+    poster_path: props.movie.poster_path
+  }
+  likeStore.movieLike(payload)
+}
 </script>
 
 <style scoped>
