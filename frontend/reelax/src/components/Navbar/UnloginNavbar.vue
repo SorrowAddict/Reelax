@@ -1,30 +1,51 @@
+<!-- components/Navbar/UnloginNavbar.vue -->
+
 <template>
   <BaseNavbar>
-    <RouterLink :to="{ name: 'LoginPageView' }"><h3>로그인</h3></RouterLink>
-    <RouterLink :to="{ name: 'SignupPageView' }"><h3>회원가입</h3></RouterLink>
+    <RouterLink :to="{ name: 'LoginPageView' }" class="btn btn-primary">
+      <FontAwesomeIcon icon="sign-in-alt" /> 로그인
+    </RouterLink>
+    <RouterLink :to="{ name: 'SignupPageView' }" class="btn btn-secondary">
+      <FontAwesomeIcon icon="user-plus" /> 회원가입
+    </RouterLink>
   </BaseNavbar>
 </template>
 
 <script setup>
 import BaseNavbar from './BaseNavbar.vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { RouterLink } from 'vue-router'
 </script>
 
 <style scoped>
-.nav-bar {
+/* 버튼 스타일 */
+.btn {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid white;
-}
-.account-link {
-  display: flex;
-}
-h2 {
-  padding: 0px 10px;
-}
-a {
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
   text-decoration: none;
+}
+
+.btn-primary {
+  background-color: #007bff;
   color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
 }
 </style>

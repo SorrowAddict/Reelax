@@ -1,11 +1,10 @@
 <template>
   <div class="search-page container py-4">
-    <h1 class="text-center mb-4">Search Results</h1>
     <div v-if="searchError" class="alert alert-danger text-center">
       {{ searchError }}
     </div>
     <div v-else-if="!searchResults || searchResults.length === 0" class="text-center">
-      <p>No results found for "{{ searchQuery }}"</p>
+      <p>"{{ searchQuery }}"로 검색하신 작품은 현재 Reelax에 없어요.</p>
     </div>
     <div v-else>
       <div class="row">
@@ -18,11 +17,6 @@
               alt="Movie Poster"
               class="img-fluid rounded shadow-sm movie-poster"
             />
-            <!-- 마우스오버 시 표시되는 설명 -->
-            <div class="movie-overlay">
-              <h5 class="movie-title">{{ movie.title }}</h5>
-              <p class="movie-overview">{{ truncateText(movie.overview, 100) }}</p>
-            </div>
           </router-link>
         </div>
       </div>
@@ -44,12 +38,6 @@ const route = useRoute()
 const getPosterUrl = (posterPath) => {
   const baseUrl = 'https://image.tmdb.org/t/p/w500'
   return posterPath ? `${baseUrl}${posterPath}` : 'https://via.placeholder.com/500x750?text=No+Image'
-}
-
-// 텍스트 자르기 함수
-const truncateText = (text, maxLength) => {
-  if (!text) return 'No description available'
-  return text.length > maxLength ? text.slice(0, maxLength) + '...' : text
 }
 
 // 라우트 변경 감지 및 검색 실행
@@ -77,7 +65,7 @@ watchEffect(() => {
 }
 
 .movie-card:hover {
-  transform: scale(1.05); /* 카드 확대 */
+  transform: scale(1.10); /* 카드 확대 */
   border: 2px solid white; /* 흰색 테두리 */
 }
 
@@ -87,42 +75,5 @@ watchEffect(() => {
   height: auto;
   border-radius: 8px;
   display: block;
-}
-
-/* 마우스오버 시 표시되는 오버레이 */
-.movie-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 10px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)); /* 그라데이션 */
-  color: white;
-  opacity: 0; /* 초기에는 숨김 */
-  transition: opacity 0.3s ease;
-  border-radius: 8px;
-}
-
-.movie-card:hover .movie-overlay {
-  opacity: 1; /* 마우스오버 시 표시 */
-}
-
-/* 영화 제목 */
-.movie-title {
-  font-size: 1rem;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 5px;
-}
-
-/* 영화 설명 */
-.movie-overview {
-  font-size: 0.8rem;
-  text-align: center;
 }
 </style>

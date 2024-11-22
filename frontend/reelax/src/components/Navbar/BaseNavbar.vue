@@ -25,7 +25,7 @@ import SearchBar from '../Search/SearchBar.vue'
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid rgb(100, 100, 100);
 }
 
 .home-link img {

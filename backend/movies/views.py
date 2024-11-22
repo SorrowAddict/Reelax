@@ -428,6 +428,7 @@ class LikeMovie(APIView):
         })
         # 3. 중복 좋아요 방지
         if user.liked_movies.filter(movie_id=movie_id).exists():
+            user.liked_movies.remove(movie)
             return Response({"message": "You already liked this movie"}, status=status.HTTP_400_BAD_REQUEST)
         # 4. 좋아요 추가
         user.liked_movies.add(movie)
@@ -461,6 +462,7 @@ class LikeActor(APIView):
         })
         # 중복 좋아요 방지
         if user.liked_actors.filter(actor_id=actor_id).exists():
+            user.liked_actors.remove(actor)
             return Response({"message": "You already liked this actor"}, status=status.HTTP_400_BAD_REQUEST)
         # 좋아요 추가
         user.liked_actors.add(actor)
@@ -493,6 +495,7 @@ class LikeDirector(APIView):
         })
         # 중복 좋아요 방지
         if user.liked_directors.filter(director_id=director_id).exists():
+            user.liked_directors.remove(director)
             return Response({"message": "You already liked this director"}, status=status.HTTP_400_BAD_REQUEST)
         # 좋아요 추가
         user.liked_directors.add(director)
@@ -528,6 +531,8 @@ class LikeGenre(APIView):
             # 좋아요 추가
             if not user.liked_genres.filter(genre_id=genre_id).exists():
                 user.liked_genres.add(genre)
+            else:
+                user.liked_genres.remove(genre)
         return Response({"message": "Genres liked successfully"}, status=status.HTTP_200_OK)
     
     def delete(self, request):
@@ -550,6 +555,9 @@ class LikeReview(APIView):
 
     def post(self, request, movie_id, review_id):
         review = Review.objects.get(id=review_id, movie_id=movie_id)
+        if request.user in review.liked_by.all():
+            review.liked_by.remove(request.user)
+            return Response({"message": "Review unliked successfully"}, status=status.HTTP)
         review.liked_by.add(request.user)
         return Response({"message": "Review liked successfully"}, status=status.HTTP_200_OK)
 
