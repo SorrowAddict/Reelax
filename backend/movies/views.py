@@ -157,8 +157,6 @@ class GenreMovies(APIView):
 
 # 영화 상세 정보 조회 [완]
 class MovieDetail(APIView):
-    permission_classes = [IsAuthenticated]
-
     def get(self, request, movie_id):
         # 기존 영화 데이터 조회
         movie_instance = Movie.objects.filter(movie_id=movie_id).first()
