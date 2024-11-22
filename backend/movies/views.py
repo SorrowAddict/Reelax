@@ -647,3 +647,26 @@ class PlaylistMovies(APIView):
             movies = Movie.objects.filter(movie_id__in=movie_ids)
             playlist.movies.remove(*movies)
         return Response({"message": "Movies removed from playlist successfully"}, status=status.HTTP_200_OK)
+
+
+class SearchMovies(APIView):
+    def get(self, request):
+        query = request.data.get('query')
+        if not query:
+            return Response({"error": "Query parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        url = f"{TMDB_BASE_URL}/search/movie"
+        params = {
+            "api_key": TMDB_API_KEY,
+            "language": "ko-KR",
+            "query": query,
+            "page": 1,
+            "include_adult": False
+        }
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            data = response.json()
+            serializer = MovieSearchSerializer(data['results'], many=True)
+            return Response({'results': serializer.data}, status=status.HTTP_200_OK)
+        
+        return Response({"error": "Failed to fetch search results"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

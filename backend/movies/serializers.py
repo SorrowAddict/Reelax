@@ -79,3 +79,14 @@ class PlaylistSerializer(serializers.ModelSerializer):
         model = Playlist
         fields = ['id', 'title', 'description', 'movies']
         read_only_fields = ['id']
+
+
+class MovieSearchSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    title = serializers.CharField(max_length=255)
+    overview = serializers.CharField()
+    release_date = serializers.DateField()
+    poster_path = serializers.CharField(max_length=255, allow_null=True)
+    backdrop_path = serializers.CharField(max_length=255, allow_null=True)
+    vote_average = serializers.FloatField()
+    vote_count = serializers.IntegerField()
