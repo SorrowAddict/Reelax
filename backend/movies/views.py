@@ -670,3 +670,35 @@ class SearchMovies(APIView):
             return Response({'results': serializer.data}, status=status.HTTP_200_OK)
         
         return Response({"error": "Failed to fetch search results"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class UpdateGenres(APIView):
+    def get(self, request):
+        # TMDB API 호출 URL 및 파라미터 설정
+        url = f"{TMDB_BASE_URL}/genre/movie/list"
+        params = {
+            "api_key": TMDB_API_KEY,
+            "language": "ko-KR"
+        }
+        response = requests.get(url, params=params)
+
+        # API 요청 성공 시 데이터 저장
+        if response.status_code == 200:
+            genres = response.json().get("genres", [])
+            for genre_data in genres:
+                # 데이터 저장 또는 업데이트
+                Genre.objects.update_or_create(
+                    genre_id=genre_data["id"],
+                    defaults={"name": genre_data["name"]}
+                )
+
+            return Response(
+                {"message": "Genres successfully updated.", "count": len(genres)},
+                status=status.HTTP_200_OK
+            )
+
+        # API 요청 실패 시 에러 반환
+        return Response(
+            {"error": "Failed to fetch genres from TMDB."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
