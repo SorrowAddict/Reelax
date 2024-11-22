@@ -88,6 +88,23 @@ export const useAccountStore = defineStore('account', () => {
       })
   }
 
+  const fetchProfile = async function () {
+    try {
+      const res = await axios({
+        method: 'get',
+        url: `${BASE_URL}/accounts/profile/`,
+        headers: {
+          Authorization: `Token ${token.value}`
+        }
+      })
+      userInfo.value = res.data
+      return res.data.profile_image
+    } catch (err) {
+      console.error(err)
+      return null // 에러 발생 시 기본값 반환
+    }
+  }  
+
   return {
     BASE_URL,
     signUp,
@@ -96,6 +113,7 @@ export const useAccountStore = defineStore('account', () => {
     isLogin,
     logOut,
     getUserInfo,
-    userInfo
-   }
+    userInfo,
+    fetchProfile,
+  }
 }, { persist: true })

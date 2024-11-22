@@ -24,16 +24,19 @@ import { ref } from 'vue'
 import { onMounted } from 'vue'
 
 const store = useAccountStore()
-const defaultProfileImage = '/default-profile.png' // 기본 프로필 이미지 경로
+const defaultProfileImage = `http://localhost:8000/media/profile_images/default_profile.jpg` // 기본 프로필 이미지 경로
 const profileImage = ref(defaultProfileImage) // 프로필 이미지 URL
 
 // DRF 요청으로 프로필 이미지 가져오기
 const fetchProfileImage = async () => {
   try {
-    const response = await store.fetchProfile() // DRF 요청 함수 호출
-    profileImage.value = response.image || defaultProfileImage
+    const response = await store.fetchProfile()
+    profileImage.value = response
+      ? `http://localhost:8000${response}`
+      : defaultProfileImage
   } catch (error) {
     console.error('Failed to fetch profile image:', error)
+    profileImage.value = defaultProfileImage
   }
 }
 
