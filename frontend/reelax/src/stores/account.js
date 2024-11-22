@@ -15,10 +15,25 @@ export const useAccountStore = defineStore('account', () => {
     }
   })
   const router = useRouter()
+
+  const getUserInfo = function () {
+    axios({
+      method: 'get',
+      url: `${BASE_URL}/accounts/profile/`,
+      headers: {
+        Authorization: `Token ${token.value}`
+      }
+    })
+      .then((res) => {
+        userInfo.value = res.data
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
   
   const logIn = function (payload) {
     const { username, password } = payload
-
     axios({
       method: 'post',
       url: `${BASE_URL}/accounts/login/`,
@@ -29,18 +44,14 @@ export const useAccountStore = defineStore('account', () => {
       .then((res) => {
         console.log('로그인이 완료되었습니다.')
         token.value = res.data.key
-        router.push({ name: 'MainPageView' })
+        if (token.value !== null) {
+          getUserInfo()
+          router.push({ name: 'MainPageView' })
+        }
       })
       .catch((err) => {
         console.log(err)
       })
-  }
-
-  const getUserInfo = function () {
-    axios({
-      method: 'get',
-      url: `${BASE_URL}/accounts/login/`
-    })
   }
 
   const signUp = function (payload) {
@@ -77,5 +88,14 @@ export const useAccountStore = defineStore('account', () => {
       })
   }
 
-  return { BASE_URL, signUp, logIn, token, isLogin, logOut }
+  return {
+    BASE_URL,
+    signUp,
+    logIn,
+    token,
+    isLogin,
+    logOut,
+    getUserInfo,
+    userInfo
+   }
 }, { persist: true })

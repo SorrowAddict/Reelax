@@ -22,7 +22,7 @@ defineProps({
 })
 
 const getMovieId = (movie) => {
-  return movie.id || movie.movieID; // id가 없으면 movieID 반환
+  return movie.id || movie.movie_id; // id가 없으면 movieID 반환
 }
 
 const movieDetail = function (movieId) {
