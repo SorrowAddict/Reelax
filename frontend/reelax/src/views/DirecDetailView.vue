@@ -7,13 +7,18 @@
         <p>감독</p>
         <p>{{ birth_year }}</p>
         <p>{{ gender }}</p>
-        <div>
-          <div v-if="isDirectorLiked(movieStore.direcDetail)">
-            <font-awesome-icon :icon="['fas', 'heart']" />
+        <div v-if="accountStore.isLogin">
+          <div @click="direcLike(movieStore.direcDetail.id, movieStore.direcDetail.name, movieStore.direcDetail.profile_path)">
+            <div v-if="isDirectorLiked(movieStore.direcDetail)">
+              <font-awesome-icon :icon="['fas', 'heart']" />
+            </div>
+            <div v-else>
+              <font-awesome-icon :icon="['far', 'heart']" />
+            </div>
           </div>
-          <div v-else>
-            <font-awesome-icon :icon="['far', 'heart']" />
-          </div>
+        </div>
+        <div v-else>
+          <font-awesome-icon :icon="['far', 'heart']" />
         </div>
       </div>
       <div>
@@ -37,9 +42,11 @@ import { useMovieStore } from '@/stores/movie'
 import { useAccountStore } from '@/stores/account'
 import { useRoute } from 'vue-router'
 import MovieCard from '@/components/Movie/MovieCard.vue'
+import { useLikeStore } from '@/stores/like'
 
 const movieStore = useMovieStore()
 const accountStore = useAccountStore()
+const likeStore = useLikeStore()
 const route = useRoute()
 
 const direc_id = route.params.direc_id
@@ -84,10 +91,21 @@ const uniqueFilmography = computed(() => {
   });
 });
 
+const direcLike = function (director_id, name, profile_path) {
+  const payload = {
+    director_id: director_id,
+    name: name,
+    profile_path: profile_path
+  }
+  likeStore.direcLike(payload)
+}
+
 onMounted(() => {
   movieStore.getDirectorDetail(direc_id)
   console.log(movieStore.direcDetail)
-  accountStore.getUserInfo()
+  if (accountStore.isLogin) {
+    accountStore.getUserInfo()
+  }
 })
 
 </script>
