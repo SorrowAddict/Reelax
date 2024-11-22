@@ -19,6 +19,12 @@
         />
       </div>
       <p>{{ movie.vote_average }}</p>
+      <div v-if="isMovieLiked">
+        <font-awesome-icon :icon="['fas', 'heart']" />
+      </div>
+      <div v-else>
+        <font-awesome-icon :icon="['far', 'heart']" />
+      </div>
     </div>
   </div>
 </template>
@@ -31,9 +37,18 @@ import { library } from "@fortawesome/fontawesome-svg-core"
 
 library.add(faStar, faStarHalfAlt)
 
-
 const props = defineProps({
-  movie: Object
+  movie: Object,
+  userInfo: Object
+})
+
+const liked_movies = computed(() => props.userInfo.liked_movies)
+
+const isMovieLiked = computed(() => {
+  console.log(props.movie.movie_id)
+  console.log(props.userInfo)
+  console.log(liked_movies.value)
+  return liked_movies.value.some((liked_movie) => liked_movie.movie_id === props.movie.movie_id)
 })
 
 const release_year = computed(() => {

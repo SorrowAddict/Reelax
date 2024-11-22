@@ -16,7 +16,7 @@ const props = defineProps({
 const movieTrailer = ref(null)
 const trailerUrl = computed(() => {
   if (movieTrailer.value) {
-    return `https://www.youtube.com/embed/${movieTrailer.value.id.videoId}?autoplay=1`
+    return `https://www.youtube.com/embed/${movieTrailer.value.id.videoId}?autoplay=1&mute=1&controls=0`
   }
 })
 const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY
@@ -56,5 +56,6 @@ onMounted(() => {
   left: 0;
   width: 100%; /* 100% 너비 */
   height: 100%; /* 16:9 비율 유지 */
+  pointer-events: none;
 }
 </style>

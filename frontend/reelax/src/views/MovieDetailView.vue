@@ -1,17 +1,18 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="movieStore.movieDetail">
     <h1>영화 상세 페이지</h1>
     <div>여기에 영화 예고편이 들어갑니다.</div>
     <div>
       <!-- 영화 예고편 -->
       <MovieTrailer
-        :title="store.movieDetail.title"
+        :title="movieStore.movieDetail.title"
       />
     </div>
     <div>
       <!-- 영화 상세 정보 카드 -->
       <MovieDetailCard
-        :movie="store.movieDetail"
+        :movie="movieStore.movieDetail"
+        :userInfo="accountStore.userInfo"
       />
     </div>
     <div>영화 상세 정보가 여기 들어갑니다.</div>
@@ -23,18 +24,20 @@
 
 <script setup>
 import { useMovieStore } from '@/stores/movie'
+import { useAccountStore } from '@/stores/account'
 import { onMounted } from 'vue';
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import MovieDetailCard from '@/components/Movie/MovieDetailCard.vue'
 import MovieTrailer from '@/components/Movie/MovieTrailer.vue'
 
-const store = useMovieStore()
+const movieStore = useMovieStore()
+const accountStore = useAccountStore()
 const route = useRoute()
 
 const movie_id = route.params.id
 
 onMounted(() => {
-  store.getMovieDetail(movie_id)
+  movieStore.getMovieDetail(movie_id)
 })
 
 </script>
