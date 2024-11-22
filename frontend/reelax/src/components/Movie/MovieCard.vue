@@ -2,7 +2,7 @@
   <div v-if="movie" class="movie-card">
     <img
       @click="movieDetail(getMovieId(movie))"
-      :src="`${imgBaseUrl}/${movie.poster_path}`"
+      :src="movie.poster_path ? `${imgBaseUrl}/${movie.poster_path}` : defaultImage"
       alt="영화 포스터"
       class="movie-poster"
     />
@@ -30,6 +30,8 @@ const movieDetail = function (movieId) {
 }
 
 const imgBaseUrl = ref('https://image.tmdb.org/t/p/w300')
+const defaultImage = ref('/image/no_poster.jpg')
+
 </script>
 
 <style scoped>

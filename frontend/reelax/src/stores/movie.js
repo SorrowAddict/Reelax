@@ -17,6 +17,7 @@ export const useMovieStore = defineStore('movie', () => {
   const movieDetail = ref(null)
   const movieReview = ref(null)
   const direcDetail = ref(null)
+  const actorDetail = ref(null)
 
   const BASE_URL = 'http://127.0.0.1:8000/api/v1/movies'
   const accountStore = useAccountStore()
@@ -185,8 +186,20 @@ export const useMovieStore = defineStore('movie', () => {
       url: `${BASE_URL}/director/${direc_id}/`
     })
       .then((res) => {
-        console.log(res.data)
-        // direcDetail.value = res.data.results
+        direcDetail.value = res.data
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const getActorDetail = function (actor_id) {
+    axios({
+      method: 'get',
+      url: `${BASE_URL}/actor/${actor_id}/`
+    })
+      .then((res) => {
+        actorDetail.value = res.data
       })
       .catch((err) => {
         console.log(err)
@@ -216,6 +229,9 @@ export const useMovieStore = defineStore('movie', () => {
     movieDetail,
     getMovieReview,
     movieReview,
-    getDirectorDetail
+    getDirectorDetail,
+    direcDetail,
+    getActorDetail,
+    actorDetail
   }
 }, { persist: true })

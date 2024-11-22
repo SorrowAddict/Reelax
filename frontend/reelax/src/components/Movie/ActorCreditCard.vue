@@ -1,7 +1,9 @@
 <template>
   <div v-for="person in topPeople" :key="person.id">
-    <img :src="getImageUrl(person.profile_path)" alt="프로필 이미지">
-    <p>{{ person.name }}</p>
+    <div @click="actorDetail(person.id)">
+      <img :src="getImageUrl(person.profile_path)" alt="프로필 이미지">
+      <p>{{ person.name }}</p>
+    </div>
     <div>
       <div v-if="isActorLiked(person)">
         <font-awesome-icon :icon="['fas', 'heart']" />
@@ -15,6 +17,9 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const props = defineProps({
   people: Object,
@@ -36,6 +41,10 @@ const liked_actors = computed(() => props.userInfo.liked_actors)
 
 const isActorLiked = function (actor) {
   return liked_actors.value.some((liked_actor) => liked_actor.actor_id === actor.id)
+}
+
+const actorDetail = function (id) {
+  router.push({ name: 'ActorDetailView', params: { actor_id: id }})
 }
 
 </script>
