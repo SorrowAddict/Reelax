@@ -12,7 +12,7 @@
       <!-- 영화 상세 정보 카드 -->
       <MovieDetailCard
         :movie="movieStore.movieDetail"
-        :userInfo="accountStore.userInfo"
+        :userInfo="accountStore.userInfo || undefined"
       />
     </div>
     <div v-if="movie_id">
@@ -39,7 +39,9 @@ const movie_id = route.params.id
 
 onMounted(() => {
   movieStore.getMovieDetail(movie_id)
-  accountStore.getUserInfo()
+  if (accountStore.isLogin) {
+    accountStore.getUserInfo()
+  }
 })
 
 </script>
