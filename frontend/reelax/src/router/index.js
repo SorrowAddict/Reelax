@@ -5,6 +5,7 @@ import SignupPageView from '@/views/SignupPageView.vue'
 import MovieDetailView from '@/views/MovieDetailView.vue'
 import MovieCredit from '@/components/Movie/MovieCredit.vue'
 import MovieReview from '@/components/Movie/MovieReview.vue'
+import SearchPageView from '@/views/SearchPageView.vue'
 import DirecDetailView from '@/views/DirecDetailView.vue'
 
 const router = createRouter({
@@ -36,10 +37,15 @@ const router = createRouter({
       ]
     },
     {
+      path: '/search',
+      name: 'SearchPageView',
+      component: SearchPageView,
+    },
+    {
       path: '/detail/direc/:direc_id',
       name: 'DirecDetailView',
       component: DirecDetailView
-    }
+    },
   ],
 })
 
