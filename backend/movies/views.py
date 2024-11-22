@@ -429,7 +429,7 @@ class LikeMovie(APIView):
         # 3. 중복 좋아요 방지
         if user.liked_movies.filter(movie_id=movie_id).exists():
             user.liked_movies.remove(movie)
-            return Response({"message": "You already liked this movie"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Movie unliked successfully"}, status=status.HTTP_200_OK)
         # 4. 좋아요 추가
         user.liked_movies.add(movie)
         return Response({"message": "Movie liked successfully"}, status=status.HTTP_200_OK)
@@ -463,7 +463,7 @@ class LikeActor(APIView):
         # 중복 좋아요 방지
         if user.liked_actors.filter(actor_id=actor_id).exists():
             user.liked_actors.remove(actor)
-            return Response({"message": "You already liked this actor"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Actor unliked successfully"}, status=status.HTTP_200_OK)
         # 좋아요 추가
         user.liked_actors.add(actor)
         return Response({"message": "Actor liked successfully"}, status=status.HTTP_200_OK)
@@ -496,7 +496,7 @@ class LikeDirector(APIView):
         # 중복 좋아요 방지
         if user.liked_directors.filter(director_id=director_id).exists():
             user.liked_directors.remove(director)
-            return Response({"message": "You already liked this director"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Director unliked successfully"}, status=status.HTTP_200_OK)
         # 좋아요 추가
         user.liked_directors.add(director)
         return Response({"message": "Director liked successfully"}, status=status.HTTP_200_OK)
@@ -532,7 +532,7 @@ class LikeGenre(APIView):
             if not user.liked_genres.filter(genre_id=genre_id).exists():
                 user.liked_genres.add(genre)
             else:
-                user.liked_genres.remove(genre)
+                pass
         return Response({"message": "Genres liked successfully"}, status=status.HTTP_200_OK)
     
     def delete(self, request):
