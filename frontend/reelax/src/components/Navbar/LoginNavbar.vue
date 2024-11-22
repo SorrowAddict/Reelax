@@ -1,17 +1,12 @@
 <template>
-  <div class="nav-bar">
-    <div class="home-link">
-      <RouterLink :to="{ name: 'MainPageView' }"><img src="/image/logo_final.png" alt="" height="60px"></RouterLink>
-    </div>
-    <div class="account-link">
-      <RouterLink :to="{ name: '' }"><h3>프로필</h3></RouterLink>
-      <h3 @click="logOut">로그아웃</h3>
-    </div>
-  </div>
-
+  <BaseNavbar>
+    <h3>프로필</h3>
+    <h3 @click="logOut" class="logout-link">로그아웃</h3>
+  </BaseNavbar>
 </template>
 
 <script setup>
+import BaseNavbar from './BaseNavbar.vue'
 import { useAccountStore } from '@/stores/account'
 
 const store = useAccountStore()
@@ -22,21 +17,12 @@ const logOut = function () {
 </script>
 
 <style scoped>
-.nav-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid white;
+.logout-link {
+  cursor: pointer;
+  transition: color 0.3s;
 }
-.account-link {
-  display: flex;
-}
-h1 {
-  padding: 0px 10px;
-}
-a {
-  text-decoration: none;
-  color: white;
+
+.logout-link:hover {
+  color: #ff4444;
 }
 </style>

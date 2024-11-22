@@ -1,17 +1,12 @@
 <template>
-  <div class="nav-bar">
-    <div class="home-link">
-      <RouterLink :to="{ name: 'MainPageView' }"><img src="/image/logo_final.png" alt="" height="60px"></RouterLink>
-    </div>
-    <div class="account-link">
-      <RouterLink :to="{ name: 'LoginPageView' }"><h3>로그인</h3></RouterLink>
-      <RouterLink :to="{ name: 'SignupPageView' }"><h3>회원가입</h3></RouterLink>
-    </div>
-  </div>
+  <BaseNavbar>
+    <RouterLink :to="{ name: 'LoginPageView' }"><h3>로그인</h3></RouterLink>
+    <RouterLink :to="{ name: 'SignupPageView' }"><h3>회원가입</h3></RouterLink>
+  </BaseNavbar>
 </template>
 
 <script setup>
-
+import BaseNavbar from './BaseNavbar.vue'
 </script>
 
 <style scoped>

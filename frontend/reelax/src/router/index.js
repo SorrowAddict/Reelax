@@ -5,6 +5,7 @@ import SignupPageView from '@/views/SignupPageView.vue'
 import MovieDetailView from '@/views/MovieDetailView.vue'
 import MovieCredit from '@/components/Movie/MovieCredit.vue'
 import MovieReview from '@/components/Movie/MovieReview.vue'
+import SearchPageView from '@/views/SearchPageView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
         { path: 'credit', name: 'MovieCredit', component: MovieCredit },
         { path: 'review', name: 'MovieReview', component: MovieReview }
       ]
+    },
+    {
+      path: '/search',
+      name: 'SearchPageView',
+      component: SearchPageView,
     },
   ],
 })
