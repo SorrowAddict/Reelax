@@ -6,6 +6,7 @@ import MovieDetailView from '@/views/MovieDetailView.vue'
 import MovieCredit from '@/components/Movie/MovieCredit.vue'
 import MovieReview from '@/components/Movie/MovieReview.vue'
 import SearchPageView from '@/views/SearchPageView.vue'
+import DirecDetailView from '@/views/DirecDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +31,7 @@ const router = createRouter({
       name: 'MovieDetailView',
       component: MovieDetailView,
       children: [
+        { path: '', name: 'MovieCreditDefault', component: MovieCredit },
         { path: 'credit', name: 'MovieCredit', component: MovieCredit },
         { path: 'review', name: 'MovieReview', component: MovieReview }
       ]
@@ -38,6 +40,11 @@ const router = createRouter({
       path: '/search',
       name: 'SearchPageView',
       component: SearchPageView,
+    },
+    {
+      path: '/detail/direc/:direc_id',
+      name: 'DirecDetailView',
+      component: DirecDetailView
     },
   ],
 })

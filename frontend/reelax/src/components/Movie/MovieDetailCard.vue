@@ -26,6 +26,14 @@
         <font-awesome-icon :icon="['far', 'heart']" />
       </div>
     </div>
+    <div class="movie-overview">
+      <p>
+        {{ isExpanded ? movie.overview : truncatedOverview }}
+        <button @click="toggleExpand">
+          {{ isExpanded ? "간략히" : "더보기" }}
+        </button>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -45,11 +53,23 @@ const props = defineProps({
 const liked_movies = computed(() => props.userInfo.liked_movies)
 
 const isMovieLiked = computed(() => {
-  console.log(props.movie.movie_id)
-  console.log(props.userInfo)
-  console.log(liked_movies.value)
   return liked_movies.value.some((liked_movie) => liked_movie.movie_id === props.movie.movie_id)
 })
+
+const isExpanded = ref(false); // 줄거리를 확장할지 여부
+
+// 일부만 보여줄 줄거리 계산
+const truncatedOverview = computed(() => {
+  if (!props.movie.overview) return ""; // 줄거리가 없을 경우 빈 문자열 반환
+  return props.movie.overview.length > 50
+    ? props.movie.overview.substring(0, 50) + "..."
+    : props.movie.overview;
+});
+
+// 줄거리 확장/축소 상태 변경
+const toggleExpand = () => {
+  isExpanded.value = !isExpanded.value;
+};
 
 const release_year = computed(() => {
   return props.movie.release_date.substring(0, 4)
