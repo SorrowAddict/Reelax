@@ -33,6 +33,12 @@
       <div v-else>
         <font-awesome-icon :icon="['far', 'heart']" />
       </div>
+      <div data-bs-toggle="modal" data-bs-target="#addPlaylistModal">
+        <font-awesome-icon :icon="['fas', 'plus']" />
+      </div>
+      <AddPlaylistModal 
+        :movie="movie"
+      />
     </div>
     <div class="movie-overview">
       <p>
@@ -52,6 +58,7 @@ import { faStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons'
 import { library } from "@fortawesome/fontawesome-svg-core"
 import { useLikeStore } from '@/stores/like'
 import { useAccountStore } from '@/stores/account'
+import AddPlaylistModal from './AddPlaylistModal.vue'
 
 library.add(faStar, faStarHalfAlt)
 
@@ -103,10 +110,7 @@ const movieLike = function () {
 <style scoped>
 .movie-detail, .movie-rated {
   display: flex;
-}
-
-.movie-detail>p, .movie-rated>p {
-  padding: 0px 5px;
+  gap: 10px;
 }
 
 .star {
