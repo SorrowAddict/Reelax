@@ -1,14 +1,14 @@
 <template>
   <div>
-    <div v-if="movieStore.direcDetail">
+    <div v-if="movieStore.actorDetail">
       <img :src="imageUrl" alt="프로필 이미지">
       <div>
-        <h3>{{ movieStore.direcDetail.name }}</h3>
-        <p>감독</p>
+        <h3>{{ movieStore.actorDetail.name }}</h3>
+        <p>배우</p>
         <p>{{ birth_year }}</p>
         <p>{{ gender }}</p>
         <div>
-          <div v-if="isDirectorLiked(movieStore.direcDetail)">
+          <div v-if="isActorLiked(movieStore.actorDetail)">
             <font-awesome-icon :icon="['fas', 'heart']" />
           </div>
           <div v-else>
@@ -17,7 +17,7 @@
         </div>
       </div>
       <div>
-        <h2>{{ movieStore.direcDetail.name }}이 연출한 영화</h2>
+        <h2>{{ movieStore.actorDetail.name }}이 출연한 영화</h2>
         <div>
           <MovieCard
             v-for="movie in uniqueFilmography"
@@ -27,7 +27,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -42,40 +41,40 @@ const movieStore = useMovieStore()
 const accountStore = useAccountStore()
 const route = useRoute()
 
-const direc_id = route.params.direc_id
+const actor_id = route.params.actor_id
 
 const defaultImage = "/image/basic_profile.png"
 const imageUrl = computed(() => {
-  if(movieStore.direcDetail.profile_path) {
-    return `https://image.tmdb.org/t/p/w200${movieStore.direcDetail.profile_path}`
+  if(movieStore.actorDetail.profile_path) {
+    return `https://image.tmdb.org/t/p/w200${movieStore.actorDetail.profile_path}`
   } else {
     return `${defaultImage}`
   }
 })
 
 const birth_year = computed(() => {
-  return movieStore.direcDetail.birthday.substring(0, 4)
+  return movieStore.actorDetail.birthday.substring(0, 4)
 })
 
 const gender = computed(() => {
-  if (movieStore.direcDetail.gender === 2) {
+  if (movieStore.actorDetail.gender === 2) {
     return '남성'
-  } else if (movieStore.direcDetail.gender === 1) {
+  } else if (movieStore.actorDetail.gender === 1) {
     return '여성'
   } else {
     return '알 수 없음'
   }
 })
 
-const liked_directors = computed(() => accountStore.userInfo.liked_directors)
+const liked_actors = computed(() => accountStore.userInfo.liked_actors)
 
-const isDirectorLiked = function (director) {
-  return liked_directors.value.some((liked_director) => liked_director.director_id === director.id)
+const isActorLiked = function (actor) {
+  return liked_actors.value.some((liked_actor) => liked_actor.actor_id === actor.id)
 }
 
 const uniqueFilmography = computed(() => {
   const seenIds = new Set();
-  return movieStore.direcDetail.filmography.filter((movie) => {
+  return movieStore.actorDetail.filmography.filter((movie) => {
     if (!seenIds.has(movie.id)) {
       seenIds.add(movie.id);
       return true;
@@ -85,11 +84,9 @@ const uniqueFilmography = computed(() => {
 });
 
 onMounted(() => {
-  movieStore.getDirectorDetail(direc_id)
-  console.log(movieStore.direcDetail)
+  movieStore.getActorDetail(actor_id)
   accountStore.getUserInfo()
 })
-
 </script>
 
 <style scoped>
