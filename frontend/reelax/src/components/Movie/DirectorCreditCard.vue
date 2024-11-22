@@ -5,7 +5,7 @@
       <img :src="getImageUrl(person.profile_path)" alt="프로필 이미지">
       <p>{{ person.name }}</p>
     </div>
-    <div>
+    <div @click="direcLike(person.id, person.name, person.profile_path)">
       <div v-if="isDirectorLiked(person)">
         <font-awesome-icon :icon="['fas', 'heart']" />
       </div>
@@ -19,12 +19,14 @@
 <script setup>
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useLikeStore } from '@/stores/like'
 
 const props = defineProps({
   people: Object,
   userInfo: Object
 })
 const router = useRouter()
+const likeStore = useLikeStore()
 
 const defaultImage = "/image/basic_profile.png"
 const baseImageUrl = "https://image.tmdb.org/t/p/w200"
@@ -43,6 +45,14 @@ const direcDetail = function (id) {
   router.push({ name: 'DirecDetailView', params: { direc_id: id }})
 }
 
+const direcLike = function (director_id, name, profile_path) {
+  const payload = {
+    director_id: director_id,
+    name: name,
+    profile_path: profile_path
+  }
+  likeStore.direcLike(payload)
+}
 </script>
 
 <style scoped>
