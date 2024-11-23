@@ -100,7 +100,7 @@ const deleteReview = function (movie_id, review_id) {
 }
 
 onMounted(() => {
-  accountStore.getUserInfo()
+  accountStore.getUserInfo(accountStore.userId)
 })
 
 </script>

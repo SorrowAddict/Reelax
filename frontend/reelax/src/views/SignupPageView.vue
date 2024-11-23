@@ -100,13 +100,16 @@ const signUp = function () {
     password2: password2.value,
   }
 
-  store.signUp(payload).then((token) => {
-    if (token) {
-      store.token = token
-      store.fetchProfile()
-      router.push({ name: 'GenreSelectionView' })
-    }
-  })
+  store.signUp(payload)
+  router.push({ name: 'GenreSelectionView' })
+
+  // store.signUp(payload).then((token) => {
+  //   if (token) {
+  //     store.token = token
+  //     store.fetchProfile()
+      
+  //   }
+  // })
 }
 </script>
 

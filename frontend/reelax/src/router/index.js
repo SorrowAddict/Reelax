@@ -60,7 +60,7 @@ const router = createRouter({
       component: GenreSelectionView
     },
     {
-      path: '/mypage',
+      path: '/mypage/:id',
       name: 'MyPageView',
       component: MyPageView
     },

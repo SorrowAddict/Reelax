@@ -64,14 +64,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useAccountStore } from '@/stores/account'
 import axios from 'axios'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import { useRoute } from 'vue-router'
 
 const accountStore = useAccountStore()
-
+const route = useRoute()
 const defaultProfileImage = '/path/to/default-profile-image.jpg'
 const profileImage = ref(null)
 
@@ -87,14 +88,26 @@ onMounted(() => {
     easing: 'ease-in-out-quint',
     once: false,
   })
+  accountStore.getUserInfo(route.params.id)
+  if (accountStore.userInfo.profile_image) {
+    profileImage.value = `http://localhost:8000${accountStore.userInfo.profile_image}`
+  } else {
+    profileImage.value = defaultProfileImage
+  }
+  
 })
 
 // 프로필 이미지를 가져오는 함수
-const fetchUserProfile = () => {
-  profileImage.value = accountStore.userInfo.profile_image
-    ? `http://localhost:8000${accountStore.userInfo.profile_image}`
-    : defaultProfileImage
-}
+// const profileImage = computed(() => {
+//   return accountStore.userInfo.profile_image
+//   ? `http://localhost:8000${accountStore.userInfo.profile_image}`
+//   : defaultProfileImage
+// })
+// const fetchUserProfile = () => {
+//   profileImage.value = accountStore.userInfo.profile_image
+//     ? `http://localhost:8000${accountStore.userInfo.profile_image}`
+//     : defaultProfileImage
+// }
 
 // 프로필 이미지 업로드
 const triggerImageUpload = () => {
@@ -151,7 +164,7 @@ const updateNickname = async () => {
         }
       }
     )
-    accountStore.userInfo.value.nickname = response.data.nickname
+    accountStore.userInfo.nickname = response.data.nickname
     isEditingNickname.value = false
     alert('닉네임이 성공적으로 업데이트되었습니다.')
   } catch (error) {

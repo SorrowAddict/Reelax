@@ -43,7 +43,7 @@ const movie_id = route.params.id
 onMounted(() => {
   movieStore.getMovieDetail(movie_id)
   if (accountStore.isLogin) {
-    accountStore.fetchProfile()
+    accountStore.getUserInfo(accountStore.userId)
   }
   AOS.init({
     duration: 800,

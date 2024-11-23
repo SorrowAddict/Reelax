@@ -110,7 +110,7 @@ const moveToLogin = function () {
 onMounted(() => {
   movieStore.getActorDetail(actor_id)
   if (accountStore.isLogin) {
-    accountStore.getUserInfo()
+    accountStore.getUserInfo(accountStore.userId)
   }
 })
 </script>
