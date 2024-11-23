@@ -80,15 +80,17 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useAccountStore } from "@/stores/account";
+import { ref } from "vue"
+import { useAccountStore } from "@/stores/account"
+import { useRouter } from "vue-router"
 
-const store = useAccountStore();
+const store = useAccountStore()
+const router = useRouter()
 
-const username = ref("");
-const nickname = ref("");
-const password1 = ref("");
-const password2 = ref("");
+const username = ref("")
+const nickname = ref("")
+const password1 = ref("")
+const password2 = ref("")
 
 const signUp = function () {
   const payload = {
@@ -96,10 +98,16 @@ const signUp = function () {
     nickname: nickname.value,
     password1: password1.value,
     password2: password2.value,
-  };
+  }
 
-  store.signUp(payload);
-};
+  store.signUp(payload).then((token) => {
+    if (token) {
+      store.token = token
+      store.getUserInfo()
+      router.push({ name: 'GenreSelectionView' })
+    }
+  })
+}
 </script>
 
 <style scoped>

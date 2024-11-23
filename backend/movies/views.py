@@ -517,6 +517,12 @@ class LikeDirector(APIView):
 class LikeGenre(APIView):
     permission_classes = [IsAuthenticated]
 
+    def get(self, request):
+        user = request.user
+        liked_genres = user.liked_genres.all()
+        data = [{"genre_id": genre.genre_id, "name": genre.name} for genre in liked_genres]
+        return Response(data, status=status.HTTP_200_OK)
+
     def post(self, request):
         user = request.user
         genres_data = request.data.get("genres", [])  # 프론트에서 전송된 장르 데이터 리스트
@@ -710,3 +716,11 @@ class UpdateGenres(APIView):
             {"error": "Failed to fetch genres from TMDB."},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
+class GenreListView(APIView):
+
+    def get(self, request):
+        genres = Genre.objects.all()
+        serializer = GenreSerializer(genres, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

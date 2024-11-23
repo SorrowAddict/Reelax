@@ -6,6 +6,9 @@ class Genre(models.Model):
     genre_id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
+
 
 class Movie(models.Model):
     movie_id = models.BigIntegerField(primary_key=True)  # TMDB의 고유 ID

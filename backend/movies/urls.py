@@ -34,4 +34,5 @@ urlpatterns = [
     path('search/', SearchMovies.as_view()),
     # 장르 DB fetch
     path('update-genres/', UpdateGenres.as_view()),
+    path('genres/', GenreListView.as_view()),
 ]

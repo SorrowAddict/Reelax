@@ -8,6 +8,7 @@ import MovieReview from '@/components/Movie/MovieReview.vue'
 import SearchPageView from '@/views/SearchPageView.vue'
 import DirecDetailView from '@/views/DirecDetailView.vue'
 import ActorDetailView from '@/views/ActorDetailView.vue'
+import GenreSelectionView from '@/views/GenreSelectionView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,7 +52,12 @@ const router = createRouter({
       path: '/detail/actor/:actor_id',
       name: 'ActorDetailView',
       component: ActorDetailView
-    }
+    },
+    {
+      path: '/genre-selection',
+      name: 'GenreSelectionView',
+      component: GenreSelectionView
+    },
   ],
 })
 
