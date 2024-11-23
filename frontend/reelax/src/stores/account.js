@@ -96,9 +96,17 @@ export const useAccountStore = defineStore('account', () => {
 
   const fetchProfile = async function () {
     try {
+      const userid = await axios({
+        method: 'get',
+        url: `${BASE_URL}/accounts/user/`,
+        headers: {
+          Authorization: `Token ${token.value}`
+        }
+      }).then((res) => res.data.pk)
+      
       const res = await axios({
         method: 'get',
-        url: `${BASE_URL}/accounts/profile/`,
+        url: `${BASE_URL}/accounts/profile/${userid}/`,
         headers: {
           Authorization: `Token ${token.value}`
         }

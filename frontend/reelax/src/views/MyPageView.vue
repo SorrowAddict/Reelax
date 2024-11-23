@@ -154,7 +154,6 @@ const fetchMovieData = async () => {
       getUserLikedActorMovies(),
       getUserLikedDirecMovies(),
     ])
-    console.log('ㅇㅇ화', userLikedMovies)
   } catch (error) {
     console.error('영화 데이터를 가져오는 데 실패했습니다.', error)
   }
