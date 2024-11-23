@@ -112,7 +112,7 @@ onMounted(() => {
   movieStore.getDirectorDetail(direc_id)
   console.log(movieStore.direcDetail)
   if (accountStore.isLogin) {
-    accountStore.getUserInfo()
+    accountStore.getUserInfo(accountStore.userId)
   }
 })
 

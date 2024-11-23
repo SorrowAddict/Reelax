@@ -22,7 +22,7 @@ export const useLikeStore = defineStore('like', () => {
       }
     })
       .then((res) => {
-        accountStore.getUserInfo()
+        accountStore.getUserInfo(accountStore.userId)
       })
       .catch((err) => {
         console.log(err)
@@ -42,7 +42,7 @@ export const useLikeStore = defineStore('like', () => {
       }
     })
       .then((res) => {
-        accountStore.getUserInfo()
+        accountStore.getUserInfo(accountStore.userId)
       })
       .catch((err) => {
         console.log(err)
@@ -62,7 +62,7 @@ export const useLikeStore = defineStore('like', () => {
       }
     })
       .then((res) => {
-        accountStore.getUserInfo()
+        accountStore.getUserInfo(accountStore.userId)
       })
       .catch((err) => {
         console.log(err)
