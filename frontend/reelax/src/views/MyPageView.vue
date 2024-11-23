@@ -32,12 +32,22 @@
             <span class="edit-icon" @click="editNickname">✎</span>
           </h1>
           <div v-if="accountStore.userInfo" class="follow-info">
-            <span>팔로우 {{ accountStore.userInfo.followers_count ?? -1 }}</span>
-            <span>팔로잉 {{ accountStore.userInfo.followings_count ?? -1 }}</span>
+            <span data-bs-toggle="modal" data-bs-target="#followListModal">팔로우 {{ accountStore.userInfo.followers_count ?? -1 }}</span>
+            <span data-bs-toggle="modal" data-bs-target="#followingListModal">팔로잉 {{ accountStore.userInfo.followings_count ?? -1 }}</span>
           </div>
           <div v-else class="follow-info">
             <span>팔로우 -</span>
             <span>팔로잉 -</span>
+          </div>
+          <div v-if="accountStore.userInfo.id !== accountStore.userId">
+            <!-- 내 페이지가 아니라면 팔로우 버튼 -->
+            <div @click="followToggle(user_id)" v-if="isFollowing">
+              <!-- 팔로잉 하고 있는 중이라면 -->
+              <p>팔로우 취소</p>
+            </div>
+            <div @click="followToggle(user_id)" v-else>
+              <p>팔로우</p>
+            </div>
           </div>
         </div>
       </div>
@@ -117,6 +127,13 @@
         <p v-else>플레이리스트가 비어 있습니다.</p>
       </div>
     </div>
+
+    <FollowListModal
+      :users="accountStore.userInfo.followers"
+    />
+    <FollowingListModal
+      :users="accountStore.userInfo.followings"
+    />
   </div>
 </template>
 
@@ -128,6 +145,8 @@ import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { useRoute, useRouter } from 'vue-router'
 import ListThumbnail from '@/components/Movie/ListThumbnail.vue'
+import FollowListModal from '@/components/Movie/FollowListModal.vue'
+import FollowingListModal from '@/components/Movie/FollowingListModal.vue'
 
 const accountStore = useAccountStore()
 const route = useRoute()
@@ -139,6 +158,12 @@ const profileImage = ref(null)
 const isEditingNickname = ref(false)
 const nickname = ref('')
 const user_id = route.params.id
+
+// 팔로우 유무 확인
+const isFollowing = computed(() => {
+  return accountStore.userInfo.followers.some(user => user.id === accountStore.userId)
+})
+
 
 // 컴포넌트 로드 시 데이터 가져오기
 onMounted(() => {
@@ -256,6 +281,10 @@ const seeAllActors = function (user_id) {
 
 const seeActorDetail = function (actor_id) {
   router.push({ name: 'ActorDetailView', params: { actor_id: actor_id }})
+}
+
+const followToggle = function (user_id) {
+  accountStore.follow(user_id)
 }
 </script>
 
