@@ -11,8 +11,9 @@ from .models import User
 class Profile(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        serializer = ProfileSerializer(request.user)
+    def get(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+        serializer = ProfileSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
