@@ -82,7 +82,6 @@ const nickname = ref('')
 
 // 컴포넌트 로드 시 데이터 가져오기
 onMounted(() => {
-  fetchUserProfile()
   AOS.init({
     duration: 800,
     easing: 'ease-in-out-quint',
@@ -96,18 +95,6 @@ onMounted(() => {
   }
   
 })
-
-// 프로필 이미지를 가져오는 함수
-// const profileImage = computed(() => {
-//   return accountStore.userInfo.profile_image
-//   ? `http://localhost:8000${accountStore.userInfo.profile_image}`
-//   : defaultProfileImage
-// })
-// const fetchUserProfile = () => {
-//   profileImage.value = accountStore.userInfo.profile_image
-//     ? `http://localhost:8000${accountStore.userInfo.profile_image}`
-//     : defaultProfileImage
-// }
 
 // 프로필 이미지 업로드
 const triggerImageUpload = () => {

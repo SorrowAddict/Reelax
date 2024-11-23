@@ -8,7 +8,7 @@
     <!-- 프로필 이미지 및 모달 -->
     <div class="profile-container">
       <img
-        :src="profileImage"
+        :src="`http://localhost:8000${store.userInfo?.profile_image}`"
         alt="User Profile"
         class="profile-image"
         @error="onImageError"
@@ -45,63 +45,28 @@ const defaultProfileImage = `http://localhost:8000/media/profile_images/default_
 const profileImage = ref(defaultProfileImage) // 프로필 이미지 URL
 const router = useRouter()
 
-// 모달 상태
 const isModalOpen = ref(false)
-
-// DRF 요청으로 프로필 이미지 가져오기
-// const fetchProfileImage = async () => {
-//   try {
-//     await store.getUserInfo(store.userId)
-//     profileImage.value = response
-//       ? `http://localhost:8000${response}`
-//       : defaultProfileImage
-//   } catch (error) {
-//     console.error('Failed to fetch profile image:', error)
-//     profileImage.value = defaultProfileImage
-//   }
-// }
-
-const fetchProfileImage = async () => {
-  try {
-    await store.getUserInfo(store.userId) // 비동기 작업 완료 대기
-    profileImage.value = store.userInfo?.profile_image
-      ? `http://localhost:8000${store.userInfo.profile_image}`
-      : defaultProfileImage
-  } catch (err) {
-    console.error('Failed to fetch profile image:', err)
-    profileImage.value = defaultProfileImage
-  }
-}
 
 // 이미지 로드 실패 시 기본 이미지로 대체
 const onImageError = () => {
   profileImage.value = defaultProfileImage
 }
 
-// 로그아웃 처리
 const logOut = () => {
   store.logOut()
 }
 
-// 마이페이지 이동
 const goToMyPage = () => {
   router.push({ name: 'MyPageView', params: { id: store.userId }})
-  // window.location.href = '/mypage'
 }
 
 // 모달 열고 닫기
 const toggleModal = () => {
   isModalOpen.value = !isModalOpen.value
 }
-
 const closeModal = () => {
   isModalOpen.value = false
 }
-
-// 컴포넌트가 로드될 때 프로필 이미지 가져오기
-onMounted(() => {
-  fetchProfileImage()
-})
 </script>
 
 <style scoped>

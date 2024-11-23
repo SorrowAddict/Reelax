@@ -65,6 +65,7 @@ export const useAccountStore = defineStore('account', () => {
     })
       .then((res) => {
         userInfo.value = res.data
+        userprofile_path.value = res.data.profile_image
       })
       .catch((err) => {
         console.error(err)
