@@ -1,36 +1,40 @@
 <template>
   <div class="container">
-    <!-- 캐러셀 영역 -->
-    <div class="carousel-wrapper" data-aos="fade-up">
-      <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
-        <div class="carousel-inner">
-          <div
-            v-for="(image, index) in carouselImages"
-            :key="index"
-            :class="['carousel-item', { active: index === 0 }]"
-          >
-            <img :src="image" class="d-block w-100" alt="영화 이미지" />
+    <!-- 그라데이션 보더 -->
+    <div class="gradient-border">
+      <!-- 캐러셀 영역 -->
+      <div class="carousel-wrapper" data-aos="zoom-in" data-aos-easing="ease-in-quint">
+        <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+          <div class="carousel-inner">
+            <div
+              v-for="(image, index) in carouselImages"
+              :key="index"
+              :class="['carousel-item', { active: index === 0 }]"
+              @mouseover="updateGradient(image)"
+            >
+              <img :src="image" class="d-block w-100" alt="영화 이미지" />
+            </div>
           </div>
+          <!-- 캐러셀 이전/다음 버튼 -->
+          <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#carouselExample"
+            data-bs-slide="prev"
+          >
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#carouselExample"
+            data-bs-slide="next"
+          >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
         </div>
-        <!-- 캐러셀 이전/다음 버튼 -->
-        <button
-          class="carousel-control-prev"
-          type="button"
-          data-bs-target="#carouselExample"
-          data-bs-slide="prev"
-        >
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button
-          class="carousel-control-next"
-          type="button"
-          data-bs-target="#carouselExample"
-          data-bs-slide="next"
-        >
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
       </div>
     </div>
 
@@ -148,10 +152,23 @@ const accountStore = useAccountStore()
 
 const carouselImages = ref([
   '/image/1.jpg',
-  '/image/1.jpg',
-  '/image/1.jpg',
-  '/image/1.jpg',
+  '/image/2.jpg',
+  '/image/3.jpg',
+  '/image/4.jpg',
 ])
+
+const gradientColors = ref("to right, #ff7e5f, #feb47b")
+
+const updateGradient = (imageSrc) => {
+  // 예: 이미지 경로에 따라 색상을 결정
+  const colorMapping = {
+    "/image/1.jpg": "to right, #ff7e5f, #feb47b",
+    "/image/2.jpg": "to right, #6a11cb, #2575fc",
+    "/image/3.jpg": "to right, #00c6ff, #0072ff",
+    "/image/4.jpg": "to right, #ff9966, #ff5e62",
+  }
+  gradientColors.value = colorMapping[imageSrc] || "to right, #ff7e5f, #feb47b"
+}
 
 onMounted(() => {
   movieStore.getTopRatedMovies()
@@ -159,9 +176,10 @@ onMounted(() => {
   movieStore.getRecentlyReleasedMovies()
   movieStore.getGenreMovies()
   AOS.init({
-    duration: 1000, // 애니메이션 지속 시간 (밀리초)
-    easing: 'ease-in-out', // 애니메이션 가속도
-    once: true, // 스크롤 시 한 번만 실행
+    duration: 800,
+    easing: 'ease-in-out-quint',
+    mirror: 'true',
+    once: false,
   })
   if (accountStore.isLogin) {
     // 로그인 되어있을 경우
@@ -176,39 +194,49 @@ onMounted(() => {
 
 <style scoped>
 .carousel-inner img {
-  width: auto; /* 이미지 너비를 자동으로 설정 */
-  height: auto; /* 이미지 높이를 자동으로 설정 */
-  max-width: 100%; /* 이미지가 캐러셀 너비를 넘지 않도록 제한 */
-  margin: 0 auto; /* 이미지를 중앙 정렬 */
-  display: block; /* 블록 요소로 설정 */
-  border-radius: 15px;
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  margin: 0 auto;
+  display: block;
+  border-radius: 30px;
   transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
-.carousel {
-  margin: 0; /* 좌우 여백 제거 */
-  width: 100%; /* 화면 전체 너비 */
+.carousel-wrapper {
+  border-radius: 30px;
+  margin: 2rem auto 0 auto;
+  max-width: 1400px;
+  overflow: hidden;
 }
 
-.carousel-wrapper {
-  margin-left: -15px;
-  margin-right: -15px;
-  width: calc(100% + 30px); /* 여백만큼 확장 */
+.carousel {
+  width: 100%;
 }
 
 .carousel-control-prev,
 .carousel-control-next {
-  width: auto; /* 버튼 크기를 조정할 수 있도록 */
-  transform: translateX(-30px); /* 이전 버튼을 왼쪽으로 이동 */
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
-.carousel-control-next {
-  transform: translateX(30px); /* 다음 버튼을 오른쪽으로 이동 */
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .movie {
-  margin: 100px 0px;
-  transition: transform 0.7s ease, opacity 0.7s ease;
+  margin: 50px 0px;
 }
 
 .movie-list {
@@ -216,6 +244,6 @@ onMounted(() => {
 }
 
 .genre-movie {
-  margin: 100px 0px;
+  margin: 50px 0px;
 }
 </style>

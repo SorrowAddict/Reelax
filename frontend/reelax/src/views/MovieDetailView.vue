@@ -13,9 +13,10 @@
       <MovieDetailCard
         :movie="movieStore.movieDetail"
         :userInfo="accountStore.userInfo || undefined"
+        data-aos="fade-up"
       />
     </div>
-    <div v-if="movie_id">
+    <div v-if="movie_id" data-aos="fade-up" data-aos-delay="150">
       <RouterLink :to="{ name: 'MovieCreditDefault', params: { id: movie_id } }">감독/출연진</RouterLink>
       <RouterLink :to="{ name: 'MovieReview', params: { id: movie_id } }">리뷰</RouterLink>
       <RouterView />
@@ -30,6 +31,8 @@ import { onMounted } from 'vue';
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import MovieDetailCard from '@/components/Movie/MovieDetailCard.vue'
 import MovieTrailer from '@/components/Movie/MovieTrailer.vue'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 
 const movieStore = useMovieStore()
 const accountStore = useAccountStore()
@@ -42,6 +45,11 @@ onMounted(() => {
   if (accountStore.isLogin) {
     accountStore.getUserInfo(accountStore.userId)
   }
+  AOS.init({
+    duration: 800,
+    easing: 'ease-in-out',
+    once: false,
+  })
 })
 
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="my-page-container">
     <!-- 프로필 정보 -->
-    <div class="profile-section">
+    <div class="profile-section" data-aos="fade-up">
       <div class="profile-header">
         <img
           :src="profileImage || defaultProfileImage"
@@ -44,7 +44,7 @@
     </div>
 
     <!-- 영화 플레이리스트 -->
-    <div class="playlist-section">
+    <div class="playlist-section" data-aos="fade-up" data-aos-delay="150">
       <h2>{{ accountStore.userInfo?.nickname || '사용자' }}님의 영화 플레이리스트</h2>
       <div class="content-box">
         <div v-if="accountStore.userInfo.playlists">
@@ -67,6 +67,8 @@
 import { ref, onMounted, computed } from 'vue'
 import { useAccountStore } from '@/stores/account'
 import axios from 'axios'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 import { useRoute } from 'vue-router'
 
 const accountStore = useAccountStore()
@@ -80,6 +82,11 @@ const nickname = ref('')
 
 // 컴포넌트 로드 시 데이터 가져오기
 onMounted(() => {
+  AOS.init({
+    duration: 800,
+    easing: 'ease-in-out-quint',
+    once: false,
+  })
   accountStore.getUserInfo(route.params.id)
   if (accountStore.userInfo.profile_image) {
     profileImage.value = `http://localhost:8000${accountStore.userInfo.profile_image}`
@@ -88,18 +95,6 @@ onMounted(() => {
   }
   
 })
-
-// 프로필 이미지를 가져오는 함수
-// const profileImage = computed(() => {
-//   return accountStore.userInfo.profile_image
-//   ? `http://localhost:8000${accountStore.userInfo.profile_image}`
-//   : defaultProfileImage
-// })
-// const fetchUserProfile = () => {
-//   profileImage.value = accountStore.userInfo.profile_image
-//     ? `http://localhost:8000${accountStore.userInfo.profile_image}`
-//     : defaultProfileImage
-// }
 
 // 프로필 이미지 업로드
 const triggerImageUpload = () => {
