@@ -104,6 +104,7 @@ export const useAccountStore = defineStore('account', () => {
         }
       })
       userInfo.value = res.data
+      // console.log(userInfo.value)
       return res.data.profile_image
     } catch (err) {
       console.error(err)

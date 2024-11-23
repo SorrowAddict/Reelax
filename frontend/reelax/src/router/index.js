@@ -9,6 +9,7 @@ import SearchPageView from '@/views/SearchPageView.vue'
 import DirecDetailView from '@/views/DirecDetailView.vue'
 import ActorDetailView from '@/views/ActorDetailView.vue'
 import GenreSelectionView from '@/views/GenreSelectionView.vue'
+import MyPageView from '@/views/MyPageView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +58,11 @@ const router = createRouter({
       path: '/genre-selection',
       name: 'GenreSelectionView',
       component: GenreSelectionView
+    },
+    {
+      path: '/mypage',
+      name: 'MyPageView',
+      component: MyPageView
     },
   ],
 })
