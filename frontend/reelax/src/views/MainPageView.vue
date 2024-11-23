@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 캐러셀 영역 -->
-    <div class="carousel-wrapper">
+    <div class="carousel-wrapper" data-aos="fade-up">
       <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
         <div class="carousel-inner">
           <div
@@ -38,7 +38,7 @@
     <div v-if="accountStore.token !== null">
       <!-- 사용자가 좋아한 장르의 영화 -->
       <div v-if="movieStore.userLikedGenreMovies && Object.keys(movieStore.userLikedGenreMovies).length > 0" class="movie">
-        <div v-for="(movies, genre) in movieStore.userLikedGenreMovies" :key="genre">
+        <div v-for="(movies, genre) in movieStore.userLikedGenreMovies" :key="genre" data-aos="fade-right">
           <h3>사용자가 좋아한 {{ genre }} 영화</h3>
           <MainCarouselSection
             carousel-id="likedGenreCarousel"
@@ -51,7 +51,7 @@
       </div>
 
       <!-- 사용자가 좋아한 최근 영화 -->
-      <div v-if="movieStore.userLikedMovies && Object.keys(movieStore.userLikedMovies).length > 0" class="movie">
+      <div v-if="movieStore.userLikedMovies && Object.keys(movieStore.userLikedMovies).length > 0" class="movie" data-aos="fade-left">
         <h3>사용자가 최근 좋아한 영화</h3>
         <MainCarouselSection
           carousel-id="likedMovieCarousel"
@@ -63,7 +63,7 @@
       </div>
 
       <!-- 유저가 좋아한 배우 중 랜덤으로 하나 뽑아서 필모 5개 표시 -->
-      <div v-if="movieStore.userLikedActorMovies && Object.keys(movieStore.userLikedActorMovies).length > 0" class="movie">
+      <div v-if="movieStore.userLikedActorMovies && Object.keys(movieStore.userLikedActorMovies).length > 0" class="movie" data-aos="fade-right">
         <h3>사용자가 좋아한 배우 {{ movieStore.userLikedActor }}의 영화</h3>
         <MainCarouselSection
           carousel-id="likedActorCarousel"
@@ -75,7 +75,7 @@
       </div>
 
       <!-- 유저가 좋아한 감독 중 랜덤으로 하나 뽑아서 필모 5개 표시 -->
-      <div v-if="movieStore.userLikedDirecMovies && Object.keys(movieStore.userLikedDirecMovies).length > 0" class="movie">
+      <div v-if="movieStore.userLikedDirecMovies && Object.keys(movieStore.userLikedDirecMovies).length > 0" class="movie" data-aos="fade-left">
         <h3>사용자가 좋아한 감독 {{ movieStore.userLikedDirec }}의 영화</h3>
         <MainCarouselSection
           carousel-id="likedDirecCarousel"
@@ -88,7 +88,7 @@
     </div>
     
     <!-- Top rated movie -->
-    <div v-if="movieStore.topRatedMovies" class="movie">
+    <div v-if="movieStore.topRatedMovies" class="movie" data-aos="fade-right">
       <h3>좋은 평가를 받은 영화 TOP 10</h3>
       <MainCarouselSection
         carousel-id="topRatedCarousel"
@@ -96,7 +96,7 @@
       />
     </div>
 
-    <div v-if="movieStore.boxOfficeMovies" class="movie">
+    <div v-if="movieStore.boxOfficeMovies" class="movie" data-aos="fade-left">
       <h3>박스 오피스 TOP 10</h3>
       <MainCarouselSection
         carousel-id="boxOfficeCarousel"
@@ -104,7 +104,7 @@
       />
     </div>
 
-    <div v-if="movieStore.recentlyReleasedMovies" class="movie">
+    <div v-if="movieStore.recentlyReleasedMovies" class="movie" data-aos="fade-right">
       <h3>최근 개봉한 영화</h3>
       <MainCarouselSection
         carousel-id="recentlyReleasedCarousel"
@@ -114,7 +114,7 @@
 
     <div v-if="accountStore.token !== null && movieStore.genreMovies">
       <!-- 로그인 되어있는 상태 -->
-      <div v-for="(movies, genre) in movieStore.genreMovies" :key="genre" class="movie">
+      <div v-for="(movies, genre) in movieStore.genreMovies" :key="genre" class="movie" data-aos="fade-left">
         <h3>이런 영화는 어떠세요?</h3>
         <MainCarouselSection
           carousel-id="genreCarousel"
@@ -124,7 +124,7 @@
     </div>
     <div v-else-if="accountStore.token === null && movieStore.genreMovies">
       <!-- 로그인 되어있지 않은 상태 -->
-      <div v-for="(movies, genre) in movieStore.genreMovies" :key="genre" class="movie">
+      <div v-for="(movies, genre) in movieStore.genreMovies" :key="genre" class="movie" data-aos="fade-left">
         <h3>당신이 좋아할만한 {{ genre }} 영화</h3>
         <MainCarouselSection
           carousel-id="genreCarousel"
@@ -140,6 +140,8 @@ import MainCarouselSection from "@/components/Movie/MainCarouselSection.vue"
 import { useAccountStore } from "@/stores/account"
 import { useMovieStore } from '@/stores/movie'
 import { onMounted, ref } from 'vue'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 
 const movieStore = useMovieStore()
 const accountStore = useAccountStore()
@@ -156,6 +158,11 @@ onMounted(() => {
   movieStore.getBoxOfficeMovies()
   movieStore.getRecentlyReleasedMovies()
   movieStore.getGenreMovies()
+  AOS.init({
+    duration: 1000, // 애니메이션 지속 시간 (밀리초)
+    easing: 'ease-in-out', // 애니메이션 가속도
+    once: true, // 스크롤 시 한 번만 실행
+  })
   if (accountStore.isLogin) {
     // 로그인 되어있을 경우
     movieStore.getUserLikedGenreMovies()
@@ -175,6 +182,7 @@ onMounted(() => {
   margin: 0 auto; /* 이미지를 중앙 정렬 */
   display: block; /* 블록 요소로 설정 */
   border-radius: 15px;
+  transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
 .carousel {
@@ -200,6 +208,7 @@ onMounted(() => {
 
 .movie {
   margin: 100px 0px;
+  transition: transform 0.7s ease, opacity 0.7s ease;
 }
 
 .movie-list {
