@@ -47,6 +47,7 @@ const createReview = function (movie_id) {
 
 onMounted(() => {
   reviewStore.getMovieReview(movie_id)
+  console.log(reviewStore.movieReview)
 })
 
 
