@@ -373,6 +373,8 @@ class UserLikedGenreMovies(APIView):
 
 # 영화 리뷰 조회 및 작성 [완]
 class MovieReviews(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
     def get(self, request, movie_id):
         reviews = Review.objects.filter(movie_id=movie_id)
         serializer = ReviewSerializer(reviews, many=True)
@@ -563,7 +565,7 @@ class LikeReview(APIView):
         review = Review.objects.get(id=review_id, movie_id=movie_id)
         if request.user in review.liked_by.all():
             review.liked_by.remove(request.user)
-            return Response({"message": "Review unliked successfully"}, status=status.HTTP)
+            return Response({"message": "Review unliked successfully"}, status=status.HTTP_200_OK)
         review.liked_by.add(request.user)
         return Response({"message": "Review liked successfully"}, status=status.HTTP_200_OK)
 
