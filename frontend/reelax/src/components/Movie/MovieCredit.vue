@@ -31,7 +31,7 @@ const movie_id = route.params.id
 onMounted(() => {
   movieStore.getMovieDetail(movie_id)
   console.log(movieStore.movieDetail)
-  accountStore.getUserInfo()
+  accountStore.getUserInfo(accountStore.userId)
   console.log(accountStore.userInfo)
 })
 </script>

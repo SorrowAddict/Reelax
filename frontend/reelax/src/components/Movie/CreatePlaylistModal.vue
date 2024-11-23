@@ -17,7 +17,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-target="#addPlaylistModal" data-bs-toggle="modal">취소</button>
-            <button type="submit" class="btn btn-primary" form="createPlaylistForm">생성</button>
+            <button type="submit" class="btn btn-primary" form="createPlaylistForm" data-bs-dismiss="modal">생성</button>
           </div>
         </div>
       </div>

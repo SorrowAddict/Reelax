@@ -36,24 +36,39 @@
 import BaseNavbar from './BaseNavbar.vue'
 import { useAccountStore } from '@/stores/account'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { ref, onMounted } from 'vue'
+import axios from 'axios';
+import { ref, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 const store = useAccountStore()
 const defaultProfileImage = `http://localhost:8000/media/profile_images/default_profile.jpg` // 기본 프로필 이미지 경로
 const profileImage = ref(defaultProfileImage) // 프로필 이미지 URL
+const router = useRouter()
 
 // 모달 상태
 const isModalOpen = ref(false)
 
 // DRF 요청으로 프로필 이미지 가져오기
+// const fetchProfileImage = async () => {
+//   try {
+//     await store.getUserInfo(store.userId)
+//     profileImage.value = response
+//       ? `http://localhost:8000${response}`
+//       : defaultProfileImage
+//   } catch (error) {
+//     console.error('Failed to fetch profile image:', error)
+//     profileImage.value = defaultProfileImage
+//   }
+// }
+
 const fetchProfileImage = async () => {
   try {
-    const response = await store.fetchProfile()
-    profileImage.value = response
-      ? `http://localhost:8000${response}`
+    await store.getUserInfo(store.userId) // 비동기 작업 완료 대기
+    profileImage.value = store.userInfo?.profile_image
+      ? `http://localhost:8000${store.userInfo.profile_image}`
       : defaultProfileImage
-  } catch (error) {
-    console.error('Failed to fetch profile image:', error)
+  } catch (err) {
+    console.error('Failed to fetch profile image:', err)
     profileImage.value = defaultProfileImage
   }
 }
@@ -70,7 +85,8 @@ const logOut = () => {
 
 // 마이페이지 이동
 const goToMyPage = () => {
-  window.location.href = '/mypage'
+  router.push({ name: 'MyPageView', params: { id: store.userId }})
+  // window.location.href = '/mypage'
 }
 
 // 모달 열고 닫기
