@@ -7,9 +7,9 @@
       <p>Copyright© REELAX All rights reserved.</p>
     </div>
     <div class="footer-icons">
-      <p>X 로고</p>
-      <p>인스타 로고</p>
-      <p>gmail 로고</p>
+      <font-awesome-icon :icon="['fab', 'instagram']" />
+      <font-awesome-icon :icon="['fab', 'x-twitter']" />
+      <font-awesome-icon :icon="['fab', 'google']" />
     </div>
   </footer>
 </template>
