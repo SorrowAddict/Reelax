@@ -8,7 +8,7 @@ export const usePlaylistStore = defineStore('playlist', () => {
   const BASE_URL = 'http://127.0.0.1:8000/api/v1/movies'
   const accountStore = useAccountStore()
   const router = useRouter()
-  const playlist = ref(null)
+  const playlist = ref({})
 
   const getPlaylist = function() {
     axios({
