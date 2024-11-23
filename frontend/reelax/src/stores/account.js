@@ -108,9 +108,6 @@ export const useAccountStore = defineStore('account', () => {
       const res = await axios({
         method: 'get',
         url: `${BASE_URL}/accounts/profile/${userid}/`,
-        headers: {
-          Authorization: `Token ${token.value}`
-        }
       })
       userInfo.value = res.data
       // console.log(userInfo.value)
