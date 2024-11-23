@@ -33,12 +33,18 @@
       <div v-else>
         <font-awesome-icon :icon="['far', 'heart']" />
       </div>
-      <div data-bs-toggle="modal" data-bs-target="#addPlaylistModal">
+      <div v-if="accountStore.isLogin">
+        <!-- 로그인 상태일 경우 -->
+        <div data-bs-toggle="modal" data-bs-target="#addPlaylistModal">
+          <font-awesome-icon :icon="['fas', 'plus']" />
+        </div>
+        <AddPlaylistModal 
+          :movie="movie"
+        />
+      </div>
+      <div v-else>
         <font-awesome-icon :icon="['fas', 'plus']" />
       </div>
-      <AddPlaylistModal 
-        :movie="movie"
-      />
     </div>
     <div class="movie-overview">
       <p>
