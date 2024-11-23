@@ -103,7 +103,7 @@ const signUp = function () {
   store.signUp(payload).then((token) => {
     if (token) {
       store.token = token
-      store.getUserInfo()
+      store.fetchProfile()
       router.push({ name: 'GenreSelectionView' })
     }
   })
