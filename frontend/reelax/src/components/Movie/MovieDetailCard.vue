@@ -31,7 +31,9 @@
         </div>
       </div>
       <div v-else>
-        <font-awesome-icon :icon="['far', 'heart']" />
+        <div @click="moveToLogin">
+          <font-awesome-icon :icon="['far', 'heart']" />
+        </div>
       </div>
       <div v-if="accountStore.isLogin">
         <!-- 로그인 상태일 경우 -->
@@ -43,7 +45,9 @@
         />
       </div>
       <div v-else>
-        <font-awesome-icon :icon="['fas', 'plus']" />
+        <div @click="moveToLogin">
+          <font-awesome-icon :icon="['fas', 'plus']" />
+        </div>
       </div>
     </div>
     <div class="movie-overview">
@@ -65,6 +69,7 @@ import { library } from "@fortawesome/fontawesome-svg-core"
 import { useLikeStore } from '@/stores/like'
 import { useAccountStore } from '@/stores/account'
 import AddPlaylistModal from './AddPlaylistModal.vue'
+import { useRouter } from 'vue-router'
 
 library.add(faStar, faStarHalfAlt)
 
@@ -74,6 +79,7 @@ const props = defineProps({
 })
 const likeStore = useLikeStore()
 const accountStore = useAccountStore()
+const router = useRouter()
 
 const liked_movies = computed(() => props.userInfo.liked_movies)
 
@@ -110,6 +116,11 @@ const movieLike = function () {
     poster_path: props.movie.poster_path
   }
   likeStore.movieLike(payload)
+}
+
+const moveToLogin = function () {
+  alert('로그인이 필요한 기능입니다.')
+  router.push({ name: 'LoginPageView' })
 }
 </script>
 

@@ -49,8 +49,8 @@ export const usePlaylistStore = defineStore('playlist', () => {
 
   const addMovieToPlaylist = function (playlist_id, movies) {
     axios({
-      method: 'put',
-      url: `${BASE_URL}/playlists/${playlist_id}/`,
+      method: 'post',
+      url: `${BASE_URL}/playlists/${playlist_id}/movies/`,
       headers: {
         Authorization: `Token ${accountStore.token}`
       },

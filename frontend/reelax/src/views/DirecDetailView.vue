@@ -18,7 +18,9 @@
           </div>
         </div>
         <div v-else>
-          <font-awesome-icon :icon="['far', 'heart']" />
+          <div @click="moveToLogin">
+            <font-awesome-icon :icon="['far', 'heart']" />
+          </div>
         </div>
       </div>
       <div>
@@ -40,7 +42,7 @@
 import { computed, onMounted } from 'vue';
 import { useMovieStore } from '@/stores/movie'
 import { useAccountStore } from '@/stores/account'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import MovieCard from '@/components/Movie/MovieCard.vue'
 import { useLikeStore } from '@/stores/like'
 
@@ -48,6 +50,7 @@ const movieStore = useMovieStore()
 const accountStore = useAccountStore()
 const likeStore = useLikeStore()
 const route = useRoute()
+const router = useRouter()
 
 const direc_id = route.params.direc_id
 
@@ -98,6 +101,11 @@ const direcLike = function (director_id, name, profile_path) {
     profile_path: profile_path
   }
   likeStore.direcLike(payload)
+}
+
+const moveToLogin = function () {
+  alert('로그인이 필요한 기능입니다.')
+  router.push({ name: 'LoginPageView' })
 }
 
 onMounted(() => {
