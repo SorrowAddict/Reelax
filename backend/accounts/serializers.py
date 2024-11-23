@@ -37,6 +37,10 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
         fields = ('pk', *extra_fields)
         read_only_fields = ('email',)
 
+class SimpleUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserModel
+        fields = ['id', 'username', 'nickname', 'profile_image']
 
 class ProfileSerializer(serializers.ModelSerializer):
     # Count fields
@@ -53,6 +57,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     liked_directors = DirectorSerializer(many=True, read_only=True)
     liked_genres = GenreSerializer(many=True, read_only=True)
     playlists = PlaylistSerializer(many=True, read_only=True)  # Playlist 추가
+
+    followings = SimpleUserSerializer(many=True, read_only=True)  # 팔로잉 목록
+    followers = SimpleUserSerializer(many=True, read_only=True)  # 팔로워 목록
 
     class Meta:
         model = UserModel
@@ -71,14 +78,17 @@ class ProfileSerializer(serializers.ModelSerializer):
             'liked_directors',
             'liked_genres',
             'playlists',  # Profile에 Playlist 포함
-            'profile_image'
+            'profile_image',
+            'followings',  # 팔로잉 목록 추가
+            'followers'    # 팔로워 목록 추가
         ]
         read_only_fields = [
             'followers_count', 'followings_count',
             'liked_movies_count', 'liked_actors_count',
             'liked_directors_count', 'liked_genres_count',
             'liked_movies', 'liked_actors',
-            'liked_directors', 'liked_genres', 'playlists', 'profile_image'
+            'liked_directors', 'liked_genres', 'playlists', 'profile_image',
+            'followings', 'followers'
         ]
 
 

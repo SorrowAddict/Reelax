@@ -32,12 +32,22 @@
             <span class="edit-icon" @click="editNickname">✎</span>
           </h1>
           <div v-if="accountStore.userInfo" class="follow-info">
-            <span>팔로우 {{ accountStore.userInfo.followers_count ?? -1 }}</span>
-            <span>팔로잉 {{ accountStore.userInfo.followings_count ?? -1 }}</span>
+            <span data-bs-toggle="modal" data-bs-target="#followListModal">팔로우 {{ accountStore.userInfo.followers_count ?? -1 }}</span>
+            <span data-bs-toggle="modal" data-bs-target="#followingListModal">팔로잉 {{ accountStore.userInfo.followings_count ?? -1 }}</span>
           </div>
           <div v-else class="follow-info">
             <span>팔로우 -</span>
             <span>팔로잉 -</span>
+          </div>
+          <div v-if="accountStore.userInfo.id !== accountStore.userId">
+            <!-- 내 페이지가 아니라면 팔로우 버튼 -->
+            <div @click="followToggle(user_id)" v-if="isFollowing">
+              <!-- 팔로잉 하고 있는 중이라면 -->
+              <p>팔로우 취소</p>
+            </div>
+            <div @click="followToggle(user_id)" v-else>
+              <p>팔로우</p>
+            </div>
           </div>
         </div>
       </div>
@@ -48,18 +58,82 @@
       <h2>{{ accountStore.userInfo?.nickname || '사용자' }}님의 영화 플레이리스트</h2>
       <div class="content-box">
         <div v-if="accountStore.userInfo.playlists">
-          <div v-for="playlist in accountStore.userInfo.playlists" :key="playlist.id">
-            <h3>{{ playlist.title }}</h3>
-            <p>{{ playlist.description }}</p>
-            <div v-for="movie in playlist.movies" :key="movie.id">
-              <img :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" alt="Movie Poster" />
-              <p>{{ movie.title }}</p>
+          <div class="playlist-box">
+            <div v-for="playlist in accountStore.userInfo.playlists.slice(0, 4)" :key="playlist.id">
+              <div @click="seePlaylistDetail(user_id, playlist.id)">
+                <ListThumbnail
+                  :movies="playlist.movies"
+                />
+                <h3>{{ playlist.title }}</h3>
+                <p>{{ playlist.description }}</p>
+              </div>
             </div>
           </div>
+          <p @click="seeAllPlaylist(user_id)">더보기</p>
         </div>
         <p v-else>플레이리스트가 비어 있습니다.</p>
       </div>
     </div>
+
+    <!-- 좋아하는 영화 -->
+    <div class="movie-section" data-aos="fade-up" data-aos-delay="150">
+      <h2>{{ accountStore.userInfo?.nickname || '사용자' }}님이 좋아한 영화</h2>
+      <div class="content-box">
+        <div v-if="accountStore.userInfo.liked_movies">
+          <div class="movie-box">
+            <div v-for="movie in accountStore.userInfo.liked_movies.slice(0, 4)" :key="movie.movie_id">
+              <img @click="seeMovieDetail(movie.movie_id)" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" alt="">
+            </div>
+          </div>
+          <p @click="seeAllMovies(user_id)">더보기</p>
+        </div>
+        <p v-else>플레이리스트가 비어 있습니다.</p>
+      </div>
+    </div>
+
+    <!-- 좋아하는 감독 -->
+    <div class="director-section" data-aos="fade-up" data-aos-delay="150">
+      <h2>{{ accountStore.userInfo?.nickname || '사용자' }}님이 좋아한 감독</h2>
+      <div class="content-box">
+        <div v-if="accountStore.userInfo.liked_directors">
+          <div class="director-box">
+            <div v-for="director in accountStore.userInfo.liked_directors.slice(0, 4)" :key="director.director_id">
+              <div @click="seeDirecDetail(director.director_id)">
+                <img :src="`https://image.tmdb.org/t/p/w200/${director.profile_path}`" alt="">
+                <h3>{{ director.name }}</h3>
+              </div>
+              
+            </div>
+          </div>
+          <p @click="seeAllDirectors(user_id)">더보기</p>
+        </div>
+        <p v-else>플레이리스트가 비어 있습니다.</p>
+      </div>
+    </div>
+
+    <!-- 좋아하는 배우 -->
+    <div class="actor-section" data-aos="fade-up" data-aos-delay="150">
+      <h2>{{ accountStore.userInfo?.nickname || '사용자' }}님이 좋아한 배우</h2>
+      <div class="content-box">
+        <div v-if="accountStore.userInfo.liked_actors">
+          <div class="actor-box">
+            <div v-for="actor in accountStore.userInfo.liked_actors.slice(0, 4)" :key="actor.actor_id">
+              <img @click="seeActorDetail(actor.actor_id)" :src="`https://image.tmdb.org/t/p/w200/${actor.profile_path}`" alt="">
+              <h3>{{ actor.name }}</h3>
+            </div>
+          </div>
+          <p @click="seeAllActors(user_id)">더보기</p>
+        </div>
+        <p v-else>플레이리스트가 비어 있습니다.</p>
+      </div>
+    </div>
+
+    <FollowListModal
+      :users="accountStore.userInfo.followers"
+    />
+    <FollowingListModal
+      :users="accountStore.userInfo.followings"
+    />
   </div>
 </template>
 
@@ -69,16 +143,27 @@ import { useAccountStore } from '@/stores/account'
 import axios from 'axios'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import ListThumbnail from '@/components/Movie/ListThumbnail.vue'
+import FollowListModal from '@/components/Movie/FollowListModal.vue'
+import FollowingListModal from '@/components/Movie/FollowingListModal.vue'
 
 const accountStore = useAccountStore()
 const route = useRoute()
+const router = useRouter()
 const defaultProfileImage = '/path/to/default-profile-image.jpg'
 const profileImage = ref(null)
 
 // 닉네임 수정 상태
 const isEditingNickname = ref(false)
 const nickname = ref('')
+const user_id = route.params.id
+
+// 팔로우 유무 확인
+const isFollowing = computed(() => {
+  return accountStore.userInfo.followers.some(user => user.id === accountStore.userId)
+})
+
 
 // 컴포넌트 로드 시 데이터 가져오기
 onMounted(() => {
@@ -93,6 +178,7 @@ onMounted(() => {
   } else {
     profileImage.value = defaultProfileImage
   }
+  console.log(accountStore.userInfo)
   
 })
 
@@ -163,6 +249,42 @@ const updateNickname = async () => {
 // 프로필 이미지 로드 실패 시 기본 이미지로 대체
 const onImageError = () => {
   profileImage.value = defaultProfileImage
+}
+
+const seeAllPlaylist = function (user_id) {
+  router.push({ name: 'MyPlaylistView', params: { id: user_id }})
+}
+
+const seePlaylistDetail = function (user_id, playlist_id) {
+  router.push({ name: 'MyPlaylistDetailView', params: { id: user_id, playlist_id: playlist_id }})
+}
+
+const seeAllMovies = function (user_id) {
+  router.push({ name: 'MyMovieView', params: { id: user_id }})
+}
+
+const seeMovieDetail = function (movie_id) {
+  router.push({ name: 'MovieDetailView', params: { id: movie_id }})
+}
+
+const seeAllDirectors = function (user_id) {
+  router.push({ name: 'MyDirectorView', params: { id: user_id }})
+}
+
+const seeDirecDetail = function (direc_id) {
+  router.push({ name: 'DirecDetailView', params: { direc_id: direc_id }})
+}
+
+const seeAllActors = function (user_id) {
+  router.push({ name: 'MyActorView', params: { id: user_id }})
+}
+
+const seeActorDetail = function (actor_id) {
+  router.push({ name: 'ActorDetailView', params: { actor_id: actor_id }})
+}
+
+const followToggle = function (user_id) {
+  accountStore.follow(user_id)
 }
 </script>
 
@@ -239,5 +361,9 @@ const onImageError = () => {
   display: flex;
   gap: 20px;
   font-size: 18px;
+}
+
+.playlist-box, .movie-box, .director-box, .actor-box {
+  display: flex;
 }
 </style>

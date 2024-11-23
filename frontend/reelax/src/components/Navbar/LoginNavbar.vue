@@ -57,6 +57,7 @@ const logOut = () => {
 }
 
 const goToMyPage = () => {
+  console.log(store.userId)
   router.push({ name: 'MyPageView', params: { id: store.userId }})
 }
 

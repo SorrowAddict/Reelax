@@ -1,7 +1,7 @@
 <template>
   <div v-if="review">
     <div v-if="!isEditing">
-      <div>
+      <div @click="moveToProfile(review.user.id)">
         {{ review.user.nickname }}
       </div>
       <div>
@@ -50,12 +50,13 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useAccountStore } from '@/stores/account'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useReviewStore } from '@/stores/review'
 
 const accountStore = useAccountStore()
 const reviewStore = useReviewStore()
 const route = useRoute()
+const router = useRouter()
 const movie_id = route.params.id
 
 const props = defineProps({
@@ -72,6 +73,10 @@ const isReviewLiked = computed(() => {
     return false
   }
 })
+
+const moveToProfile = function (user_id) {
+  router.push({ name: 'MyPageView', params: { id: user_id }})
+}
 
 const likeReview = function (movie_id, review_id) {
   reviewStore.likeReview(movie_id, review_id)

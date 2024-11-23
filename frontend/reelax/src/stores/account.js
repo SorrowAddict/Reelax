@@ -196,7 +196,23 @@ export const useAccountStore = defineStore('account', () => {
   //     console.error(err)
   //     return null // 에러 발생 시 기본값 반환
   //   }
-  // }  
+  // } 
+  
+  const follow = function (user_id) {
+    axios({
+      method: 'post',
+      url: `${BASE_URL}/accounts/follow-toggle/${user_id}/`,
+      headers: {
+        Authorization: `Token ${token.value}`
+      }
+    })
+      .then((res) => {
+        getUserInfo(user_id)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
   return {
     BASE_URL,
@@ -209,6 +225,7 @@ export const useAccountStore = defineStore('account', () => {
     userInfo,
     // fetchProfile,
     userprofile_path,
-    userId
+    userId,
+    follow
   }
 }, { persist: true })
