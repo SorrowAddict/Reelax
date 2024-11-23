@@ -9,7 +9,7 @@
     <div v-else>
       <div class="row">
         <!-- 영화 카드 -->
-        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4" v-for="(movie, index) in searchResults" :key="index">
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4" v-for="(movie, index) in searchResults" :key="index" data-aos="fade-up">
           <router-link :to="{ name: 'MovieDetailView', params: { id: movie.id } }" class="movie-card">
             <!-- 영화 포스터 -->
             <img
@@ -27,8 +27,18 @@
 <script setup>
 import { useSearchStore } from '@/stores/search'
 import { storeToRefs } from 'pinia'
-import { watchEffect } from 'vue'
+import { watchEffect, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+
+onMounted(() => {
+  AOS.init({
+    duration: 800,
+    easing: 'ease-in-out',
+    once: false,
+  })
+})
 
 const store = useSearchStore()
 const { searchResults, searchQuery, searchError } = storeToRefs(store)

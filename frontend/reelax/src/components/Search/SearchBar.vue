@@ -4,31 +4,62 @@
     <input
       type="text"
       v-model="searchInput"
-      placeholder="Search for movies..."
+      :placeholder="animatedPlaceholder"
       class="form-control"
     />
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-const searchInput = ref('') // 검색 입력 값
-let debounceTimer = null // 디바운스 타이머
+const searchInput = ref('')
+const animatedPlaceholder = ref('')
+const placeholderStrings = ['Search for movies...', 'Explore genres...', 'Find your favorites!']
+
+let currentStringIndex = 0
+let currentCharIndex = 0
+let isDeleting = false
+let debounceTimer = null
 const router = useRouter()
 
-// 디바운스 처리: 입력 변경 시 일정 시간 후 라우터로 이동
+const updatePlaceholder = () => {
+  const currentString = placeholderStrings[currentStringIndex]
+
+  if (!isDeleting) {
+    animatedPlaceholder.value = currentString.slice(0, currentCharIndex++)
+    if (currentCharIndex > currentString.length) {
+      isDeleting = true
+      setTimeout(updatePlaceholder, 2000)
+      return
+    }
+  } else {
+    animatedPlaceholder.value = currentString.slice(0, currentCharIndex--)
+    if (currentCharIndex < 0) {
+      isDeleting = false
+      currentStringIndex = (currentStringIndex + 1) % placeholderStrings.length
+    }
+  }
+
+  const delay = isDeleting ? 50 : 100
+  setTimeout(updatePlaceholder, delay)
+}
+
 watch(searchInput, (newQuery) => {
   if (debounceTimer) {
-    clearTimeout(debounceTimer) // 기존 타이머 취소
+    clearTimeout(debounceTimer)
   }
   debounceTimer = setTimeout(() => {
     if (newQuery.trim()) {
-      router.push({ name: 'SearchPageView', query: { q: newQuery.trim() } }) // 검색 실행
+      router.push({ name: 'SearchPageView', query: { q: newQuery.trim() } })
     }
-  }, 300) // 300ms 디바운스 시간
+  }, 300)
+})
+
+onMounted(() => {
+  updatePlaceholder()
 })
 </script>
 

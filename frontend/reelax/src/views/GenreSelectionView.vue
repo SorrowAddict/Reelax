@@ -7,6 +7,7 @@
         :key="genre.genre_id" 
         :class="{ selected: selectedGenres.some(g => g.genre_id === genre.genre_id) }"
         @click="toggleGenre(genre)"
+        data-aos="fade-up"
       >
         {{ genre.name }}
       </li>
@@ -16,10 +17,20 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { ref, onMounted } from "vue"
 import axios from "axios"
 import { useAccountStore } from "@/stores/account"
 import { useRouter } from "vue-router"
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+
+onMounted(() => {
+  AOS.init({
+    duration: 800,
+    easing: 'ease-in-out',
+    once: false,
+  })
+})
 
 const store = useAccountStore()
 const router = useRouter()
