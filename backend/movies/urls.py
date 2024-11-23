@@ -28,7 +28,7 @@ urlpatterns = [
     # playlist CRUD
     path('playlists/', UserPlaylists.as_view()),
     path('playlists/<int:playlist_id>/', UpdateDeletePlaylist.as_view()),
-    # playlist에 영화 추가 CR
+    # playlist에 영화 추가 CRD
     path('playlists/<int:playlist_id>/movies/', PlaylistMovies.as_view()),
     # 영화 검색
     path('search/', SearchMovies.as_view()),
