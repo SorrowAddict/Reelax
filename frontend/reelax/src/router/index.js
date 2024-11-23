@@ -10,6 +10,11 @@ import DirecDetailView from '@/views/DirecDetailView.vue'
 import ActorDetailView from '@/views/ActorDetailView.vue'
 import GenreSelectionView from '@/views/GenreSelectionView.vue'
 import MyPageView from '@/views/MyPageView.vue'
+import MyPlaylistView from '@/views/MyPlaylistView.vue'
+import MyPlaylistDetailView from '@/views/MyPlaylistDetailView.vue'
+import MyMovieView from '@/views/MyMovieView.vue'
+import MyDirectorView from '@/views/MyDirectorView.vue'
+import MyActorView from '@/views/MyActorView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -64,6 +69,31 @@ const router = createRouter({
       name: 'MyPageView',
       component: MyPageView
     },
+    {
+      path: '/mypage/:id/my-playlist',
+      name: 'MyPlaylistView',
+      component: MyPlaylistView
+    },
+    {
+      path: '/mypage/:id/my-playlist/:playlist_id',
+      name: 'MyPlaylistDetailView',
+      component: MyPlaylistDetailView
+    },
+    {
+      path: '/mypage/:id/my-movie',
+      name: 'MyMovieView',
+      component: MyMovieView
+    },
+    {
+      path: '/mypage/:id/my-director',
+      name: 'MyDirectorView',
+      component: MyDirectorView
+    },
+    {
+      path: '/mypage/:id/my-actor',
+      name: 'MyActorView',
+      component: MyActorView
+    }
   ],
 })
 
