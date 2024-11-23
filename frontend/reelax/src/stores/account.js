@@ -7,6 +7,7 @@ export const useAccountStore = defineStore('account', () => {
   const BASE_URL = 'http://127.0.0.1:8000/api/v1'
   const token = ref(null)
   const userInfo = ref(null)
+  const userprofile_path = ref(null)
   const isLogin = computed(() => {
     if (token.value !== null) {
       return true
@@ -113,6 +114,7 @@ export const useAccountStore = defineStore('account', () => {
       })
       userInfo.value = res.data
       // console.log(userInfo.value)
+      userprofile_path.value = res.data.profile_image
       return res.data.profile_image
     } catch (err) {
       console.error(err)
@@ -130,5 +132,6 @@ export const useAccountStore = defineStore('account', () => {
     getUserInfo,
     userInfo,
     fetchProfile,
+    userprofile_path,
   }
 }, { persist: true })

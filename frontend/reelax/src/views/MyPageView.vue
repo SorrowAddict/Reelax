@@ -20,7 +20,7 @@
         />
         <div class="profile-info">
           <h1>
-            <span v-if="!isEditingNickname">{{ userInfo?.nickname || '사용자' }}</span>
+            <span v-if="!isEditingNickname">{{ accountStore.userInfo?.nickname || '사용자' }}</span>
             <input
               v-else
               type="text"
@@ -31,9 +31,9 @@
             />
             <span class="edit-icon" @click="editNickname">✎</span>
           </h1>
-          <div v-if="userInfo" class="follow-info">
-            <span>팔로우 {{ userInfo.followers_count ?? -1 }}</span>
-            <span>팔로잉 {{ userInfo.followings_count ?? -1 }}</span>
+          <div v-if="accountStore.userInfo" class="follow-info">
+            <span>팔로우 {{ accountStore.userInfo.followers_count ?? -1 }}</span>
+            <span>팔로잉 {{ accountStore.userInfo.followings_count ?? -1 }}</span>
           </div>
           <div v-else class="follow-info">
             <span>팔로우 -</span>
@@ -45,53 +45,19 @@
 
     <!-- 영화 플레이리스트 -->
     <div class="playlist-section">
-      <h2>{{ userInfo?.nickname || '사용자' }}님의 영화 플레이리스트</h2>
+      <h2>{{ accountStore.userInfo?.nickname || '사용자' }}님의 영화 플레이리스트</h2>
       <div class="content-box">
-        <ul v-if="userLikedMovies && userLikedMovies.length > 0">
-          <li v-for="movie in userLikedMovies" :key="movie.id">
-            {{ movie.title }}
-          </li>
-        </ul>
+        <div v-if="accountStore.userInfo.playlists">
+          <div v-for="playlist in accountStore.userInfo.playlists" :key="playlist.id">
+            <h3>{{ playlist.title }}</h3>
+            <p>{{ playlist.description }}</p>
+            <div v-for="movie in playlist.movies" :key="movie.id">
+              <img :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" alt="Movie Poster" />
+              <p>{{ movie.title }}</p>
+            </div>
+          </div>
+        </div>
         <p v-else>플레이리스트가 비어 있습니다.</p>
-      </div>
-    </div>
-
-    <!-- 좋아한 영화 -->
-    <div class="liked-movies-section">
-      <h2>{{ userInfo?.nickname || '사용자' }}님이 좋아한 영화</h2>
-      <div class="content-box">
-        <ul v-if="userLikedGenreMovies && userLikedGenreMovies.length > 0">
-          <li v-for="movie in userLikedGenreMovies" :key="movie.id">
-            {{ movie.title }}
-          </li>
-        </ul>
-        <p v-else>좋아한 영화가 없습니다.</p>
-      </div>
-    </div>
-
-    <!-- 좋아한 배우 -->
-    <div class="liked-actors-section">
-      <h2>{{ userLikedActor }} 배우가 출연한 영화</h2>
-      <div class="content-box">
-        <ul v-if="userLikedActorMovies && userLikedActorMovies.length > 0">
-          <li v-for="movie in userLikedActorMovies" :key="movie.id">
-            {{ movie.title }}
-          </li>
-        </ul>
-        <p v-else>좋아한 배우가 없습니다.</p>
-      </div>
-    </div>
-
-    <!-- 좋아한 감독 -->
-    <div class="liked-directors-section">
-      <h2>{{ userLikedDirec }} 감독의 영화</h2>
-      <div class="content-box">
-        <ul v-if="userLikedDirecMovies && userLikedDirecMovies.length > 0">
-          <li v-for="movie in userLikedDirecMovies" :key="movie.id">
-            {{ movie.title }}
-          </li>
-        </ul>
-        <p v-else>좋아한 감독이 없습니다.</p>
       </div>
     </div>
   </div>
@@ -100,70 +66,28 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useAccountStore } from '@/stores/account'
-import { useMovieStore } from '@/stores/movie'
 import axios from 'axios'
 
-// Pinia 스토어 가져오기
 const accountStore = useAccountStore()
-const movieStore = useMovieStore()
 
-// 기본 프로필 이미지
 const defaultProfileImage = '/path/to/default-profile-image.jpg'
-
-// 프로필 데이터 상태
 const profileImage = ref(null)
-const userInfo = ref(null)
 
 // 닉네임 수정 상태
 const isEditingNickname = ref(false)
 const nickname = ref('')
 
-// 영화 데이터 상태
-const {
-  userLikedMovies,
-  getUserLikedMovies,
-  userLikedGenreMovies,
-  getUserLikedGenreMovies,
-  userLikedActorMovies,
-  userLikedActor,
-  getUserLikedActorMovies,
-  userLikedDirecMovies,
-  userLikedDirec,
-  getUserLikedDirecMovies,
-} = movieStore
-
-// 프로필 이미지를 가져오는 함수
-const fetchUserProfile = async () => {
-  try {
-    const image = await accountStore.fetchProfile()
-    profileImage.value = image
-      ? `http://localhost:8000${image}`
-      : defaultProfileImage
-    userInfo.value = accountStore.userInfo
-  } catch (error) {
-    console.error('프로필 데이터를 가져오는 데 실패했습니다.', error)
-  }
-}
-
-// 영화 데이터를 가져오는 함수
-const fetchMovieData = async () => {
-  try {
-    await Promise.all([
-      getUserLikedMovies(),
-      getUserLikedGenreMovies(),
-      getUserLikedActorMovies(),
-      getUserLikedDirecMovies(),
-    ])
-  } catch (error) {
-    console.error('영화 데이터를 가져오는 데 실패했습니다.', error)
-  }
-}
-
 // 컴포넌트 로드 시 데이터 가져오기
 onMounted(() => {
   fetchUserProfile()
-  fetchMovieData()
 })
+
+// 프로필 이미지를 가져오는 함수
+const fetchUserProfile = () => {
+  profileImage.value = accountStore.userInfo.profile_image
+    ? `http://localhost:8000${accountStore.userInfo.profile_image}`
+    : defaultProfileImage
+}
 
 // 프로필 이미지 업로드
 const triggerImageUpload = () => {
@@ -199,7 +123,7 @@ const uploadProfileImage = async (event) => {
 
 // 닉네임 수정
 const editNickname = () => {
-  nickname.value = userInfo?.nickname || ''
+  nickname.value = accountStore.userInfo?.nickname || ''
   isEditingNickname.value = true
 }
 
@@ -220,7 +144,7 @@ const updateNickname = async () => {
         }
       }
     )
-    userInfo.value.nickname = response.data.nickname
+    accountStore.userInfo.value.nickname = response.data.nickname
     isEditingNickname.value = false
     alert('닉네임이 성공적으로 업데이트되었습니다.')
   } catch (error) {
