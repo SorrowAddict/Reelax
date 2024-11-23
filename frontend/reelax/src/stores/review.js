@@ -4,62 +4,60 @@ import axios from 'axios'
 import { useAccountStore } from './account'
 import { useRouter } from 'vue-router'
 
-export const usePlaylistStore = defineStore('playlist', () => {
+export const useReviewStore = defineStore('review', () => {
   const BASE_URL = 'http://127.0.0.1:8000/api/v1/movies'
   const accountStore = useAccountStore()
   const router = useRouter()
-  const playlist = ref({})
+  const movieReview = ref({})
 
-  const getPlaylist = function() {
+  // 특정 영화 리뷰 가져오기
+  const getMovieReview = function (movie_id) {
     axios({
       method: 'get',
-      url: `${BASE_URL}/playlists/`,
-      headers: {
-        Authorization: `Token ${accountStore.token}`
-      }
+      url: `${BASE_URL}/${movie_id}/reviews/`,
     })
       .then((res) => {
-        playlist.value = res.data.results
-        console.log(playlist.value)
+        movieReview.value = res.data.results
       })
       .catch((err) => {
         console.log(err)
       })
   }
 
-  const createPlaylist = function(payload) {
-    const { title, description, movies } = payload
+  // 영화 리뷰 작성
+  const createReview = function (movie_id, payload) {
+    const { content } = payload
     axios({
       method: 'post',
-      url: `${BASE_URL}/playlists/`,
+      url: `${BASE_URL}/${movie_id}/reviews/`,
       headers: {
         Authorization: `Token ${accountStore.token}`
       },
       data: {
-        title, description, movies
+        content
       }
     })
       .then((res) => {
-        console.log('생성 성공!')
+        console.log('리뷰 작성 성공!')
+        getMovieReview(movie_id)
       })
       .catch((err) => {
         console.log(err)
       })
   }
 
-  const addMovieToPlaylist = function (playlist_id, movies) {
+  // 영화 리뷰 좋아요
+  const likeReview = function (movie_id, review_id) {
     axios({
       method: 'post',
-      url: `${BASE_URL}/playlists/${playlist_id}/movies/`,
+      url: `${BASE_URL}/${movie_id}/reviews/${review_id}/like/`,
       headers: {
         Authorization: `Token ${accountStore.token}`
-      },
-      data: {
-        movies
       }
     })
       .then((res) => {
-        console.log('추가 성공!')
+        console.log('리뷰 좋아요 성공!')
+        getMovieReview(movie_id)
       })
       .catch((err) => {
         console.log(err)
@@ -67,9 +65,9 @@ export const usePlaylistStore = defineStore('playlist', () => {
   }
 
   return {
-    getPlaylist,
-    playlist,
-    createPlaylist,
-    addMovieToPlaylist
+    getMovieReview,
+    movieReview,
+    createReview,
+    likeReview
   }
 }, { persist: true })
