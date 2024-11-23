@@ -164,20 +164,6 @@ export const useMovieStore = defineStore('movie', () => {
       })
   }
 
-  // 특정 영화 리뷰 가져오기
-  const getMovieReview = function (movie_id) {
-    axios({
-      method: 'get',
-      url: `${BASE_URL}/${movie_id}/reviews/`,
-    })
-      .then((res) => {
-        movieReview.value = res.data.results
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
-
   // 영화 감독 상세 정보 가져오기
   const getDirectorDetail = function (direc_id) {
     axios({
@@ -226,8 +212,6 @@ export const useMovieStore = defineStore('movie', () => {
     userLikedDirec,
     getMovieDetail,
     movieDetail,
-    getMovieReview,
-    movieReview,
     getDirectorDetail,
     direcDetail,
     getActorDetail,
