@@ -1,40 +1,58 @@
 <template>
-  <div>
-    <div v-if="movieStore.direcDetail">
-      <img :src="imageUrl" alt="프로필 이미지">
-      <div>
-        <h3>{{ movieStore.direcDetail.name }}</h3>
-        <p>감독</p>
-        <p>{{ birth_year }}</p>
-        <p>{{ gender }}</p>
-        <div v-if="accountStore.isLogin">
-          <div @click="direcLike(movieStore.direcDetail.id, movieStore.direcDetail.name, movieStore.direcDetail.profile_path)">
-            <div v-if="isDirectorLiked(movieStore.direcDetail)">
-              <font-awesome-icon :icon="['fas', 'heart']" />
-            </div>
-            <div v-else>
-              <font-awesome-icon :icon="['far', 'heart']" />
+  <div class="director-page">
+    <div class="container py-5" v-if="movieStore.direcDetail">
+      <!-- 상단 프로필 섹션 -->
+      <div class="director-profile mb-5" data-aos="fade-up">
+        <div class="row align-items-center">
+          <!-- 프로필 이미지 -->
+          <div class="col-md-4 mb-4 mb-md-0">
+            <div class="profile-image-container">
+              <img :src="imageUrl" alt="프로필 이미지" class="profile-image">
             </div>
           </div>
-        </div>
-        <div v-else>
-          <div @click="moveToLogin">
-            <font-awesome-icon :icon="['far', 'heart']" />
+          <!-- 감독 정보 -->
+          <div class="col-md-8">
+            <div class="director-info">
+              <h3 class="director-name">{{ movieStore.direcDetail.name }}</h3>
+              <p class="director-role">감독</p>
+              <div class="director-details">
+                <p class="birth-year">{{ birth_year }}</p>
+                <p class="gender">{{ gender }}</p>
+              </div>
+              <!-- 좋아요 버튼 -->
+              <div class="like-button-container">
+                <div v-if="accountStore.isLogin" class="like-button" @click="direcLike(movieStore.direcDetail.id, movieStore.direcDetail.name, movieStore.direcDetail.profile_path)">
+                  <div v-if="isDirectorLiked(movieStore.direcDetail)">
+                    <font-awesome-icon :icon="['fas', 'heart']" class="heart-icon liked" />
+                  </div>
+                  <div v-else>
+                    <font-awesome-icon :icon="['far', 'heart']" class="heart-icon" />
+                  </div>
+                </div>
+                <div v-else class="like-button" @click="moveToLogin">
+                  <font-awesome-icon :icon="['far', 'heart']" class="heart-icon" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div>
-        <h2>{{ movieStore.direcDetail.name }}이 연출한 영화</h2>
-        <div>
-          <MovieCard
-            v-for="movie in uniqueFilmography"
-            :key="movie.id"
-            :movie="movie"
-          />
+
+      <!-- 필모그래피 섹션 -->
+      <div class="filmography-section" data-aos="fade-up" data-aos-delay="200">
+        <h2 class="section-title mb-4 text-center">{{ movieStore.direcDetail.name }} 감독이 연출한 영화</h2>
+        <div class="filmography-container">
+          <div class="movies-grid">
+            <MovieCard
+              v-for="movie in uniqueFilmography"
+              :key="movie.id"
+              :movie="movie"
+              class="movie-card-wrapper"
+            />
+          </div>
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -119,5 +137,157 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.director-page {
+  background-color: #2d2d2d;
+  min-height: 100vh;
+  color: white;
+}
 
+.director-profile {
+  background-color: #383838;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.profile-image-container {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.profile-image {
+  width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.profile-image:hover {
+  transform: scale(1.02);
+}
+
+.director-info {
+  padding-left: 1rem;
+}
+
+.director-name {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.director-role {
+  font-size: 1.2rem;
+  color: #e0e0e0;
+  margin-bottom: 1rem;
+}
+
+.director-details {
+  margin-bottom: 1.5rem;
+}
+
+.director-details p {
+  font-size: 1.1rem;
+  color: #e0e0e0;
+  margin-bottom: 0.5rem;
+}
+
+.like-button {
+  display: inline-block;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.like-button:hover {
+  transform: scale(1.1);
+}
+
+.heart-icon {
+  font-size: 1.5rem;
+  color: #dc3545;
+}
+
+.heart-icon.liked {
+  color: #dc3545;
+  animation: heartBeat 0.3s ease-in-out;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: white;
+  margin-top: 2rem;
+}
+
+.filmography-section {
+  background-color: #383838;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.filmography-container {
+  padding: 0 1rem;
+}
+
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 280px); /* MovieCard width + margin */
+  gap: 2rem;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 1400px; /* Prevent too wide layout */
+}
+
+.movie-card-wrapper {
+  width: 250px; /* Match MovieCard width */
+  margin: 0 auto;
+}
+
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .director-info {
+    padding-left: 0;
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  .profile-image-container {
+    max-width: 200px;
+  }
+
+  .director-name {
+    font-size: 2rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .movies-grid {
+    grid-template-columns: repeat(auto-fill, 260px);
+    gap: 1.5rem;
+  }
+}
+
+/* 작은 화면에서의 그리드 조정 */
+@media (max-width: 576px) {
+  .movies-grid {
+    grid-template-columns: repeat(auto-fill, 250px);
+    gap: 1rem;
+  }
+
+  .filmography-container {
+    padding: 0 0.5rem;
+  }
+}
 </style>
