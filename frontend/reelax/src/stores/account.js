@@ -89,6 +89,7 @@ export const useAccountStore = defineStore('account', () => {
       if (token.value) {
         await getUserId()
         await getLoggedInUserInfo() // 로그인한 사용자 정보 로드
+        router.push({ name: 'MainPageView' })
       }
     } catch (err) {
       console.error('Log in failed:', err)

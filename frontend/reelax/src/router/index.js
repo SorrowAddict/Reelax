@@ -94,6 +94,19 @@ const router = createRouter({
       component: MyActorView
     }
   ],
+
+  scrollBehavior(to, from, savedPosition) {
+    if (to.name.startsWith('Movie') && from.name?.startsWith('Movie')) {
+      // MovieDetailView의 children route 간 이동 시 스크롤 유지
+      return false
+    }
+    if (savedPosition) {
+      // 뒤로가기/앞으로가기 시 저장된 위치로 이동
+      return savedPosition
+    }
+    // 기본 동작: 항상 상단으로 스크롤
+    return { top: 0 }
+  }
 })
 
 export default router
