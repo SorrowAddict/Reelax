@@ -5,9 +5,9 @@
     </div>
     <div class="movie-detail">
       <p>{{ release_year }}</p>
-      <p>상영시간</p>
-      <p>장르</p>
-      <p>국가?</p>
+      <p>| {{ movie.additional_data.runtime }}분</p>
+      <p>| 장르 : <span v-for="genre in movie.genres">{{ genre.name }}&nbsp;</span></p>
+      <p>| 관람 등급 : {{ movie.additional_data?.adult }}</p>
     </div>
     <div class="movie-rated">
       <div>

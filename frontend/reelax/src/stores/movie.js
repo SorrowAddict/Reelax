@@ -149,6 +149,8 @@ export const useMovieStore = defineStore('movie', () => {
       })
   }
 
+  const movieDetailLoading = ref(false)
+
   // 영화 상세 정보 가져오기
   const getMovieDetail = function (movie_id) {
     axios({
@@ -156,12 +158,15 @@ export const useMovieStore = defineStore('movie', () => {
       url: `${BASE_URL}/${movie_id}/`,
       headers: accountStore.token ? { Authorization: `Token ${accountStore.token}` } : {}
     })
-      .then((res) => {
-        movieDetail.value = res.data
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    .then((res) => {
+      movieDetail.value = res.data
+      movieDetailLoading.value = true
+    })
+    .catch((err) => {
+      console.log(err)
+    }).finally(() => {
+      movieDetailLoading.value = false
+    })
   }
 
   // 영화 감독 상세 정보 가져오기
@@ -212,6 +217,7 @@ export const useMovieStore = defineStore('movie', () => {
     userLikedDirec,
     getMovieDetail,
     movieDetail,
+    movieDetailLoading,
     getDirectorDetail,
     direcDetail,
     getActorDetail,

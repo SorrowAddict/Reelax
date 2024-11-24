@@ -54,5 +54,76 @@ onMounted(() => {
 </script>
 
 <style scoped>
+h3 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
 
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: #1c1c1e;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+textarea {
+  resize: none;
+  padding: 15px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  background: #2b2b2e;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+}
+
+textarea::placeholder {
+  color: #999;
+}
+
+button {
+  align-self: flex-start;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #1e90ff;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+  background-color: #00bfff;
+  transform: translateY(-2px);
+}
+
+div {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+}
+
+.ReviewCard {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #2b2b2e;
+  border-radius: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.ReviewCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
+}
 </style>

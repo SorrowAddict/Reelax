@@ -229,10 +229,15 @@ class MovieDetail(APIView):
                 if crew.get("job") == "Director"
             ],
             "additional_data": {
-                "runtime": movie_data.get("runtime"),
-                "spoken_languages": movie_data.get("spoken_languages"),
                 "production_companies": movie_data.get("production_companies"),
                 "production_countries": movie_data.get("production_countries"),
+                "spoken_languages": movie_data.get("spoken_languages"),
+                "collection": movie_data.get("belongs_to_collection"),
+                "videos": movie_data.get("videos", {}).get("results", []),
+                "imdb_id": movie_data.get("imdb_id"),
+                "adult": movie_data.get("adult"),
+                "status": movie_data.get("status"),
+                "runtime": movie_data.get("runtime"),
             },
         }
         return formatted_data

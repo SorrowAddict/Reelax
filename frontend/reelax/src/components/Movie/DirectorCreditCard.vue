@@ -1,8 +1,8 @@
 <template>
   <div v-for="person in people" :key="person.id">
-    <div @click="direcDetail(person.id)">
+    <div class="person">
       {{ person.director_id }}
-      <img :src="getImageUrl(person.profile_path)" alt="프로필 이미지">
+      <img :src="getImageUrl(person.profile_path)" alt="프로필 이미지" @click="direcDetail(person.id)">
       <p>{{ person.name }}</p>
     </div>
   </div>
@@ -50,5 +50,28 @@ const direcLike = function (director_id, name, profile_path) {
 </script>
 
 <style scoped>
+div {
+  display: inline-block;
+  margin: 10px;
+  text-align: center;
+}
 
+p {
+  margin-top: 10px;
+}
+
+.person {
+  text-align: center;
+  background-color: #2b2b2e;
+  padding: 10px;
+  border-radius: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  color: #f4f4f4;
+  cursor: pointer;
+}
+
+.person:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
+}
 </style>
