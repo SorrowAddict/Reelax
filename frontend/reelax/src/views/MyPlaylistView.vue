@@ -1,13 +1,16 @@
 <template>
-  <div v-if="accountStore.userInfo">
-    <h1>{{ accountStore.userInfo?.nickname || '사용자' }}님의 플레이리스트</h1>
-    <div class="playlist">
-      <div v-for="playlist in accountStore.userInfo.playlists" :key="playlist.id">
-        <div @click="seePlaylistDetail(user_id, playlist.id)">
-          <ListThumbnail
-            :movies="playlist.movies"
-          />
-          <h3>{{ playlist.title }}</h3>
+  <div v-if="accountStore.userInfo" class="container">
+    <h1 class="playlist-title">{{ accountStore.userInfo?.nickname || '사용자' }}님의 플레이리스트</h1>
+    <div class="row playlist">
+      <!-- 부트스트랩의 그리드 클래스 활용 -->
+      <div 
+        class="col-6 col-md-4 col-lg-3 mb-4" 
+        v-for="playlist in accountStore.userInfo.playlists" 
+        :key="playlist.id"
+      >
+        <div class="list" @click="seePlaylistDetail(user_id, playlist.id)">
+          <ListThumbnail :movies="playlist.movies" />
+          <p class="text-center mt-2">{{ playlist.title }}</p>
         </div>
       </div>
     </div>
@@ -38,5 +41,24 @@ onMounted(() => {
 .playlist {
   display: flex;
   flex-wrap: wrap;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.list:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.playlist-title {
+  margin-top: 20px;
+  margin-bottom: 50px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="my-page-container">
+  <div class="my-page-container" v-if="currentUserInfo">
     <!-- 프로필 정보 -->
     <div class="profile-section" data-aos="fade-up">
       <div class="profile-header">
@@ -28,9 +28,8 @@
               class="nickname-input"
               @keyup.enter="updateNickname"
               @blur="cancelEditing"
-              v-if="isOwnProfile"
             />
-            <span class="edit-icon" v-if="isOwnProfile" @click="editNickname">✎</span>
+            <span class="edit-icon" @click="editNickname">✎</span>
           </h1>
           <div class="follow-info">
             <span data-bs-toggle="modal" data-bs-target="#followListModal">
@@ -145,13 +144,12 @@ import FollowingListModal from '@/components/MyPage/FollowingListModal.vue'
 const accountStore = useAccountStore()
 const route = useRoute()
 const router = useRouter()
-const defaultProfileImage = '/path/to/default-profile-image.jpg'
+const defaultProfileImage = '/media/profile_images/default_profile.jpg'
 const profileImage = ref(null)
 
 // 닉네임 수정 상태
 const isEditingNickname = ref(false)
 const nickname = ref('')
-// const user_id = route.params.id
 
 // 현재 사용자가 자신의 프로필 페이지를 보고 있는지 확인
 const isOwnProfile = computed(() => route.params.id === accountStore.userId)
@@ -180,12 +178,14 @@ const loadUserInfo = async () => {
     : defaultProfileImage
 }
 
+// 라우트 변경 감지
 watch(() => route.params.id, async (newId, oldId) => {
   if (newId !== oldId) {
     await loadUserInfo()
   }
 })
 
+// 초기 데이터 로드
 onMounted(async () => {
   AOS.init({
     duration: 800,
@@ -195,6 +195,7 @@ onMounted(async () => {
   await loadUserInfo()
 })
 
+// 프로필 이미지 업로드
 const triggerImageUpload = () => {
   const input = document.querySelector('input[type="file"]')
   input.click()
@@ -219,6 +220,7 @@ const uploadProfileImage = async (event) => {
       }
     )
     profileImage.value = `http://localhost:8000${response.data.profile_image}`
+    accountStore.loggedInUserInfo.profile_image = response.data.profile_image
     alert('프로필 이미지가 성공적으로 업데이트되었습니다.')
   } catch (error) {
     console.error('프로필 이미지를 업로드하는 중 오류가 발생했습니다.', error)
@@ -226,7 +228,7 @@ const uploadProfileImage = async (event) => {
   }
 }
 
-
+// 닉네임 수정
 const editNickname = () => {
   nickname.value = currentUserInfo.value?.nickname || ''
   isEditingNickname.value = true
@@ -250,6 +252,7 @@ const updateNickname = async () => {
       }
     )
     accountStore.loggedInUserInfo.nickname = response.data.nickname
+    await loadUserInfo()
     isEditingNickname.value = false
     alert('닉네임이 성공적으로 업데이트되었습니다.')
   } catch (error) {
@@ -258,6 +261,7 @@ const updateNickname = async () => {
   }
 }
 
+// 팔로우 상태 확인
 const isFollowing = computed(() => {
   if (isOwnProfile.value) return null // 내 프로필에서는 팔로우 버튼 표시 안 함
   return currentUserInfo.value?.followers?.some(user => user.id === accountStore.userId)

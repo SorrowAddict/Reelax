@@ -64,6 +64,7 @@ const logOut = () => {
 
 const goToMyPage = () => {
   console.log(store.userId)
+  isModalOpen.value = false
   router.push({ name: 'MyPageView', params: { id: store.userId }})
 }
 
@@ -74,6 +75,13 @@ const toggleModal = () => {
 const closeModal = () => {
   isModalOpen.value = false
 }
+
+watch(
+  () => store.loggedInUserInfo.profile_image,
+  (newImage) => {
+    profileImage.value = newImage ? `http://localhost:8000${newImage}` : defaultProfileImage
+  }
+)
 </script>
 
 <style scoped>
