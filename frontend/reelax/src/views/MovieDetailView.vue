@@ -10,7 +10,7 @@
       />
     </div>
     <div v-if="movie_id" data-aos="fade-up" data-aos-delay="150">
-      <RouterLink :to="{ name: 'MovieCreditDefault', params: { id: movie_id } }">감독/출연진</RouterLink>
+      <RouterLink :to="{ name: 'MovieCredit', params: { id: movie_id } }">감독/출연진</RouterLink>
       <RouterLink :to="{ name: 'MovieReview', params: { id: movie_id } }">리뷰</RouterLink>
       <RouterView />
     </div>
