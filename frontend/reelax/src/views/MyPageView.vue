@@ -1,5 +1,5 @@
 <template>
-  <div class="my-page-container" v-if="currentUserInfo">
+  <div class="container" v-if="currentUserInfo">
     <!-- 프로필 정보 -->
     <div class="profile-section" data-aos="fade-up">
       <div class="profile-header">
@@ -17,6 +17,7 @@
           class="hidden"
           @change="uploadProfileImage"
           accept="image/*"
+          v-if="isOwnProfile"
         />
         <div class="profile-info">
           <h1>
@@ -152,7 +153,7 @@ const isEditingNickname = ref(false)
 const nickname = ref('')
 
 // 현재 사용자가 자신의 프로필 페이지를 보고 있는지 확인
-const isOwnProfile = computed(() => route.params.id === accountStore.userId)
+const isOwnProfile = computed(() => Number(route.params.id) === accountStore.userId)
 
 // 현재 렌더링해야 할 사용자 데이터
 const currentUserInfo = computed(() => {
@@ -193,12 +194,15 @@ onMounted(async () => {
     once: false,
   })
   await loadUserInfo()
+  console.log(isOwnProfile.value)
 })
 
 // 프로필 이미지 업로드
 const triggerImageUpload = () => {
-  const input = document.querySelector('input[type="file"]')
-  input.click()
+  if (isOwnProfile) {
+    const input = document.querySelector('input[type="file"]')
+    input.click()
+  }
 }
 
 const uploadProfileImage = async (event) => {
@@ -230,8 +234,10 @@ const uploadProfileImage = async (event) => {
 
 // 닉네임 수정
 const editNickname = () => {
-  nickname.value = currentUserInfo.value?.nickname || ''
-  isEditingNickname.value = true
+  if (isOwnProfile) {
+    nickname.value = currentUserInfo.value?.nickname || ''
+    isEditingNickname.value = true
+  }
 }
 
 const cancelEditing = () => {
@@ -291,24 +297,16 @@ const seeActorDetail = (actor_id) => router.push({ name: 'ActorDetailView', para
 
 <style scoped>
 /* 전체 페이지 스타일 */
-.my-page-container {
-  background-color: #454545;
-  color: white;
-  padding: 40px 20px;
-  max-width: 1440px;
-  margin: 0 auto;
-  font-family: 'DM Sans', sans-serif;
-}
-
 .hidden {
   display: none;
 }
 
 /* 프로필 섹션 */
 .profile-section {
+  margin-top: 40px;
   margin-bottom: 40px;
   border-bottom: 1px solid #666666;
-  padding-bottom: 20px;
+  padding-bottom: 40px;
 }
 
 .profile-header {
