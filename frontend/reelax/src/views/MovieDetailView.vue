@@ -1,16 +1,9 @@
 <template>
   <div class="container" v-if="movieStore.movieDetail">
-    <h1>영화 상세 페이지</h1>
-    <div>여기에 영화 예고편이 들어갑니다.</div>
     <div v-if="!movieStore.movieDetailLoading && movieStore.movieDetail.title">
       <!-- 영화 예고편 -->
       <MovieTrailer
         :title="movieStore.movieDetail.title"
-      />
-    </div>
-    <div>
-      <!-- 영화 상세 정보 카드 -->
-      <MovieDetailCard
         :movie="movieStore.movieDetail"
         :userInfo="accountStore.userInfo || undefined"
         data-aos="fade-up"
@@ -29,7 +22,6 @@ import { useMovieStore } from '@/stores/movie'
 import { useAccountStore } from '@/stores/account'
 import { onMounted } from 'vue';
 import { RouterLink, RouterView, useRoute } from 'vue-router'
-import MovieDetailCard from '@/components/Movie/MovieDetailCard.vue'
 import MovieTrailer from '@/components/Movie/MovieTrailer.vue'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
@@ -55,5 +47,32 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.container a {
+  text-decoration: none;
+  color: #1e90ff;
+  font-weight: bold;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.container a:hover {
+  background-color: rgba(30, 144, 255, 0.1);
+  color: #00bfff;
+}
+
+.container > div[data-aos]:not(.movie-trailer-container) {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+}
 
 </style>

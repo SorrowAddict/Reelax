@@ -30,12 +30,50 @@ const movie_id = route.params.id
 
 onMounted(() => {
   movieStore.getMovieDetail(movie_id)
-  console.log(movieStore.movieDetail)
+  // console.log(movieStore.movieDetail)
   accountStore.getUserInfo(accountStore.userId)
-  console.log(accountStore.userInfo)
+  // console.log(accountStore.userInfo)
 })
 </script>
 
 <style scoped>
+div {
+  padding: 20px;
+  color: #ffffff;
+  background-color: #1c1c1e;
+  border-radius: 10px;
+  margin: 20px 0;
+}
 
+h3 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #f4f4f4;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.MovieDetailDirecCard,
+.MovieDetailActorCard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+.MovieDetailDirecCard div,
+.MovieDetailActorCard div {
+  background-color: #2b2b2e;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  color: #f4f4f4;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.MovieDetailDirecCard div:hover,
+.MovieDetailActorCard div:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
+}
 </style>

@@ -1,58 +1,60 @@
 <template>
-  <div v-for="person in topPeople" :key="person.id">
-    <div @click="actorDetail(person.id)">
-      <img :src="getImageUrl(person.profile_path)" alt="프로필 이미지">
-      <p>{{ person.name }}</p>
+  <div>
+    <div @click="actorDetail(people.id)">
+      <img :src="getImageUrl(people.profile_path)" alt="프로필 이미지">
+      <p>{{ people.name }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useLikeStore } from '@/stores/like';
-import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAccountStore } from '@/stores/account'
-
-const router = useRouter()
-const likeStore = useLikeStore()
-const accountStore = useAccountStore()
 
 const props = defineProps({
   people: Object,
   userInfo: Object
 })
 
-console.log(props.people, props.userInfo)
+const router = useRouter()
 
 const defaultImage = "/image/basic_profile.png"
 const baseImageUrl = "https://image.tmdb.org/t/p/w200"
 
 const getImageUrl = (profilePath) => {
-  return profilePath ? `${baseImageUrl}${profilePath}` : defaultImage;
-};
-
-const topPeople = computed(() => props.people.slice(0, 10))
-
-const liked_actors = computed(() => props.userInfo.liked_actors)
-
-const isActorLiked = function (actor) {
-  return liked_actors.value.some((liked_actor) => liked_actor.actor_id === actor.id)
+  return profilePath ? `${baseImageUrl}${profilePath}` : defaultImage
 }
 
 const actorDetail = function (id) {
-  router.push({ name: 'ActorDetailView', params: { actor_id: id }})
-}
-
-const actorLike = function (actor_id, name, profile_path) {
-  const payload = {
-    actor_id: actor_id,
-    name: name,
-    profile_path: profile_path
-  }
-  likeStore.actorLike(payload)
+  router.push({ name: 'ActorDetailView', params: { actor_id: id } })
 }
 </script>
 
 <style scoped>
+div {
+  text-align: center;
+  background-color: #2b2b2e;
+  padding: 10px;
+  border-radius: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  color: #f4f4f4;
+  cursor: pointer;
+}
 
+div:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
+}
+
+img {
+  width: 100%;
+  height: auto;
+  max-width: 120px;
+  border-radius: 35%;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+p {
+  margin-top: 10px;
+  text-transform: capitalize;
+}
 </style>
