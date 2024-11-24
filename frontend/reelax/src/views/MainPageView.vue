@@ -140,7 +140,7 @@
 </template>
 
 <script setup>
-import MainCarouselSection from "@/components/Movie/MainCarouselSection.vue"
+import MainCarouselSection from "@/components/MainPage/MainCarouselSection.vue"
 import { useAccountStore } from "@/stores/account"
 import { useMovieStore } from '@/stores/movie'
 import { onMounted, ref } from 'vue'

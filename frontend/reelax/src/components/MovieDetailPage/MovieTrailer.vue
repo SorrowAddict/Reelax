@@ -28,7 +28,7 @@
 <script setup>
 import axios from 'axios'
 import { onMounted, ref, computed } from 'vue'
-import MovieDetailCard from '@/components/Movie/MovieDetailCard.vue'
+import MovieDetailCard from '@/components/MovieDetailPage/MovieDetailCard.vue'
 
 const props = defineProps({
   title: String,
