@@ -8,7 +8,7 @@
     <!-- 프로필 이미지 및 모달 -->
     <div class="profile-container">
       <img
-        :src="`http://localhost:8000${store.userInfo?.profile_image}`"
+        :src="`http://localhost:8000${store.loggedInUserInfo?.profile_image || '/media/profile_images/default_profile.jpg'}`"
         alt="User Profile"
         class="profile-image"
         @error="onImageError"
@@ -46,6 +46,12 @@ const profileImage = ref(defaultProfileImage) // 프로필 이미지 URL
 const router = useRouter()
 
 const isModalOpen = ref(false)
+
+onMounted(() => {
+  if (!store.loggedInUserInfo) {
+    store.getLoggedInUserInfo()
+  }
+})
 
 // 이미지 로드 실패 시 기본 이미지로 대체
 const onImageError = () => {

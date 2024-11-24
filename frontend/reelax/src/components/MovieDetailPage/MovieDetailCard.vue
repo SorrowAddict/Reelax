@@ -40,9 +40,6 @@
         <div data-bs-toggle="modal" data-bs-target="#addPlaylistModal">
           <font-awesome-icon :icon="['fas', 'plus']" />
         </div>
-        <AddPlaylistModal 
-          :movie="movie"
-        />
       </div>
       <div v-else>
         <div @click="moveToLogin">

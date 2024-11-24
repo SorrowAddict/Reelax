@@ -3,6 +3,7 @@
     <!-- 프로필 정보 -->
     <div class="profile-section" data-aos="fade-up">
       <div class="profile-header">
+        <!-- 프로필 이미지 -->
         <img
           :src="profileImage || defaultProfileImage"
           alt="프로필 이미지"
@@ -10,7 +11,6 @@
           @error="onImageError"
           @click="triggerImageUpload"
         />
-        <!-- 프로필 이미지 업로드 -->
         <input
           type="file"
           ref="imageInput"
@@ -20,7 +20,7 @@
         />
         <div class="profile-info">
           <h1>
-            <span v-if="!isEditingNickname">{{ accountStore.userInfo?.nickname || '사용자' }}</span>
+            <span v-if="!isEditingNickname">{{ currentUserInfo?.nickname || '사용자' }}</span>
             <input
               v-else
               type="text"
@@ -28,24 +28,24 @@
               class="nickname-input"
               @keyup.enter="updateNickname"
               @blur="cancelEditing"
+              v-if="isOwnProfile"
             />
-            <span class="edit-icon" @click="editNickname">✎</span>
+            <span class="edit-icon" v-if="isOwnProfile" @click="editNickname">✎</span>
           </h1>
-          <div v-if="accountStore.userInfo" class="follow-info">
-            <span data-bs-toggle="modal" data-bs-target="#followListModal">팔로우 {{ accountStore.userInfo.followers_count ?? -1 }}</span>
-            <span data-bs-toggle="modal" data-bs-target="#followingListModal">팔로잉 {{ accountStore.userInfo.followings_count ?? -1 }}</span>
+          <div class="follow-info">
+            <span data-bs-toggle="modal" data-bs-target="#followListModal">
+              팔로우 {{ currentUserInfo.followers_count ?? 0 }}
+            </span>
+            <span data-bs-toggle="modal" data-bs-target="#followingListModal">
+              팔로잉 {{ currentUserInfo.followings_count ?? 0 }}
+            </span>
           </div>
-          <div v-else class="follow-info">
-            <span>팔로우 -</span>
-            <span>팔로잉 -</span>
-          </div>
-          <div v-if="accountStore.userInfo.id !== accountStore.userId">
-            <!-- 내 페이지가 아니라면 팔로우 버튼 -->
-            <div @click="followToggle(user_id)" v-if="isFollowing">
-              <!-- 팔로잉 하고 있는 중이라면 -->
+          <div v-if="isFollowing !== null">
+            <!-- 팔로우 버튼 -->
+            <div @click="followToggle(route.params.id)" v-if="isFollowing">
               <p>팔로우 취소</p>
             </div>
-            <div @click="followToggle(user_id)" v-else>
+            <div @click="followToggle(route.params.id)" v-else>
               <p>팔로우</p>
             </div>
           </div>
@@ -55,21 +55,19 @@
 
     <!-- 영화 플레이리스트 -->
     <div class="playlist-section" data-aos="fade-up" data-aos-delay="150">
-      <h2>{{ accountStore.userInfo?.nickname || '사용자' }}님의 영화 플레이리스트</h2>
+      <h2>{{ currentUserInfo?.nickname || '사용자' }}님의 영화 플레이리스트</h2>
       <div class="content-box">
-        <div v-if="accountStore.userInfo.playlists">
+        <div v-if="currentUserInfo.playlists">
           <div class="playlist-box">
-            <div v-for="playlist in accountStore.userInfo.playlists.slice(0, 4)" :key="playlist.id">
-              <div @click="seePlaylistDetail(user_id, playlist.id)">
-                <ListThumbnail
-                  :movies="playlist.movies"
-                />
+            <div v-for="playlist in currentUserInfo.playlists.slice(0, 4)" :key="playlist.id">
+              <div @click="seePlaylistDetail(route.params.id, playlist.id)">
+                <ListThumbnail :movies="playlist.movies" />
                 <h3>{{ playlist.title }}</h3>
                 <p>{{ playlist.description }}</p>
               </div>
             </div>
           </div>
-          <p @click="seeAllPlaylist(user_id)">더보기</p>
+          <p @click="seeAllPlaylist(route.params.id)">더보기</p>
         </div>
         <p v-else>플레이리스트가 비어 있습니다.</p>
       </div>
@@ -77,68 +75,64 @@
 
     <!-- 좋아하는 영화 -->
     <div class="movie-section" data-aos="fade-up" data-aos-delay="150">
-      <h2>{{ accountStore.userInfo?.nickname || '사용자' }}님이 좋아한 영화</h2>
+      <h2>{{ currentUserInfo?.nickname || '사용자' }}님이 좋아한 영화</h2>
       <div class="content-box">
-        <div v-if="accountStore.userInfo.liked_movies">
+        <div v-if="currentUserInfo.liked_movies">
           <div class="movie-box">
-            <div v-for="movie in accountStore.userInfo.liked_movies.slice(0, 4)" :key="movie.movie_id">
-              <img @click="seeMovieDetail(movie.movie_id)" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" alt="">
+            <div v-for="movie in currentUserInfo.liked_movies.slice(0, 4)" :key="movie.movie_id">
+              <img @click="seeMovieDetail(movie.movie_id)" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" alt="영화 포스터">
             </div>
           </div>
-          <p @click="seeAllMovies(user_id)">더보기</p>
+          <p @click="seeAllMovies(route.params.id)">더보기</p>
         </div>
-        <p v-else>플레이리스트가 비어 있습니다.</p>
+        <p v-else>좋아하는 영화가 없습니다.</p>
       </div>
     </div>
 
     <!-- 좋아하는 감독 -->
     <div class="director-section" data-aos="fade-up" data-aos-delay="150">
-      <h2>{{ accountStore.userInfo?.nickname || '사용자' }}님이 좋아한 감독</h2>
+      <h2>{{ currentUserInfo?.nickname || '사용자' }}님이 좋아한 감독</h2>
       <div class="content-box">
-        <div v-if="accountStore.userInfo.liked_directors">
+        <div v-if="currentUserInfo.liked_directors">
           <div class="director-box">
-            <div v-for="director in accountStore.userInfo.liked_directors.slice(0, 4)" :key="director.director_id">
+            <div v-for="director in currentUserInfo.liked_directors.slice(0, 4)" :key="director.director_id">
               <div @click="seeDirecDetail(director.director_id)">
-                <img :src="`https://image.tmdb.org/t/p/w200/${director.profile_path}`" alt="">
+                <img :src="`https://image.tmdb.org/t/p/w200/${director.profile_path}`" alt="감독 프로필">
                 <h3>{{ director.name }}</h3>
               </div>
-              
             </div>
           </div>
-          <p @click="seeAllDirectors(user_id)">더보기</p>
+          <p @click="seeAllDirectors(route.params.id)">더보기</p>
         </div>
-        <p v-else>플레이리스트가 비어 있습니다.</p>
+        <p v-else>좋아하는 감독이 없습니다.</p>
       </div>
     </div>
 
     <!-- 좋아하는 배우 -->
     <div class="actor-section" data-aos="fade-up" data-aos-delay="150">
-      <h2>{{ accountStore.userInfo?.nickname || '사용자' }}님이 좋아한 배우</h2>
+      <h2>{{ currentUserInfo?.nickname || '사용자' }}님이 좋아한 배우</h2>
       <div class="content-box">
-        <div v-if="accountStore.userInfo.liked_actors">
+        <div v-if="currentUserInfo.liked_actors">
           <div class="actor-box">
-            <div v-for="actor in accountStore.userInfo.liked_actors.slice(0, 4)" :key="actor.actor_id">
-              <img @click="seeActorDetail(actor.actor_id)" :src="`https://image.tmdb.org/t/p/w200/${actor.profile_path}`" alt="">
+            <div v-for="actor in currentUserInfo.liked_actors.slice(0, 4)" :key="actor.actor_id">
+              <img @click="seeActorDetail(actor.actor_id)" :src="`https://image.tmdb.org/t/p/w200/${actor.profile_path}`" alt="배우 프로필">
               <h3>{{ actor.name }}</h3>
             </div>
           </div>
-          <p @click="seeAllActors(user_id)">더보기</p>
+          <p @click="seeAllActors(route.params.id)">더보기</p>
         </div>
-        <p v-else>플레이리스트가 비어 있습니다.</p>
+        <p v-else>좋아하는 배우가 없습니다.</p>
       </div>
     </div>
 
-    <FollowListModal
-      :users="accountStore.userInfo.followers"
-    />
-    <FollowingListModal
-      :users="accountStore.userInfo.followings"
-    />
+    <!-- 팔로워/팔로잉 모달 -->
+    <FollowListModal :users="currentUserInfo.followers" />
+    <FollowingListModal :users="currentUserInfo.followings" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useAccountStore } from '@/stores/account'
 import axios from 'axios'
 import AOS from 'aos'
@@ -157,32 +151,50 @@ const profileImage = ref(null)
 // 닉네임 수정 상태
 const isEditingNickname = ref(false)
 const nickname = ref('')
-const user_id = route.params.id
+// const user_id = route.params.id
 
-// 팔로우 유무 확인
-const isFollowing = computed(() => {
-  return accountStore.userInfo.followers.some(user => user.id === accountStore.userId)
+// 현재 사용자가 자신의 프로필 페이지를 보고 있는지 확인
+const isOwnProfile = computed(() => route.params.id === accountStore.userId)
+
+// 현재 렌더링해야 할 사용자 데이터
+const currentUserInfo = computed(() => {
+  return isOwnProfile.value ? accountStore.loggedInUserInfo : accountStore.userInfo
 })
 
-
 // 컴포넌트 로드 시 데이터 가져오기
-onMounted(() => {
+const loadUserInfo = async () => {
+  if (isOwnProfile.value) {
+    // 로그인한 사용자의 프로필 로드
+    if (!accountStore.loggedInUserInfo) {
+      await accountStore.getLoggedInUserInfo()
+    }
+  } else {
+    // 다른 사용자의 프로필 로드
+    await accountStore.getUserInfo(route.params.id)
+  }
+
+  // 프로필 이미지 설정
+  const user = currentUserInfo.value
+  profileImage.value = user?.profile_image
+    ? `http://localhost:8000${user.profile_image}`
+    : defaultProfileImage
+}
+
+watch(() => route.params.id, async (newId, oldId) => {
+  if (newId !== oldId) {
+    await loadUserInfo()
+  }
+})
+
+onMounted(async () => {
   AOS.init({
     duration: 800,
     easing: 'ease-in-out-quint',
     once: false,
   })
-  accountStore.getUserInfo(route.params.id)
-  if (accountStore.userInfo.profile_image) {
-    profileImage.value = `http://localhost:8000${accountStore.userInfo.profile_image}`
-  } else {
-    profileImage.value = defaultProfileImage
-  }
-  console.log(accountStore.userInfo)
-  
+  await loadUserInfo()
 })
 
-// 프로필 이미지 업로드
 const triggerImageUpload = () => {
   const input = document.querySelector('input[type="file"]')
   input.click()
@@ -214,9 +226,9 @@ const uploadProfileImage = async (event) => {
   }
 }
 
-// 닉네임 수정
+
 const editNickname = () => {
-  nickname.value = accountStore.userInfo?.nickname || ''
+  nickname.value = currentUserInfo.value?.nickname || ''
   isEditingNickname.value = true
 }
 
@@ -237,7 +249,7 @@ const updateNickname = async () => {
         }
       }
     )
-    accountStore.userInfo.nickname = response.data.nickname
+    accountStore.loggedInUserInfo.nickname = response.data.nickname
     isEditingNickname.value = false
     alert('닉네임이 성공적으로 업데이트되었습니다.')
   } catch (error) {
@@ -246,46 +258,30 @@ const updateNickname = async () => {
   }
 }
 
+const isFollowing = computed(() => {
+  if (isOwnProfile.value) return null // 내 프로필에서는 팔로우 버튼 표시 안 함
+  return currentUserInfo.value?.followers?.some(user => user.id === accountStore.userId)
+})
+
+const followToggle = async (user_id) => {
+  await accountStore.follow(user_id)
+  await loadUserInfo() // 팔로우 상태 갱신
+}
+
 // 프로필 이미지 로드 실패 시 기본 이미지로 대체
 const onImageError = () => {
   profileImage.value = defaultProfileImage
 }
 
-const seeAllPlaylist = function (user_id) {
-  router.push({ name: 'MyPlaylistView', params: { id: user_id }})
-}
-
-const seePlaylistDetail = function (user_id, playlist_id) {
-  router.push({ name: 'MyPlaylistDetailView', params: { id: user_id, playlist_id: playlist_id }})
-}
-
-const seeAllMovies = function (user_id) {
-  router.push({ name: 'MyMovieView', params: { id: user_id }})
-}
-
-const seeMovieDetail = function (movie_id) {
-  router.push({ name: 'MovieDetailView', params: { id: movie_id }})
-}
-
-const seeAllDirectors = function (user_id) {
-  router.push({ name: 'MyDirectorView', params: { id: user_id }})
-}
-
-const seeDirecDetail = function (direc_id) {
-  router.push({ name: 'DirecDetailView', params: { direc_id: direc_id }})
-}
-
-const seeAllActors = function (user_id) {
-  router.push({ name: 'MyActorView', params: { id: user_id }})
-}
-
-const seeActorDetail = function (actor_id) {
-  router.push({ name: 'ActorDetailView', params: { actor_id: actor_id }})
-}
-
-const followToggle = function (user_id) {
-  accountStore.follow(user_id)
-}
+// 상세 페이지 이동 함수들
+const seeAllPlaylist = (user_id) => router.push({ name: 'MyPlaylistView', params: { id: user_id } })
+const seePlaylistDetail = (user_id, playlist_id) => router.push({ name: 'MyPlaylistDetailView', params: { id: user_id, playlist_id } })
+const seeAllMovies = (user_id) => router.push({ name: 'MyMovieView', params: { id: user_id } })
+const seeMovieDetail = (movie_id) => router.push({ name: 'MovieDetailView', params: { id: movie_id } })
+const seeAllDirectors = (user_id) => router.push({ name: 'MyDirectorView', params: { id: user_id } })
+const seeDirecDetail = (director_id) => router.push({ name: 'DirecDetailView', params: { director_id } })
+const seeAllActors = (user_id) => router.push({ name: 'MyActorView', params: { id: user_id } })
+const seeActorDetail = (actor_id) => router.push({ name: 'ActorDetailView', params: { actor_id } })
 </script>
 
 
