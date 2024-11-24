@@ -16,8 +16,8 @@
               <h3 class="director-name">{{ movieStore.direcDetail.name }}</h3>
               <p class="director-role">감독</p>
               <div class="director-details">
-                <p class="birth-year">{{ birth_year }}</p>
-                <p class="gender">{{ gender }}</p>
+                <p class="birth-year">{{ movieStore.direcDetail?.birthday }}</p>
+                <p class="gender">{{ movieStore.direcDetail?.gender === 2 ? '남성' : movieStore.direcDetail?.gender === 1 ? '여성' : '정보 없음' }}</p>
               </div>
               <!-- 좋아요 버튼 -->
               <div class="like-button-container">
