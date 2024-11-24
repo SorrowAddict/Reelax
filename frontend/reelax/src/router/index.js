@@ -39,8 +39,7 @@ const router = createRouter({
       name: 'MovieDetailView',
       component: MovieDetailView,
       children: [
-        { path: '', name: 'MovieCreditDefault', component: MovieCredit },
-        { path: 'credit', name: 'MovieCredit', component: MovieCredit },
+        { path: '', name: 'MovieCredit', component: MovieCredit },
         { path: 'review', name: 'MovieReview', component: MovieReview }
       ]
     },

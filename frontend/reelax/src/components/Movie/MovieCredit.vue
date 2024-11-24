@@ -15,7 +15,6 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
 import { useRoute } from 'vue-router'
 import MovieDetailActorCard from './MovieDetailActorCard.vue'
 import MovieDetailDirecCard from './MovieDetailDirecCard.vue'
@@ -27,13 +26,6 @@ const accountStore = useAccountStore()
 const route = useRoute()
 
 const movie_id = route.params.id
-
-onMounted(() => {
-  movieStore.getMovieDetail(movie_id)
-  // console.log(movieStore.movieDetail)
-  accountStore.getUserInfo(accountStore.userId)
-  // console.log(accountStore.userInfo)
-})
 </script>
 
 <style scoped>

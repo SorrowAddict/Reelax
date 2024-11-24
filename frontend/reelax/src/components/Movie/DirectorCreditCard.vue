@@ -74,4 +74,12 @@ p {
   transform: translateY(-5px);
   box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
 }
+
+img {
+  max-width: 200px;
+  max-height: 300px;
+  border-radius: 10px;
+  object-fit: cover;
+  cursor: pointer;
+}
 </style>
