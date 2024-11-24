@@ -1,6 +1,6 @@
 <template>
   <div class="container" v-if="movieStore.movieDetail">
-    <div v-if="!movieStore.movieDetailLoading && movieStore.movieDetail.title">
+    <div v-show="!movieStore.movieDetailLoading && movieStore.movieDetail.title">
       <!-- 영화 예고편 -->
       <MovieTrailer
         :title="movieStore.movieDetail.title"
@@ -14,6 +14,9 @@
       <RouterLink :to="{ name: 'MovieReview', params: { id: movie_id } }">리뷰</RouterLink>
       <RouterView />
     </div>
+    <AddPlaylistModal 
+      :movie="movieStore.movieDetail"
+    />
   </div>
 </template>
 
@@ -25,6 +28,7 @@ import { RouterLink, RouterView, useRoute } from 'vue-router'
 import MovieTrailer from '@/components/MovieDetailPage/MovieTrailer.vue'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import AddPlaylistModal from '@/components/MovieDetailPage/AddPlaylistModal.vue'
 
 const movieStore = useMovieStore()
 const accountStore = useAccountStore()

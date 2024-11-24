@@ -7,6 +7,7 @@ export const useAccountStore = defineStore('account', () => {
   const BASE_URL = 'http://127.0.0.1:8000/api/v1'
   const token = ref(null)
   const userInfo = ref(null)
+  const loggedInUserInfo = ref(null)
   // 이것도 로그인한 사용자의 정보를 담는 것이 아니라
   // 모든 사용자의 정보를 담는 것이다.
   const userprofile_path = ref(null)
@@ -20,22 +21,17 @@ export const useAccountStore = defineStore('account', () => {
   const userId = ref(null)
 
   // 이건 현재 로그인한 사용자의 아이디를 가져오는 것
-  const getUserId = function () {
-    return axios({
-      method: 'get',
-      url: `${BASE_URL}/accounts/user/`,
-      headers: {
-        Authorization: `Token ${token.value}`
-      },
-    })
-      .then((res) => {
-        userId.value = res.data.pk
-        console.log('User ID fetched:', userId.value)
+  const getUserId = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/accounts/user/`, {
+        headers: { Authorization: `Token ${token.value}` }
       })
-      .catch((err) => {
-        console.error('Failed to fetch User ID:', err)
-      })
+      userId.value = res.data.pk
+    } catch (err) {
+      console.error('Failed to fetch user ID:', err)
+    }
   }
+
   // const getUserId = function () {
   //   axios({
   //     method: 'get',
@@ -51,6 +47,18 @@ export const useAccountStore = defineStore('account', () => {
   //       console.log(err)
   //     })
   // }
+
+  const getLoggedInUserInfo = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/accounts/profile/${userId.value}/`, {
+        headers: { Authorization: `Token ${token.value}` }
+      })
+      loggedInUserInfo.value = res.data
+    } catch (err) {
+      console.error('Failed to fetch logged-in user info:', err)
+    }
+  }
+
   const router = useRouter()
 
   // 이건 더 이상 현재 로그인한 사용자가 아니라
@@ -72,33 +80,19 @@ export const useAccountStore = defineStore('account', () => {
       })
   }
 
-  const logIn = function (payload) {
+
+  const logIn = async (payload) => {
     const { username, password } = payload
-    axios({
-      method: 'post',
-      url: `${BASE_URL}/accounts/login/`,
-      data: { username, password }
-    })
-      .then((res) => {
-        console.log('로그인이 완료되었습니다.')
-        token.value = res.data.key
-  
-        if (token.value !== null) {
-          return getUserId() // getUserId 프로미스 반환
-        }
-      })
-      .then(() => {
-        console.log('User ID:', userId.value)
-        if (userId.value !== null) {
-          return getUserInfo(userId.value) // getUserInfo 호출
-        }
-      })
-      .then(() => {
-        router.push({ name: 'MainPageView' }) // 페이지 이동
-      })
-      .catch((err) => {
-        console.error('로그인 또는 사용자 정보 로드 실패:', err)
-      })
+    try {
+      const res = await axios.post(`${BASE_URL}/accounts/login/`, { username, password })
+      token.value = res.data.key
+      if (token.value) {
+        await getUserId()
+        await getLoggedInUserInfo() // 로그인한 사용자 정보 로드
+      }
+    } catch (err) {
+      console.error('Log in failed:', err)
+    }
   }
 
   // const logIn = function (payload) {
@@ -174,6 +168,7 @@ export const useAccountStore = defineStore('account', () => {
         token.value = null
         userId.value = null
         userInfo.value = null // userInfo 초기화
+        loggedInUserInfo.value = null
         router.push({ name: 'MainPageView'})
       })
       .catch((err) => {
@@ -226,6 +221,8 @@ export const useAccountStore = defineStore('account', () => {
     // fetchProfile,
     userprofile_path,
     userId,
-    follow
+    follow,
+    loggedInUserInfo,
+    getLoggedInUserInfo
   }
 }, { persist: true })
