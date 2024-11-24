@@ -144,9 +144,9 @@ import axios from 'axios'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { useRoute, useRouter } from 'vue-router'
-import ListThumbnail from '@/components/Movie/ListThumbnail.vue'
-import FollowListModal from '@/components/Movie/FollowListModal.vue'
-import FollowingListModal from '@/components/Movie/FollowingListModal.vue'
+import ListThumbnail from '@/components/MyPage/ListThumbnail.vue'
+import FollowListModal from '@/components/MyPage/FollowListModal.vue'
+import FollowingListModal from '@/components/MyPage/FollowingListModal.vue'
 
 const accountStore = useAccountStore()
 const route = useRoute()

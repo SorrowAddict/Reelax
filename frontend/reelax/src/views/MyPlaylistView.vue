@@ -18,7 +18,7 @@
 import { useAccountStore } from '@/stores/account'
 import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import ListThumbnail from '@/components/Movie/ListThumbnail.vue';
+import ListThumbnail from '@/components/MyPage/ListThumbnail.vue';
 
 const route = useRoute()
 const router = useRouter()

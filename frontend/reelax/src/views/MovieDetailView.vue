@@ -22,7 +22,7 @@ import { useMovieStore } from '@/stores/movie'
 import { useAccountStore } from '@/stores/account'
 import { onMounted } from 'vue';
 import { RouterLink, RouterView, useRoute } from 'vue-router'
-import MovieTrailer from '@/components/Movie/MovieTrailer.vue'
+import MovieTrailer from '@/components/MovieDetailPage/MovieTrailer.vue'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
