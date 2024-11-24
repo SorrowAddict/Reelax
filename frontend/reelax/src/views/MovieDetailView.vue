@@ -1,6 +1,6 @@
 <template>
   <div class="container" v-if="movieStore.movieDetail">
-    <div v-show="!movieStore.movieDetailLoading && movieStore.movieDetail.title">
+    <div v-if="!movieStore.movieDetailLoading && movieStore.movieDetail.title">
       <!-- 영화 예고편 -->
       <MovieTrailer
         :title="movieStore.movieDetail.title"

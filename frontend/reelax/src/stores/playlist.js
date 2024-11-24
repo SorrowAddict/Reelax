@@ -41,6 +41,7 @@ export const usePlaylistStore = defineStore('playlist', () => {
     })
       .then((res) => {
         console.log('생성 성공!')
+        getPlaylist()
       })
       .catch((err) => {
         console.log(err)
@@ -59,6 +60,7 @@ export const usePlaylistStore = defineStore('playlist', () => {
       }
     })
       .then((res) => {
+        alert('성공적으로 추가되었습니다.')
         console.log('추가 성공!')
       })
       .catch((err) => {
