@@ -2,11 +2,11 @@
   <div class="container" v-if="movieStore.movieDetail">
     <h1>영화 상세 페이지</h1>
     <div>여기에 영화 예고편이 들어갑니다.</div>
-    <div>
+    <div v-if="!movieStore.movieDetailLoading && movieStore.movieDetail.title">
       <!-- 영화 예고편 -->
-      <!-- <MovieTrailer
+      <MovieTrailer
         :title="movieStore.movieDetail.title"
-      /> -->
+      />
     </div>
     <div>
       <!-- 영화 상세 정보 카드 -->

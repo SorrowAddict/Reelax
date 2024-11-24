@@ -7,8 +7,8 @@
 </template>
 
 <script setup>
-import axios from 'axios';
-import { onMounted, ref, computed } from 'vue';
+import axios from 'axios'
+import { onMounted, ref, computed } from 'vue'
 
 const props = defineProps({
   title: String
