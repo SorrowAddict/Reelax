@@ -50,6 +50,13 @@
               팔로잉 {{ currentUserInfo.followings_count ?? 0 }}
             </span>
           </div>
+          <div class="liked_genre">
+            <div v-if="currentUserInfo.liked_genres.length === 0">
+              
+            </div>
+            <div v-for="genre in currentUserInfo.liked_genres" :key="genre.genre_id"># {{ genre.name }}</div>
+            <div v-if="isOwnProfile" class="add-genre" @click="goToGenreSelection"><font-awesome-icon :icon="['far', 'square-plus']" /></div>
+          </div>
           
         </div>
       </div>
@@ -224,7 +231,7 @@ onMounted(async () => {
   if (isOwnProfile.value !== undefined) {
     await loadUserInfo()
   }
-  console.log(isOwnProfile.value)
+  console.log(currentUserInfo.value)
 })
 
 // 프로필 이미지 업로드
@@ -321,6 +328,7 @@ const seeAllDirectors = (user_id) => router.push({ name: 'MyDirectorView', param
 const seeDirecDetail = (director_id) => router.push({ name: 'DirecDetailView', params: { direc_id: director_id } })
 const seeAllActors = (user_id) => router.push({ name: 'MyActorView', params: { id: user_id } })
 const seeActorDetail = (actor_id) => router.push({ name: 'ActorDetailView', params: { actor_id } })
+const goToGenreSelection = () => router.push({ name: 'GenreSelectionView', query: { from: "mypage" } })
 </script>
 
 
@@ -413,6 +421,21 @@ const seeActorDetail = (actor_id) => router.push({ name: 'ActorDetailView', para
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+.liked_genre {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 20px
+}
+
+.add-genre {
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.add-genre:hover {
+  transform: scale(1.1);
 }
 
 .playlist-section, .movie-section, .director-section, .actor-section {
