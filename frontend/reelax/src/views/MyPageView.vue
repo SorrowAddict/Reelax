@@ -17,113 +17,139 @@
           class="hidden"
           @change="uploadProfileImage"
           accept="image/*"
-          v-if="isOwnProfile"
         />
         <div class="profile-info">
-          <h1>
-            <span v-if="!isEditingNickname">{{ currentUserInfo?.nickname || '사용자' }}</span>
-            <input
-              v-else
-              type="text"
-              v-model="nickname"
-              class="nickname-input"
-              @keyup.enter="updateNickname"
-              @blur="cancelEditing"
-            />
-            <span class="edit-icon" @click="editNickname">✎</span>
-          </h1>
+          <div class="user-name">
+            <h1>
+              <span v-if="!isEditingNickname">{{ currentUserInfo?.nickname || '사용자' }}</span>
+              <input
+                v-else
+                type="text"
+                v-model="nickname"
+                class="nickname-input"
+                @keyup.enter="updateNickname"
+                @blur="cancelEditing"
+              />
+            </h1>
+            <span v-if="isOwnProfile" class="edit-icon" @click="editNickname">✎</span>
+            <div v-if="Number(route.params.id) !== accountStore.userId">
+              <!-- 팔로우 버튼 -->
+              <button class="follow-btn" @click="followToggle(route.params.id)" v-if="isFollowing">
+                팔로우 취소
+              </button>
+              <button class="follow-btn" @click="followToggle(route.params.id)" v-else>
+                팔로우
+              </button>
+            </div>
+          </div>
           <div class="follow-info">
             <span data-bs-toggle="modal" data-bs-target="#followListModal">
-              팔로우 {{ currentUserInfo.followers_count ?? 0 }}
+              팔로워 {{ currentUserInfo.followers_count ?? 0 }}
             </span>
             <span data-bs-toggle="modal" data-bs-target="#followingListModal">
               팔로잉 {{ currentUserInfo.followings_count ?? 0 }}
             </span>
           </div>
-          <div v-if="isFollowing !== null">
-            <!-- 팔로우 버튼 -->
-            <div @click="followToggle(route.params.id)" v-if="isFollowing">
-              <p>팔로우 취소</p>
-            </div>
-            <div @click="followToggle(route.params.id)" v-else>
-              <p>팔로우</p>
-            </div>
-          </div>
+          
         </div>
       </div>
     </div>
-
-    <!-- 영화 플레이리스트 -->
-    <div class="playlist-section" data-aos="fade-up" data-aos-delay="150">
-      <h2>{{ currentUserInfo?.nickname || '사용자' }}님의 영화 플레이리스트</h2>
-      <div class="content-box">
-        <div v-if="currentUserInfo.playlists">
-          <div class="playlist-box">
-            <div v-for="playlist in currentUserInfo.playlists.slice(0, 4)" :key="playlist.id">
-              <div @click="seePlaylistDetail(route.params.id, playlist.id)">
-                <ListThumbnail :movies="playlist.movies" />
-                <h3>{{ playlist.title }}</h3>
-                <p>{{ playlist.description }}</p>
+    
+    <div class="main-section">
+        <!-- 영화 플레이리스트 -->
+      <div class="playlist-section" data-aos="fade-up" data-aos-delay="150">
+        
+        <div class="content-box">
+          <div class="playlist-header">
+            <h2>{{ currentUserInfo?.nickname || '사용자' }}님의 영화 플레이리스트</h2>
+            <button @click="seeAllPlaylist(route.params.id)" class="see-more">더보기</button>
+          </div>
+          <div v-if="currentUserInfo.playlists.length !== 0">
+            <div class="playlist-box">
+              <div v-for="playlist in currentUserInfo.playlists.slice(0, 4)" :key="playlist.id">
+                <div class="playlist" @click="seePlaylistDetail(route.params.id, playlist.id)">
+                  <ListThumbnail :movies="playlist.movies" />
+                  <div class="list-name">
+                    <h4>{{ playlist.title }}</h4>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <p @click="seeAllPlaylist(route.params.id)">더보기</p>
+          <p v-else>플레이리스트가 비어 있습니다.</p>
         </div>
-        <p v-else>플레이리스트가 비어 있습니다.</p>
       </div>
-    </div>
 
-    <!-- 좋아하는 영화 -->
-    <div class="movie-section" data-aos="fade-up" data-aos-delay="150">
-      <h2>{{ currentUserInfo?.nickname || '사용자' }}님이 좋아한 영화</h2>
-      <div class="content-box">
-        <div v-if="currentUserInfo.liked_movies">
-          <div class="movie-box">
-            <div v-for="movie in currentUserInfo.liked_movies.slice(0, 4)" :key="movie.movie_id">
-              <img @click="seeMovieDetail(movie.movie_id)" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" alt="영화 포스터">
-            </div>
+      <!-- 좋아하는 영화 -->
+      <div class="movie-section" data-aos="fade-up" data-aos-delay="150">
+        <div class="content-box">
+          <div class="movie-header">
+            <h2>{{ currentUserInfo?.nickname || '사용자' }}님이 좋아한 영화</h2>
+            <button @click="seeAllMovies(route.params.id)">더보기</button>
           </div>
-          <p @click="seeAllMovies(route.params.id)">더보기</p>
-        </div>
-        <p v-else>좋아하는 영화가 없습니다.</p>
-      </div>
-    </div>
-
-    <!-- 좋아하는 감독 -->
-    <div class="director-section" data-aos="fade-up" data-aos-delay="150">
-      <h2>{{ currentUserInfo?.nickname || '사용자' }}님이 좋아한 감독</h2>
-      <div class="content-box">
-        <div v-if="currentUserInfo.liked_directors">
-          <div class="director-box">
-            <div v-for="director in currentUserInfo.liked_directors.slice(0, 4)" :key="director.director_id">
-              <div @click="seeDirecDetail(director.director_id)">
-                <img :src="`https://image.tmdb.org/t/p/w200/${director.profile_path}`" alt="감독 프로필">
-                <h3>{{ director.name }}</h3>
+          <div v-if="currentUserInfo.liked_movies.length !== 0">
+            <div class="movie-box">
+              <div v-for="movie in currentUserInfo.liked_movies.slice(0, 4)" :key="movie.movie_id">
+                <MovieCard
+                  :movie="movie"
+                  class="movie"
+                />
               </div>
             </div>
           </div>
-          <p @click="seeAllDirectors(route.params.id)">더보기</p>
+          <p v-else>좋아하는 영화가 없습니다.</p>
         </div>
-        <p v-else>좋아하는 감독이 없습니다.</p>
       </div>
-    </div>
 
-    <!-- 좋아하는 배우 -->
-    <div class="actor-section" data-aos="fade-up" data-aos-delay="150">
-      <h2>{{ currentUserInfo?.nickname || '사용자' }}님이 좋아한 배우</h2>
-      <div class="content-box">
-        <div v-if="currentUserInfo.liked_actors">
-          <div class="actor-box">
-            <div v-for="actor in currentUserInfo.liked_actors.slice(0, 4)" :key="actor.actor_id">
-              <img @click="seeActorDetail(actor.actor_id)" :src="`https://image.tmdb.org/t/p/w200/${actor.profile_path}`" alt="배우 프로필">
-              <h3>{{ actor.name }}</h3>
+      <!-- 좋아하는 감독 -->
+      <div class="director-section" data-aos="fade-up" data-aos-delay="150">
+        
+        <div class="content-box">
+          <div class="director-header">
+            <h2>{{ currentUserInfo?.nickname || '사용자' }}님이 좋아한 감독</h2>
+            <button @click="seeAllDirectors(route.params.id)">더보기</button>
+          </div>
+          <div v-if="currentUserInfo.liked_directors.length !== 0">
+            <div class="director-box">
+              <div v-for="director in currentUserInfo.liked_directors.slice(0, 4)" :key="director.director_id">
+                <div @click="seeDirecDetail(director.director_id)">
+                  <img :src="`https://image.tmdb.org/t/p/w200/${director.profile_path}`" alt="감독 프로필" class="director-image">
+                  <div class="director-name">
+                    <h3>{{ director.name }}</h3>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <p @click="seeAllActors(route.params.id)">더보기</p>
+          <p v-else>좋아하는 감독이 없습니다.</p>
         </div>
-        <p v-else>좋아하는 배우가 없습니다.</p>
+      </div>
+
+      <!-- 좋아하는 배우 -->
+      <div class="actor-section" data-aos="fade-up" data-aos-delay="150">
+        
+        <div class="content-box">
+          <div class="actor-header">
+            <h2>{{ currentUserInfo?.nickname || '사용자' }}님이 좋아한 배우</h2>
+            <button @click="seeAllActors(route.params.id)">더보기</button>
+          </div>
+          <div v-if="currentUserInfo.liked_actors.length !== 0">
+            <div class="actor-box">
+              <div v-for="actor in currentUserInfo.liked_actors.slice(0, 4)" :key="actor.actor_id">
+                <div @click="seeActorDetail(actor.actor_id)">
+                  <img :src="`https://image.tmdb.org/t/p/w200/${actor.profile_path}`" alt="배우 프로필" class="actor-image">
+                  <div class="actor-name">
+                    <h3>{{ actor.name }}</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p v-else>좋아하는 배우가 없습니다.</p>
+        </div>
       </div>
     </div>
+    
 
     <!-- 팔로워/팔로잉 모달 -->
     <FollowListModal :users="currentUserInfo.followers" />
@@ -141,19 +167,21 @@ import { useRoute, useRouter } from 'vue-router'
 import ListThumbnail from '@/components/MyPage/ListThumbnail.vue'
 import FollowListModal from '@/components/MyPage/FollowListModal.vue'
 import FollowingListModal from '@/components/MyPage/FollowingListModal.vue'
+import MovieCard from '@/components/Movie/MovieCard.vue'
 
 const accountStore = useAccountStore()
 const route = useRoute()
 const router = useRouter()
 const defaultProfileImage = '/media/profile_images/default_profile.jpg'
 const profileImage = ref(null)
+const isOwnProfile = ref(null)
 
 // 닉네임 수정 상태
 const isEditingNickname = ref(false)
 const nickname = ref('')
 
 // 현재 사용자가 자신의 프로필 페이지를 보고 있는지 확인
-const isOwnProfile = computed(() => Number(route.params.id) === accountStore.userId)
+// const isOwnProfile = computed(() => Number(route.params.id) === accountStore.userId)
 
 // 현재 렌더링해야 할 사용자 데이터
 const currentUserInfo = computed(() => {
@@ -164,9 +192,7 @@ const currentUserInfo = computed(() => {
 const loadUserInfo = async () => {
   if (isOwnProfile.value) {
     // 로그인한 사용자의 프로필 로드
-    if (!accountStore.loggedInUserInfo) {
-      await accountStore.getLoggedInUserInfo()
-    }
+    await accountStore.getLoggedInUserInfo()
   } else {
     // 다른 사용자의 프로필 로드
     await accountStore.getUserInfo(route.params.id)
@@ -193,7 +219,10 @@ onMounted(async () => {
     easing: 'ease-in-out-quint',
     once: false,
   })
-  await loadUserInfo()
+  isOwnProfile.value = Number(route.params.id) === accountStore.userId
+  if (isOwnProfile.value !== undefined) {
+    await loadUserInfo()
+  }
   console.log(isOwnProfile.value)
 })
 
@@ -296,6 +325,11 @@ const seeActorDetail = (actor_id) => router.push({ name: 'ActorDetailView', para
 
 
 <style scoped>
+.main-section {
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+}
 /* 전체 페이지 스타일 */
 .hidden {
   display: none;
@@ -315,6 +349,49 @@ const seeActorDetail = (actor_id) => router.push({ name: 'ActorDetailView', para
   gap: 20px;
 }
 
+.profile-info h1 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-name {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.edit-icon {
+  font-size: 24px;
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.3s ease;
+}
+
+.follow-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-left: 30px;
+}
+
+.follow-btn:hover {
+  background-color: #5a6268;
+  transform: translateY(-2px);
+}
+
+.follow-info {
+  margin-top: 10px;
+  display: flex;
+  gap: 20px;
+  font-size: 18px;
+}
+
 .profile-image {
   width: 150px;
   height: 150px;
@@ -331,11 +408,6 @@ const seeActorDetail = (actor_id) => router.push({ name: 'ActorDetailView', para
   font-size: 18px;
 }
 
-.profile-info h1 {
-  font-size: 36px;
-  margin-bottom: 10px;
-}
-
 .nickname {
   font-size: 24px;
   display: flex;
@@ -343,25 +415,87 @@ const seeActorDetail = (actor_id) => router.push({ name: 'ActorDetailView', para
   gap: 5px;
 }
 
-.nickname .edit-icon {
-  font-size: 18px;
-  cursor: pointer;
-  color: #aaaaaa;
-  transition: color 0.3s;
+.playlist-section, .movie-section, .director-section, .actor-section {
+  margin-bottom: 40px;
+  padding-bottom: 20px;
 }
-
-.nickname .edit-icon:hover {
-  color: white;
-}
-
-.follow-info {
-  margin-top: 10px;
+.playlist-box, .movie-box, .actor-box {
   display: flex;
+  flex-wrap: wrap;
   gap: 20px;
-  font-size: 18px;
+  text-align: center;
 }
 
-.playlist-box, .movie-box, .director-box, .actor-box {
+.playlist-header, .movie-header, .director-header, .actor-header {
   display: flex;
+  margin-bottom: 20px;
 }
+.playlist-header button, .movie-header button, .director-header button, .actor-header button {
+  all: unset;
+  display: inline-block;
+  margin-left: 20px;
+  margin-bottom: 0px;
+  color: #aaaaaa;
+}
+
+button:hover {
+  color: white
+}
+
+.list-description {
+  margin-top: 10px;
+}
+
+.director-box, .actor-box {
+  display: flex;
+  flex-wrap: wrap; /* 줄바꿈 활성화 */
+  gap: 20px; /* 아이템 간격 */
+  justify-content: flex-start; /* 왼쪽 정렬 */
+}
+
+.director-item, .actor-item {
+  flex: 1 1 calc(25% - 20px); /* 한 줄에 4개 (간격 포함) */
+  max-width: calc(25% - 20px); /* 최대 너비 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.director-image, .actor-image {
+  width: 100%;
+  aspect-ratio: 2 / 2.5; /* 세로 비율 */
+  border-radius: 16px; /* 둥근 모서리 */
+  object-fit: cover; /* 이미지가 영역에 적합하도록 조정 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* 그림자 효과 */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.director-image:hover, .actor-image:hover {
+  transform: scale(1.05); /* 확대 효과 */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4); /* hover 시 그림자 강화 */
+}
+
+.list-name h4 {
+  font-size: 16px;
+  margin-top: 10px;
+  font-weight: bold;
+  color: white; /* 텍스트 색상 */
+  text-align: center;
+}
+
+.director-name h3 {
+  font-size: 16px;
+  margin-top: 10px;
+  font-weight: bold;
+  color: white; /* 텍스트 색상 */
+  text-align: center;
+}
+
+.actor-name h3 {
+  font-size: 16px;
+  margin-top: 10px;
+  font-weight: bold;
+  color: white; /* 텍스트 색상 */
+}
+
 </style>
