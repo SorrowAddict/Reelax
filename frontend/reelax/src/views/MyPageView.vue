@@ -17,7 +17,6 @@
           class="hidden"
           @change="uploadProfileImage"
           accept="image/*"
-          v-if="isOwnProfile"
         />
         <div class="profile-info">
           <h1>

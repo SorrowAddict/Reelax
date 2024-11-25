@@ -94,7 +94,7 @@ export default {
       accountStore.signUp(payload).then((token) => {
         if (token) {
           accountStore.token = token
-          accountStore.fetchProfile()
+          accountStore.getUserInfo()
           router.push({ name: 'GenreSelectionView' })
         }
       }).then((result) => {

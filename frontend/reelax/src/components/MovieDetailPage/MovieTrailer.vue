@@ -41,7 +41,7 @@ const trailerUrl = computed(() => {
     return `https://www.youtube.com/embed/${movieTrailer.value.id.videoId}?autoplay=1&mute=1&controls=0`
   }
 })
-const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY3
+const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY2
 onMounted(() => {
   axios({
     method: 'get',
