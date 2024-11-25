@@ -19,10 +19,10 @@
             <li>
               <label>
                 <input
-                  type="text"
-                  v-model="username"
-                  placeholder="아이디"
-                  title="아이디"
+                  type="email"
+                  v-model="email"
+                  placeholder="이메일을 입력하세요"
+                  title="이메일"
                   class="input-style"
                   required
                 />
@@ -87,14 +87,14 @@ import { useRouter } from "vue-router"
 const store = useAccountStore()
 const router = useRouter()
 
-const username = ref("")
+const email = ref("")
 const nickname = ref("")
 const password1 = ref("")
 const password2 = ref("")
 
 const signUp = function () {
   const payload = {
-    username: username.value,
+    email: email.value,
     nickname: nickname.value,
     password1: password1.value,
     password2: password2.value,

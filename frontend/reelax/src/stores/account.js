@@ -24,7 +24,7 @@ export const useAccountStore = defineStore('account', () => {
   const getUserId = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/accounts/user/`, {
-        headers: { Authorization: `Token ${token.value}` }
+        headers: { Authorization: `Bearer ${token.value}` }
       })
       userId.value = res.data.pk
     } catch (err) {
@@ -51,7 +51,7 @@ export const useAccountStore = defineStore('account', () => {
   const getLoggedInUserInfo = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/accounts/profile/${userId.value}/`, {
-        headers: { Authorization: `Token ${token.value}` }
+        headers: { Authorization: `Bearer ${token.value}` }
       })
       loggedInUserInfo.value = res.data
     } catch (err) {
@@ -68,7 +68,7 @@ export const useAccountStore = defineStore('account', () => {
       method: 'get',
       url: `${BASE_URL}/accounts/profile/${user_id}/`,
       headers: {
-        Authorization: `Token ${token.value}`
+        Authorization: `Bearer ${token.value}`
       },
     })
       .then((res) => {
@@ -82,10 +82,11 @@ export const useAccountStore = defineStore('account', () => {
 
 
   const logIn = async (payload) => {
-    const { username, password } = payload
+    const { email, password } = payload
     try {
-      const res = await axios.post(`${BASE_URL}/accounts/login/`, { username, password })
-      token.value = res.data.key
+      const res = await axios.post(`${BASE_URL}/accounts/login/`, { email, password })
+      token.value = res.data.access
+      userId.value = res.data.user.pk
       if (token.value) {
         await getUserId()
         await getLoggedInUserInfo() // 로그인한 사용자 정보 로드
@@ -97,12 +98,12 @@ export const useAccountStore = defineStore('account', () => {
   }
 
   // const logIn = function (payload) {
-  //   const { username, password } = payload
+  //   const { email, password } = payload
   //   axios({
   //     method: 'post',
   //     url: `${BASE_URL}/accounts/login/`,
   //     data: {
-  //       username, password
+  //       email, password
   //     }
   //   })
   //     .then((res) => {
@@ -130,23 +131,23 @@ export const useAccountStore = defineStore('account', () => {
   // }
 
   const signUp = function (payload) {
-    const { username, nickname, password1, password2 } = payload
+    const { email, nickname, password1, password2 } = payload
 
     return axios({
       method: 'post',
-      url: `${BASE_URL}/accounts/registration/`,
+      url: `${BASE_URL}/accounts/`,
       data: {
-        username, nickname, password1, password2
+        email, nickname, password1, password2
       }
     })
       .then((res) => {
-        console.log('회원가입이 완료되었습니다.')
-        token.value = res.data.key
+        console.log('회원가입이 완료되었습니다.', res.data.access)
+        token.value = res.data.access
         if (token.value !== null) {
           getUserId()
             .then(() => getUserInfo(userId.value))
         }
-        return res.data.key
+        return res.data.access
       })
       .catch((err) => {
         // console.log(err)
@@ -160,21 +161,25 @@ export const useAccountStore = defineStore('account', () => {
   }
 
   const logOut = function () {
-    axios({
-      method: 'post',
-      url: `${BASE_URL}/accounts/logout/`
-    })
-      .then((res) => {
-        console.log('로그아웃이 완료되었습니다.')
-        token.value = null
-        userId.value = null
-        userInfo.value = null // userInfo 초기화
-        loggedInUserInfo.value = null
-        router.push({ name: 'MainPageView'})
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    // axios({
+    //   method: 'post',
+    //   url: `${BASE_URL}/accounts/logout/`
+    // })
+    //   .then((res) => {
+    //     console.log('로그아웃이 완료되었습니다.')
+    //     token.value = null
+    //     userId.value = null
+    //     userInfo.value = null // userInfo 초기화
+    //     loggedInUserInfo.value = null
+    //     router.push({ name: 'MainPageView'})
+    //   })
+    //   .catch((err) => {
+    //     console.log(err)
+    //   })
+    token.value = null
+    userId.value = null
+    loggedInUserInfo.value = null
+    router.push({ name: 'MainPageView' })
   }
 
   // const fetchProfile = async function () {
@@ -199,7 +204,7 @@ export const useAccountStore = defineStore('account', () => {
       method: 'post',
       url: `${BASE_URL}/accounts/follow-toggle/${user_id}/`,
       headers: {
-        Authorization: `Token ${token.value}`
+        Authorization: `Bearer ${token.value}`
       }
     })
       .then((res) => {

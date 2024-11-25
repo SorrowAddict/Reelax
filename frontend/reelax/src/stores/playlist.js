@@ -15,7 +15,7 @@ export const usePlaylistStore = defineStore('playlist', () => {
       method: 'get',
       url: `${BASE_URL}/playlists/`,
       headers: {
-        Authorization: `Token ${accountStore.token}`
+        Authorization: `Bearer ${accountStore.token}`
       }
     })
       .then((res) => {
@@ -33,7 +33,7 @@ export const usePlaylistStore = defineStore('playlist', () => {
       method: 'post',
       url: `${BASE_URL}/playlists/`,
       headers: {
-        Authorization: `Token ${accountStore.token}`
+        Authorization: `Bearer ${accountStore.token}`
       },
       data: {
         title, description, movies
@@ -53,7 +53,7 @@ export const usePlaylistStore = defineStore('playlist', () => {
       method: 'post',
       url: `${BASE_URL}/playlists/${playlist_id}/movies/`,
       headers: {
-        Authorization: `Token ${accountStore.token}`
+        Authorization: `Bearer ${accountStore.token}`
       },
       data: {
         movies

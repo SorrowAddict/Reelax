@@ -15,7 +15,7 @@ export const useLikeStore = defineStore('like', () => {
       method: 'post',
       url: `${BASE_URL}/like-movie/`,
       headers: {
-        Authorization: `Token ${accountStore.token}`
+        Authorization: `Bearer ${accountStore.token}`
       },
       data: {
         movie_id, poster_path
@@ -35,7 +35,7 @@ export const useLikeStore = defineStore('like', () => {
       method: 'post',
       url: `${BASE_URL}/like-director/`,
       headers: {
-        Authorization: `Token ${accountStore.token}`
+        Authorization: `Bearer ${accountStore.token}`
       },
       data: {
         director_id, name, profile_path
@@ -55,7 +55,7 @@ export const useLikeStore = defineStore('like', () => {
       method: 'post',
       url: `${BASE_URL}/like-actor/`,
       headers: {
-        Authorization: `Token ${accountStore.token}`
+        Authorization: `Bearer ${accountStore.token}`
       },
       data: {
         actor_id, name, profile_path
