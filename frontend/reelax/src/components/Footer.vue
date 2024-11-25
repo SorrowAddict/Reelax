@@ -22,6 +22,7 @@
   background-color: rgba(0, 0, 0, 0.5);
   padding: 20px;
   color: white;
+  margin-top: 20px;
 }
 
 .footer-links p {

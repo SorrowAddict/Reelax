@@ -31,8 +31,8 @@ const firstFourPosters = computed(() => {
 <style scoped>
 /* 썸네일 컨테이너 */
 .playlist-thumbnail {
-  width: 150px;
-  height: 150px;
+  width: 200px;
+  height: 200px;
   display: flex;
   justify-content: center;
   align-items: center;
