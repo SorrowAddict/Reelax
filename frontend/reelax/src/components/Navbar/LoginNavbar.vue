@@ -77,9 +77,11 @@ const closeModal = () => {
 }
 
 watch(
-  () => store.loggedInUserInfo.profile_image,
+  () => store.loggedInUserInfo?.profile_image, // 안전하게 profile_image에 접근
   (newImage) => {
-    profileImage.value = newImage ? `http://localhost:8000${newImage}` : defaultProfileImage
+    profileImage.value = newImage
+      ? `http://localhost:8000${newImage}`
+      : defaultProfileImage
   }
 )
 </script>
