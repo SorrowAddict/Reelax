@@ -208,6 +208,7 @@ const loadUserInfo = async () => {
 // 라우트 변경 감지
 watch(() => route.params.id, async (newId, oldId) => {
   if (newId !== oldId) {
+    isOwnProfile.value = Number(newId) === accountStore.userId;
     await loadUserInfo()
   }
 })
