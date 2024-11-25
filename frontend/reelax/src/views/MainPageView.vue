@@ -51,11 +51,11 @@
         </div>
       </div>
       <div v-else class="movie">
-        <h1>아직 좋아한 장르가 없습니다!</h1>
+        <p>아직 좋아한 장르가 없습니다!</p>
       </div>
 
       <!-- 사용자가 좋아한 최근 영화 -->
-      <div v-if="movieStore.userLikedMovies && Object.keys(movieStore.userLikedMovies).length > 0" class="movie" data-aos="fade-left">
+      <!-- <div v-if="movieStore.userLikedMovies && Object.keys(movieStore.userLikedMovies).length > 0" class="movie" data-aos="fade-left">
         <h3>사용자가 최근 좋아한 영화</h3>
         <MainCarouselSection
           carousel-id="likedMovieCarousel"
@@ -64,7 +64,7 @@
       </div>
       <div v-else class="movie">
         <h1>아직 좋아한 영화가 없습니다!</h1>
-      </div>
+      </div> -->
 
       <!-- 유저가 좋아한 배우 중 랜덤으로 하나 뽑아서 필모 5개 표시 -->
       <div v-if="movieStore.userLikedActorMovies && Object.keys(movieStore.userLikedActorMovies).length > 0" class="movie" data-aos="fade-right">
@@ -75,7 +75,7 @@
         />
       </div>
       <div v-else class="movie">
-        <h1>아직 좋아한 배우가 없습니다!</h1>
+        <p>아직 좋아한 배우가 없습니다!</p>
       </div>
 
       <!-- 유저가 좋아한 감독 중 랜덤으로 하나 뽑아서 필모 5개 표시 -->
@@ -87,7 +87,7 @@
         />
       </div>
       <div v-else class="movie">
-        <h1>아직 좋아한 감독이 없습니다!</h1>
+        <p>아직 좋아한 감독이 없습니다!</p>
       </div>
     </div>
     

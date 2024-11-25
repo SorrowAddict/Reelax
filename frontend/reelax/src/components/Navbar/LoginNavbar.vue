@@ -80,7 +80,9 @@ const closeModal = () => {
 watch(
   () => store.loggedInUserInfo?.profile_image,
   (newImage) => {
-    profileImage.value = newImage ? `http://localhost:8000${newImage}` : defaultProfileImage
+    profileImage.value = newImage
+      ? `http://localhost:8000${newImage}`
+      : defaultProfileImage
   }
 )
 </script>

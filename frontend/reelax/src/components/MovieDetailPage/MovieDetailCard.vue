@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="userInfo">
     <div>
       <h1>{{ movie.title }}</h1>
     </div>

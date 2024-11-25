@@ -1,5 +1,5 @@
 <template>
-  <div class="director-page">
+  <div class="director-page" >
     <div class="container py-5" v-if="movieStore.direcDetail">
       <!-- 상단 프로필 섹션 -->
       <div class="director-profile mb-5" data-aos="fade-up">
