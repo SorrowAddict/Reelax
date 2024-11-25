@@ -217,7 +217,6 @@ export const useMovieStore = defineStore('movie', () => {
     userLikedDirec,
     getMovieDetail,
     movieDetail,
-    movieDetailLoading,
     getDirectorDetail,
     direcDetail,
     getActorDetail,

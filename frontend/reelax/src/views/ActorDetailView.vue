@@ -1,63 +1,69 @@
 <template>
   <div class="actor-page">
-    <div class="container py-5" v-if="movieStore.actorDetail">
-      <!-- 상단 프로필 섹션 -->
-      <div class="actor-profile mb-5" data-aos="fade-up">
-        <div class="row align-items-center">
-          <!-- 프로필 이미지 -->
-          <div class="col-md-4 mb-4 mb-md-0">
-            <div class="profile-image-container">
-              <img :src="imageUrl" alt="프로필 이미지" class="profile-image">
-            </div>
-          </div>
-          <!-- 배우 정보 -->
-          <div class="col-md-8">
-            <div class="actor-info">
-              <h3 class="actor-name">{{ movieStore.actorDetail.name }}</h3>
-              <p class="actor-role">배우</p>
-              <div class="actor-details">
-                <p class="birth-year">{{ birth_year }}</p>
-                <p class="gender">{{ gender }}</p>
+    <div v-if="isLoading" class="spinner-container">
+      <div class="spinner"></div>
+    </div>
+    <div v-else>
+      <div class="container py-5" v-if="movieStore.actorDetail">
+        <!-- 상단 프로필 섹션 -->
+        <div class="actor-profile mb-5" data-aos="fade-up">
+          <div class="row align-items-center">
+            <!-- 프로필 이미지 -->
+            <div class="col-md-4 mb-4 mb-md-0">
+              <div class="profile-image-container">
+                <img :src="imageUrl" alt="프로필 이미지" class="profile-image">
               </div>
-              <!-- 좋아요 버튼 -->
-              <div class="like-button-container">
-                <div v-if="accountStore.isLogin" class="like-button" @click="actorLike(movieStore.actorDetail.id, movieStore.actorDetail.name, movieStore.actorDetail.profile_path)">
-                  <div v-if="isActorLiked(movieStore.actorDetail)">
-                    <font-awesome-icon :icon="['fas', 'heart']" class="heart-icon liked" />
+            </div>
+            <!-- 배우 정보 -->
+            <div class="col-md-8">
+              <div class="actor-info">
+                <h3 class="actor-name">{{ movieStore.actorDetail.name }}</h3>
+                <p class="actor-role">배우</p>
+                <div class="actor-details">
+                  <p class="birth-year">{{ birth_year }}</p>
+                  <p class="gender">{{ gender }}</p>
+                </div>
+                <!-- 좋아요 버튼 -->
+                <div class="like-button-container">
+                  <div v-if="accountStore.isLogin" class="like-button" @click="actorLike(movieStore.actorDetail.id, movieStore.actorDetail.name, movieStore.actorDetail.profile_path)">
+                    <div v-if="isActorLiked(movieStore.actorDetail)">
+                      <font-awesome-icon :icon="['fas', 'heart']" class="heart-icon liked" />
+                    </div>
+                    <div v-else>
+                      <font-awesome-icon :icon="['far', 'heart']" class="heart-icon" />
+                    </div>
                   </div>
-                  <div v-else>
+                  <div v-else class="like-button" @click="moveToLogin">
                     <font-awesome-icon :icon="['far', 'heart']" class="heart-icon" />
                   </div>
-                </div>
-                <div v-else class="like-button" @click="moveToLogin">
-                  <font-awesome-icon :icon="['far', 'heart']" class="heart-icon" />
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- 필모그래피 섹션 -->
-      <div class="filmography-section" data-aos="fade-up" data-aos-delay="200">
-        <h2 class="section-title mb-4 text-center">{{ movieStore.actorDetail.name }} 배우가 출연한 영화</h2>
-        <div class="filmography-container">
-          <div class="movies-grid">
-            <MovieCard
-              v-for="movie in uniqueFilmography"
-              :key="movie.id"
-              :movie="movie"
-              class="movie-card-wrapper"
-            />
+        <!-- 필모그래피 섹션 -->
+        <div class="filmography-section" data-aos="fade-up" data-aos-delay="200">
+          <h2 class="section-title mb-4 text-center">{{ movieStore.actorDetail.name }} 배우가 출연한 영화</h2>
+          <div class="filmography-container">
+            <div class="movies-grid">
+              <MovieCard
+                v-for="movie in uniqueFilmography"
+                :key="movie.id"
+                :movie="movie"
+                class="movie-card-wrapper"
+              />
+            </div>
           </div>
         </div>
       </div>
     </div>
+    
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useMovieStore } from '@/stores/movie'
 import { useAccountStore } from '@/stores/account'
 import { useRoute, useRouter } from 'vue-router'
@@ -69,6 +75,16 @@ const accountStore = useAccountStore()
 const likeStore = useLikeStore()
 const route = useRoute()
 const router = useRouter()
+const isLoading = ref(true); // 로딩 상태 초기화
+
+watch(
+  () => movieStore.actorDetail, // movieStore.direcDetail 변화를 감시
+  (newValue) => {
+    if (newValue) {
+      isLoading.value = false; // 데이터가 로드되면 로딩 상태를 false로 변경
+    }
+  }
+)
 
 const actor_id = route.params.actor_id
 
@@ -135,6 +151,33 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* 스피너 애니메이션 */
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ccc; /* 회색 테두리 */
+  border-top: 5px solid #007bff; /* 파란색 테두리 */
+  border-radius: 50%; /* 원 모양 */
+  animation: spin 1s linear infinite;
+}
+
+/* 애니메이션 키프레임 */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .actor-page {
   background-color: #2d2d2d;
   min-height: 100vh;

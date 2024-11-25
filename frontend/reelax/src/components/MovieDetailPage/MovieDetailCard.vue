@@ -4,17 +4,17 @@
       <h1>{{ movie.title }}</h1>
     </div>
     <div class="movie-detail">
-      <p>{{ release_year }}</p>
-      <p>| {{ movie.additional_data.runtime }}분</p>
-      <p>| 장르 : <span v-for="genre in movie.genres">{{ genre.name }}&nbsp;</span></p>
-      <p>| 관람 등급 : {{ movie.additional_data?.adult }}</p>
+      <p>{{ release_year }}&nbsp;</p>
+      <p>|&nbsp;{{ movie.additional_data.runtime }}분&nbsp;</p>
+      <p>|&nbsp;<span v-for="genre in movie.genres">{{ genre.name }}&nbsp;</span></p>
+      <p v-if="movie.additional_data?.adult">|&nbsp;<img src="/image/r-rated.svg" alt="알랄라"></p>
     </div>
     <div class="movie-rated">
       <div>
         <font-awesome-icon
           v-for="star in 5"
           :key="star"
-          :icon="['fas', star <= convertedRating ? 'star' : 'star-half-alt']"
+          :icon="getStarIcon(star)"
           class="star"
         />
       </div>
@@ -107,6 +107,16 @@ const convertedRating = computed(() => {
   return Math.min((props.movie.vote_average / 10) * 5, 5)
 })
 
+const getStarIcon = (star) => {
+  if (star <= Math.floor(convertedRating.value)) {
+    return ['fas', 'star']; // 꽉 찬 별
+  } else if (star - 0.5 <= convertedRating.value) {
+    return ['fas', 'star-half-alt']; // 반개 별
+  } else {
+    return ['far', 'star']; // 빈 별
+  }
+}
+
 const movieLike = function () {
   const payload = {
     movie_id: props.movie.movie_id,
@@ -124,6 +134,9 @@ const moveToLogin = function () {
 <style scoped>
 .movie-detail, .movie-rated {
   display: flex;
+}
+
+.movie-rated {
   gap: 10px;
 }
 
