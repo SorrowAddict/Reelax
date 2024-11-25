@@ -40,7 +40,7 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
 class SimpleUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = ['id', 'username', 'nickname', 'profile_image']
+        fields = ['id', 'email', 'first_name', 'last_name', 'spouse_name', 'nickname', 'profile_image', 'date_of_birth']
 
 class ProfileSerializer(serializers.ModelSerializer):
     # Count fields
@@ -65,6 +65,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = UserModel
         fields = [
             'id',
+            'email',
             'username',
             'nickname',
             'followers_count',

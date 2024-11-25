@@ -13,7 +13,7 @@
           <h1 class="login__title">로그인</h1>
           <div class="login__box">
             <i class="bx bx-user login__icon"></i>
-            <input v-model="loginForm.username" type="text" placeholder="Username" class="login__input" />
+            <input v-model="loginForm.email" type="email" placeholder="Email" class="login__input" />
           </div>
           <div class="login__box">
             <i class="bx bx-lock login__icon"></i>
@@ -32,7 +32,7 @@
           <h1 class="login__title">계정 생성</h1>
           <div class="login__box">
             <i class="bx bx-user login__icon"></i>
-            <input v-model="signUpForm.username" type="text" placeholder="Username" class="login__input" />
+            <input v-model="signUpForm.email" type="email" placeholder="Email" class="login__input" />
           </div>
           <div class="login__box">
             <i class="bx bx-user login__icon"></i>
@@ -69,12 +69,12 @@ export default {
     const router = useRouter()
 
     const loginForm = ref({
-      username: '',
+      email: '',
       password: ''
     })
 
     const signUpForm = ref({
-      username: '',
+      email: '',
       nickname: '',
       password1: '',
       password2: ''

@@ -51,6 +51,7 @@ onMounted(() => {
   if (!store.loggedInUserInfo) {
     store.getLoggedInUserInfo()
   }
+  console.log('로그인 Navbar onMounted', store.userInfo)
 })
 
 // 이미지 로드 실패 시 기본 이미지로 대체
@@ -77,7 +78,7 @@ const closeModal = () => {
 }
 
 watch(
-  () => store.loggedInUserInfo?.profile_image, // 안전하게 profile_image에 접근
+  () => store.loggedInUserInfo?.profile_image,
   (newImage) => {
     profileImage.value = newImage
       ? `http://localhost:8000${newImage}`

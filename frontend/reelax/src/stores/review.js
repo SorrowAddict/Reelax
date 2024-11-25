@@ -31,7 +31,7 @@ export const useReviewStore = defineStore('review', () => {
       method: 'post',
       url: `${BASE_URL}/${movie_id}/reviews/`,
       headers: {
-        Authorization: `Token ${accountStore.token}`
+        Authorization: `Bearer ${accountStore.token}`
       },
       data: {
         content
@@ -52,7 +52,7 @@ export const useReviewStore = defineStore('review', () => {
       method: 'post',
       url: `${BASE_URL}/${movie_id}/reviews/${review_id}/like/`,
       headers: {
-        Authorization: `Token ${accountStore.token}`
+        Authorization: `Bearer ${accountStore.token}`
       }
     })
       .then((res) => {
@@ -71,7 +71,7 @@ export const useReviewStore = defineStore('review', () => {
       method: 'put',
       url: `${BASE_URL}/${movie_id}/reviews/${review_id}/`,
       headers: {
-        Authorization: `Token ${accountStore.token}`
+        Authorization: `Bearer ${accountStore.token}`
       },
       data: {
         content
@@ -92,7 +92,7 @@ export const useReviewStore = defineStore('review', () => {
       method: 'delete',
       url: `${BASE_URL}/${movie_id}/reviews/${review_id}/`,
       headers: {
-        Authorization: `Token ${accountStore.token}`
+        Authorization: `Bearer ${accountStore.token}`
       },
     })
       .then((res) => {

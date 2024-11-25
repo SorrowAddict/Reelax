@@ -23,6 +23,9 @@ environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
 TMDB_API_KEY = env('TMDB_API_KEY')
 TMDB_READ_ACCESS_TOKEN = env('TMDB_READ_ACCESS_TOKEN')
 YOUTUBE_API_KEY = env('YOUTUBE_API_KEY')
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = env('SOCIAL_AUTH_GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_SECRET = env('SOCIAL_AUTH_GOOGLE_SECRET')
+STATE = env('STATE')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -47,6 +50,8 @@ INSTALLED_APPS = [
     # DRF
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
 
     # REST_AUTH
@@ -54,6 +59,9 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.kakao',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.google',
     'dj_rest_auth.registration',
     'django.contrib.sites',
 
@@ -88,21 +96,48 @@ CORS_ALLOWED_ORIGINS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ]
 }
 
 REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'my-app-auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'my-refresh-token',
     'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer',
     'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailsSerializer',
 }
 
-ACCOUNT_ADAPTER = 'accounts.models.CustomAccountAdapter'
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'users.serializers.SimpleUserSerializer',
+}
 
-ACCOUNT_EMAIL_REQUIRED = False  # 이메일 필수 해제
+ACCOUNT_ADAPTER = 'accounts.models.CustomAccountAdapter'
+# SOCIALACCOUNT_ADAPTER = 'accounts.adapters.CustomGoogleOAuth2Adapter'
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = "none"  # 이메일 인증 비활성화
-ACCOUNT_AUTHENTICATION_METHOD = "username"  # 사용자 이름 기반 인증
-ACCOUNT_USERNAME_REQUIRED = True  # 사용자 이름 필수
+ACCOUNT_AUTHENTICATION_METHOD = "email"  # 사용자 이름 기반 인증
+ACCOUNT_USERNAME_REQUIRED = False  # 사용자 이름 필수
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+REST_USE_JWT = True
+TOKEN_MODEL = None
+# REST_AUTH_LOGOUT_ON_GET = False
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=365),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
 
 ROOT_URLCONF = 'reelax.urls'
 

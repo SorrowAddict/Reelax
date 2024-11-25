@@ -249,7 +249,7 @@ const uploadProfileImage = async (event) => {
       {
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: `Token ${accountStore.token}`
+          Authorization: `Bearer ${accountStore.token}`
         }
       }
     )
@@ -276,14 +276,13 @@ const cancelEditing = () => {
 
 const updateNickname = async () => {
   if (!nickname.value.trim()) return
-
   try {
     const response = await axios.patch(
       'http://localhost:8000/api/v1/accounts/user/',
       { nickname: nickname.value },
       {
         headers: {
-          Authorization: `Token ${accountStore.token}`
+          Authorization: `Bearer ${accountStore.token}`
         }
       }
     )

@@ -69,7 +69,7 @@ export const useMovieStore = defineStore('movie', () => {
     axios({
       method: 'get',
       url: `${BASE_URL}/genre-movies/`,
-      headers: accountStore.token ? { Authorization: `Token ${accountStore.token}` } : {}
+      headers: accountStore.token ? { Authorization: `Bearer ${accountStore.token}` } : {}
     })
       .then((res) => {
         genreMovies.value = res.data.results
@@ -85,7 +85,7 @@ export const useMovieStore = defineStore('movie', () => {
       method: 'get',
       url: `${BASE_URL}/user-liked-genre/`,
       headers: {
-        Authorization: `Token ${accountStore.token}`
+        Authorization: `Bearer ${accountStore.token}`
       }
     })
       .then((res) => {
@@ -102,7 +102,7 @@ export const useMovieStore = defineStore('movie', () => {
       method: 'get',
       url: `${BASE_URL}/user-liked-movies/`,
       headers: {
-        Authorization: `Token ${accountStore.token}`
+        Authorization: `Bearer ${accountStore.token}`
       }
     })
       .then((res) => {
@@ -119,7 +119,7 @@ export const useMovieStore = defineStore('movie', () => {
       method: 'get',
       url: `${BASE_URL}/user-liked-actor/`,
       headers: {
-        Authorization: `Token ${accountStore.token}`
+        Authorization: `Bearer ${accountStore.token}`
       }
     })
       .then((res) => {
@@ -137,7 +137,7 @@ export const useMovieStore = defineStore('movie', () => {
       method: 'get',
       url: `${BASE_URL}/user-liked-director/`,
       headers: {
-        Authorization: `Token ${accountStore.token}`
+        Authorization: `Bearer ${accountStore.token}`
       }
     })
       .then((res) => {
@@ -156,7 +156,7 @@ export const useMovieStore = defineStore('movie', () => {
     axios({
       method: 'get',
       url: `${BASE_URL}/${movie_id}/`,
-      headers: accountStore.token ? { Authorization: `Token ${accountStore.token}` } : {}
+      headers: accountStore.token ? { Authorization: `Bearer ${accountStore.token}` } : {}
     })
     .then((res) => {
       movieDetail.value = res.data
