@@ -81,20 +81,19 @@ def google_callback(request):
     client_id = settings.SOCIAL_AUTH_GOOGLE_CLIENT_ID
     client_secret = settings.SOCIAL_AUTH_GOOGLE_SECRET
     code = request.GET.get("code")
-    """
-    Access Token Request
-    """
+    frontend_url = "http://localhost:5173/google/callback/"  # 프론트엔드 Google Callback View 경로
+
+    # 1. Access Token 요청
     token_req = requests.post(
-        f"https://oauth2.googleapis.com/token?client_id={client_id}&client_secret={client_secret}&code={code}&grant_type=authorization_code&redirect_uri={GOOGLE_CALLBACK_URI}&state={state}"
+        f"https://oauth2.googleapis.com/token?client_id={client_id}&client_secret={client_secret}&code={code}&grant_type=authorization_code&redirect_uri={GOOGLE_CALLBACK_URI}"
     )
     token_req_json = token_req.json()
     error = token_req_json.get("error")
     if error is not None:
         raise JSONDecodeError(error)
     access_token = token_req_json.get("access_token")
-    """
-    Email Request
-    """
+
+    # 2. 사용자 이메일 요청
     email_req = requests.get(
         f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}"
     )
@@ -105,12 +104,8 @@ def google_callback(request):
         )
     email_req_json = email_req.json()
     email = email_req_json.get("email")
-    """
-    Signup or Signin Request
-    """
 
-    cookie_max_age = 3600 * 24 * 14 # 14 days
-
+    # 3. 사용자 회원가입 또는 로그인 처리
     try:
         user = User.objects.get(email=email)
         social_user = SocialAccount.objects.get(user=user)
@@ -125,36 +120,16 @@ def google_callback(request):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Google로 로그인 요청
+        # 로그인 처리
         accept = requests.post(f"{BASE_URL}accounts/google/login/finish/", data=token_req_json)
         accept_status = accept.status_code
         if accept_status != 200:
             return JsonResponse({"err_msg": "failed to signin"}, status=accept_status)
 
-        # Set-Cookie 헤더에서 refresh_token 추출
-        refresh_token_header = accept.headers.get('Set-Cookie')
-        if refresh_token_header:
-            cookie = SimpleCookie()
-            cookie.load(refresh_token_header)
-            refresh_token = cookie.get('my-refresh-token')
-            if refresh_token:
-                refresh_token_value = refresh_token.value
-            else:
-                return JsonResponse({"err_msg": "refresh_token not found"}, status=400)
-        else:
-            return JsonResponse({"err_msg": "Set-Cookie header not found"}, status=400)
-
-        # Response에 refresh_token 설정
+        # 프론트엔드로 리디렉션
         accept_json = accept.json()
-        response_cookie = JsonResponse(accept_json)
-        response_cookie.set_cookie(
-            'refresh_token',
-            refresh_token_value,
-            max_age=cookie_max_age,
-            httponly=True,
-            samesite='Lax',
-        )
-        return response_cookie
+        access_token = accept_json.get("access")
+        return redirect(f"{frontend_url}?access_token={access_token}")
 
     except User.DoesNotExist:
         # 신규 가입 처리
@@ -163,27 +138,7 @@ def google_callback(request):
         if accept_status != 200:
             return JsonResponse({"err_msg": "failed to signup"}, status=accept_status)
 
-        # Set-Cookie 헤더에서 refresh_token 추출
-        refresh_token_header = accept.headers.get('Set-Cookie')
-        if refresh_token_header:
-            cookie = SimpleCookie()
-            cookie.load(refresh_token_header)
-            refresh_token = cookie.get('my-refresh-token')
-            if refresh_token:
-                refresh_token_value = refresh_token.value
-            else:
-                return JsonResponse({"err_msg": "refresh_token not found"}, status=400)
-        else:
-            return JsonResponse({"err_msg": "Set-Cookie header not found"}, status=400)
-
-        # Response에 refresh_token 설정
+        # 프론트엔드로 리디렉션
         accept_json = accept.json()
-        response_cookie = JsonResponse(accept_json)
-        response_cookie.set_cookie(
-            'refresh_token',
-            refresh_token_value,
-            max_age=cookie_max_age,
-            httponly=True,
-            samesite='Lax',
-        )
-        return response_cookie
+        access_token = accept_json.get("access")
+        return redirect(f"{frontend_url}?access_token={access_token}")

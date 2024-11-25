@@ -216,6 +216,7 @@ export const useAccountStore = defineStore('account', () => {
   }
 
   return {
+    getUserId,
     BASE_URL,
     signUp,
     logIn,
