@@ -1,14 +1,16 @@
 <template>
-  <nav v-if="store.isLogin">
-    <LoginNavbar />
-  </nav>
-  <nav v-else>
-    <UnloginNavbar />
-  </nav>
-  <main>
-    <RouterView />
-  </main>
-  <Footer />
+  <div class="page-container">
+    <nav v-if="store.isLogin">
+      <LoginNavbar />
+    </nav>
+    <nav v-else>
+      <UnloginNavbar />
+    </nav>
+    <main>
+      <RouterView />
+    </main>
+    <Footer />
+  </div>
 </template>
 
 <script setup>
@@ -22,20 +24,19 @@ const store = useAccountStore();
 </script>
 
 <style>
-body {
-  background-color: #2d2d2d;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+html, body {
+  height: 100%;
   margin: 0;
 }
 
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #2d2d2d;
+  color: white;
+}
 main {
   flex: 1; /* 콘텐츠 영역이 footer 위로 확장되도록 설정 */
-}
-
-footer {
-  margin-top: auto;
 }
 </style>

@@ -54,7 +54,7 @@ const fetchLikedGenres = async () => {
   try {
     const res = await axios.get(`${BASE_URL}/movies/like-genre/`, {
       headers: {
-        Authorization: `Token ${store.token}`,
+        Authorization: `Bearer ${store.token}`,
       },
     })
     selectedGenres.value = res.data // 초기 좋아요 데이터 설정
@@ -81,7 +81,7 @@ const saveGenres = async () => {
       { genres: selectedGenres.value }, // 전송 데이터
       {
         headers: {
-          Authorization: `Token ${store.token}`, // 인증 토큰
+          Authorization: `Bearer ${store.token}`, // 인증 토큰
         },
       }
     )

@@ -318,7 +318,7 @@ const seePlaylistDetail = (user_id, playlist_id) => router.push({ name: 'MyPlayl
 const seeAllMovies = (user_id) => router.push({ name: 'MyMovieView', params: { id: user_id } })
 const seeMovieDetail = (movie_id) => router.push({ name: 'MovieDetailView', params: { id: movie_id } })
 const seeAllDirectors = (user_id) => router.push({ name: 'MyDirectorView', params: { id: user_id } })
-const seeDirecDetail = (director_id) => router.push({ name: 'DirecDetailView', params: { director_id } })
+const seeDirecDetail = (director_id) => router.push({ name: 'DirecDetailView', params: { direc_id: director_id } })
 const seeAllActors = (user_id) => router.push({ name: 'MyActorView', params: { id: user_id } })
 const seeActorDetail = (actor_id) => router.push({ name: 'ActorDetailView', params: { actor_id } })
 </script>
