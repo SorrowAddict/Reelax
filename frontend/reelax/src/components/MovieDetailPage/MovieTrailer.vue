@@ -22,6 +22,16 @@
         />
       </div>
     </div>
+    <div v-else class="movie-trailer-block">
+      <!-- 영화 상세 정보 카드 -->
+      <div class="movie-detail-card-overlay">
+        <MovieDetailCard
+          :movie="movie"
+          :userInfo="userInfo"
+          data-aos="fade-up"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
