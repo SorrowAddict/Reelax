@@ -693,6 +693,46 @@ class SearchMovies(APIView):
         return Response({"error": "Failed to fetch search results"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class SearchPeople(APIView):
+    def get(self, request):
+        query = request.query_params.get('query')
+        if not query:
+            return Response({"error": "Query parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        url = f"{TMDB_BASE_URL}/search/person"
+        params = {
+            "api_key": TMDB_API_KEY,
+            "language": "ko-KR",
+            "query": query,
+            "page": 1,
+            "include_adult": False
+        }
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            return Response(response.json(), status=status.HTTP_200_OK)
+        return Response({"error": "Failed to fetch people"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class SearchTVShows(APIView):
+    def get(self, request):
+        query = request.query_params.get('query')
+        if not query:
+            return Response({"error": "Query parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        url = f"{TMDB_BASE_URL}/search/tv"
+        params = {
+            "api_key": TMDB_API_KEY,
+            "language": "ko-KR",
+            "query": query,
+            "page": 1,
+            "include_adult": False
+        }
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            return Response(response.json(), status=status.HTTP_200_OK)
+        return Response({"error": "Failed to fetch TV shows"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class UpdateGenres(APIView):
     def get(self, request):
         # TMDB API 호출 URL 및 파라미터 설정
