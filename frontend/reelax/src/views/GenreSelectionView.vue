@@ -20,7 +20,7 @@
 import { ref, onMounted } from "vue"
 import axios from "axios"
 import { useAccountStore } from "@/stores/account"
-import { useRouter } from "vue-router"
+import { useRouter, useRoute } from "vue-router"
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
@@ -34,6 +34,7 @@ onMounted(() => {
 
 const store = useAccountStore()
 const router = useRouter()
+const route = useRoute()
 
 const BASE_URL = store.BASE_URL
 const genres = ref([]) // 모든 장르
@@ -86,7 +87,11 @@ const saveGenres = async () => {
       }
     )
     console.log("선호 장르가 저장되었습니다.")
-    router.push({ name: "MainPageView" }) // 저장 후 메인 페이지로 이동
+    if (route.query.from === "mypage") {
+      router.push({ name: "MyPageView", params: { id: store.userId }})
+    } else {
+      router.push({ name: "MainPageView" }) // 저장 후 메인 페이지로 이동
+    }
   } catch (err) {
     console.error(err)
   }
