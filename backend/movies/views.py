@@ -292,7 +292,7 @@ class UserLikedMovies(APIView):
         return Response({'results': serializer.data}, status=status.HTTP_200_OK)
 
 
-# 좋아요 한 배우를 기반으로 영화 5개 조회 [완]
+# 좋아요 한 배우를 기반으로 영화 10개 조회 [완]
 class UserLikedActor(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -312,7 +312,7 @@ class UserLikedActor(APIView):
             }
             movies_response = requests.get(movies_url, params=movies_params)
             if movies_response.status_code == 200:
-                movies = movies_response.json().get("results", [])[:5]
+                movies = movies_response.json().get("results", [])[:10]
                 return Response({'results': movies, 'name': actor_name}, status=status.HTTP_200_OK)
         return Response(
             {"results": {}, "error": "Failed to fetch liked actor movies"},
@@ -320,7 +320,7 @@ class UserLikedActor(APIView):
         )
 
 
-# 유저가 좋아요 한 감독을 기반으로 영화 5개 조회 [완]
+# 유저가 좋아요 한 감독을 기반으로 영화 10개 조회 [완]
 class UserLikedDirector(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -340,7 +340,7 @@ class UserLikedDirector(APIView):
             }
             movies_response = requests.get(movies_url, params=movies_params)
             if movies_response.status_code == 200:
-                movies = movies_response.json().get("results", [])[:5]
+                movies = movies_response.json().get("results", [])[:10]
                 return Response({'results': movies, 'name': director_name}, status=status.HTTP_200_OK)
         return Response(
             {"results": {}, "error": "Failed to fetch liked director movies"},
@@ -348,7 +348,7 @@ class UserLikedDirector(APIView):
         )
 
 
-# 유저가 좋아요 한 장르를 기반으로 영화 5개 조회 [완]
+# 유저가 좋아요 한 장르를 기반으로 영화 10개 조회 [완]
 class UserLikedGenreMovies(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -368,7 +368,7 @@ class UserLikedGenreMovies(APIView):
             }
             movies_response = requests.get(movies_url, params=movies_params)
             if movies_response.status_code == 200:
-                movies = movies_response.json().get("results", [])[:5]
+                movies = movies_response.json().get("results", [])[:10]
                 return Response({'results': {genre_name: movies}}, status=status.HTTP_200_OK)
         return Response(
             {"results": {}, "error": "Failed to fetch liked genre movies"},

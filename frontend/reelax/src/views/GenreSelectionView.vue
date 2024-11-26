@@ -27,15 +27,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
-import { useAccountStore } from "@/stores/account";
-import { useRouter } from "vue-router";
-import AOS from "aos";
-import "aos/dist/aos.css";
+import { ref, onMounted } from "vue"
+import axios from "axios"
+import { useAccountStore } from "@/stores/account"
+import { useRouter, useRoute } from "vue-router"
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 
-const store = useAccountStore();
-const router = useRouter();
+const store = useAccountStore()
+const router = useRouter()
 
 onMounted(async () => {
   AOS.init({
@@ -50,6 +50,9 @@ onMounted(async () => {
 const BASE_URL = store.BASE_URL;
 const genres = ref([]); // 모든 장르
 const selectedGenres = ref([]); // 사용자가 좋아요한 장르
+// const store = useAccountStore()
+// const router = useRouter()
+const route = useRoute()
 
 const fetchGenres = async () => {
   try {
@@ -94,9 +97,13 @@ const saveGenres = async () => {
           Authorization: `Bearer ${store.token}`, // 인증 토큰
         },
       }
-    );
-    console.log("선호 장르가 저장되었습니다.");
-    router.push({ name: "MainPageView" }); // 저장 후 메인 페이지로 이동
+    )
+    console.log("선호 장르가 저장되었습니다.")
+    if (route.query.from === "mypage") {
+      router.push({ name: "MyPageView", params: { id: store.userId }})
+    } else {
+      router.push({ name: "MainPageView" }) // 저장 후 메인 페이지로 이동
+    }
   } catch (err) {
     console.error(err);
   }
