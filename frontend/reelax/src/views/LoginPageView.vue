@@ -1,11 +1,6 @@
 <template>
   <div class="login">
     <div class="login__content">
-      <!-- Image Section -->
-      <div class="login__img">
-        <img src="https://image.freepik.com/free-vector/code-typing-concept-illustration_114360-3581.jpg" alt="user login" />
-      </div>
-
       <!-- Forms Section -->
       <div class="login__forms">
         <!-- Sign In Form -->
@@ -24,6 +19,7 @@
           <div>
             <span class="login__account login__account--account">계정이 없다면?</span>
             <span class="login__signin login__signin--signup" @click="toggleForm">회원가입</span>
+            <button @click="googleLogin">Google로 로그인</button>
           </div>
         </form>
 
@@ -50,6 +46,7 @@
           <div>
             <span class="login__account login__account--account">이미 계정이 있습니까?</span>
             <span class="login__signup login__signup--signup" @click="toggleForm">로그인</span>
+            <button @click="googleLogin">Google로 로그인</button>
           </div>
         </form>
       </div>
@@ -104,6 +101,10 @@ export default {
         }
       })
     }
+    const googleLogin = () => {
+      const GOOGLE_LOGIN_URL = "http://127.0.0.1:8000/api/v1/accounts/google/login"
+      window.location.href = GOOGLE_LOGIN_URL
+    }
 
     return {
       isSignIn,
@@ -111,7 +112,8 @@ export default {
       signUpForm,
       toggleForm,
       handleLogin,
-      handleSignUp
+      handleSignUp,
+      googleLogin
     }
   }
 }
@@ -185,7 +187,7 @@ img {
 
   &__forms {
     position: relative;
-    height: 150px;
+    height: 600px;
     margin: 0 25%;
   }
 
