@@ -31,7 +31,9 @@ urlpatterns = [
     # playlist에 영화 추가 CRD
     path('playlists/<int:playlist_id>/movies/', PlaylistMovies.as_view()),
     # 영화 검색
-    path('search/', SearchMovies.as_view()),
+    path('search/movies/', SearchMovies.as_view(), name='search_movies'),
+    path('search/people/', SearchPeople.as_view(), name='search_people'),
+    path('search/tv-shows/', SearchTVShows.as_view(), name='search_tv_shows'),
     # 장르 DB fetch
     path('update-genres/', UpdateGenres.as_view()),
     path('genres/', GenreListView.as_view()),

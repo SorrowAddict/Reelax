@@ -13,7 +13,7 @@
           <router-link :to="{ name: 'MovieDetailView', params: { id: movie.id } }" class="movie-card">
             <!-- 영화 포스터 -->
             <img
-              :src="getPosterUrl(movie.poster_path)"
+              :src="getPosterUrl(movie.poster_path, movie.profile_path)"
               alt="Movie Poster"
               class="img-fluid rounded shadow-sm movie-poster"
             />
@@ -45,16 +45,24 @@ const { searchResults, searchQuery, searchError } = storeToRefs(store)
 const route = useRoute()
 
 // TMDB 포스터 URL 생성 함수
-const getPosterUrl = (posterPath) => {
+const getPosterUrl = (posterPath, profilePath) => {
   const baseUrl = 'https://image.tmdb.org/t/p/w500'
-  return posterPath ? `${baseUrl}${posterPath}` : 'https://via.placeholder.com/500x750?text=No+Image'
+  if (posterPath) {
+    return `${baseUrl}${posterPath}`
+  }
+  if (profilePath) {
+    return `${baseUrl}${profilePath}`
+  }
+  return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNNLEL-qmmLeFR1nxJuepFOgPYfnwHR56vcw&s'
 }
 
 // 라우트 변경 감지 및 검색 실행
 watchEffect(() => {
   const query = route.query.q
+  const type = route.query.type
+  console.log(query, type)
   if (query) {
-    store.fetchSearchResults(query)
+    store.fetchSearchResults(query, type)
   }
 })
 </script>

@@ -15,6 +15,7 @@ import MyPlaylistDetailView from '@/views/MyPlaylistDetailView.vue'
 import MyMovieView from '@/views/MyMovieView.vue'
 import MyDirectorView from '@/views/MyDirectorView.vue'
 import MyActorView from '@/views/MyActorView.vue'
+import GoogleCallbackView from '@/views/GoogleCallbackView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -92,7 +93,8 @@ const router = createRouter({
       path: '/mypage/:id/my-actor',
       name: 'MyActorView',
       component: MyActorView
-    }
+    },
+    { path: '/google/callback/', name: 'GoogleCallbackView', component: GoogleCallbackView },
   ],
 
   scrollBehavior(to, from, savedPosition) {

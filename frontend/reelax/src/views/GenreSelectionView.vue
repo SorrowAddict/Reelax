@@ -1,18 +1,28 @@
 <template>
-  <div class="genre-selection">
-    <h1>선호 장르를 선택해주세요</h1>
-    <ul class="genre-list">
-      <li 
-        v-for="genre in genres" 
-        :key="genre.genre_id" 
-        :class="{ selected: selectedGenres.some(g => g.genre_id === genre.genre_id) }"
-        @click="toggleGenre(genre)"
-        data-aos="fade-up"
+  <div class="genre-selection container">
+    <h3 class="text-center mb-4 display-5" data-aos="fade-up">선호 장르를 선택해주세요</h3>
+    <div class="row g-3">
+      <div
+        v-for="genre in genres"
+        :key="genre.genre_id"
+        class="col-6 col-sm-4 col-md-3"
+        data-aos="zoom-in"
+        data-aos-delay="250"
       >
-        {{ genre.name }}
-      </li>
-    </ul>
-    <button @click="saveGenres" class="btn-save">저장하기</button>
+        <div
+          class="genre-item text-center p-3"
+          :class="{ selected: selectedGenres.some((g) => g.genre_id === genre.genre_id) }"
+          @click="toggleGenre(genre)"
+        >
+          {{ genre.name }}
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <button @click="saveGenres" class="btn btn-primary btn-lg" data-aos="fade-down" data-aos-delay="0">
+        저장하기
+      </button>
+    </div>
   </div>
 </template>
 
@@ -24,57 +34,59 @@ import { useRouter, useRoute } from "vue-router"
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
-onMounted(() => {
-  AOS.init({
-    duration: 800,
-    easing: 'ease-in-out',
-    once: false,
-  })
-})
-
 const store = useAccountStore()
 const router = useRouter()
+
+onMounted(async () => {
+  AOS.init({
+    duration: 400,
+    easing: "ease-in-out",
+    once: false,
+  })
+  await store.getUserId()
+  await store.getLoggedInUserInfo()
+});
+
+const BASE_URL = store.BASE_URL;
+const genres = ref([]); // 모든 장르
+const selectedGenres = ref([]); // 사용자가 좋아요한 장르
+// const store = useAccountStore()
+// const router = useRouter()
 const route = useRoute()
 
-const BASE_URL = store.BASE_URL
-const genres = ref([]) // 모든 장르
-const selectedGenres = ref([]) // 사용자가 좋아요한 장르
-
-// 모든 장르 목록 가져오기
 const fetchGenres = async () => {
   try {
-    const res = await axios.get(`${BASE_URL}/movies/genres/`) // 장르 리스트 API 호출
-    genres.value = res.data
+    const res = await axios.get(`${BASE_URL}/movies/genres/`); // 장르 리스트 API 호출
+    genres.value = res.data;
   } catch (err) {
-    console.error(err)
+    console.error(err);
   }
-}
+};
 
-// 사용자가 좋아요한 장르 가져오기
 const fetchLikedGenres = async () => {
   try {
     const res = await axios.get(`${BASE_URL}/movies/like-genre/`, {
       headers: {
         Authorization: `Bearer ${store.token}`,
       },
-    })
-    selectedGenres.value = res.data // 초기 좋아요 데이터 설정
+    });
+    selectedGenres.value = res.data; // 초기 좋아요 데이터 설정
   } catch (err) {
-    console.error(err)
+    console.error(err);
   }
-}
+};
 
-// 장르 선택/해제 토글
 const toggleGenre = (genre) => {
-  const index = selectedGenres.value.findIndex((g) => g.genre_id === genre.genre_id)
+  const index = selectedGenres.value.findIndex(
+    (g) => g.genre_id === genre.genre_id
+  );
   if (index === -1) {
-    selectedGenres.value.push({ genre_id: genre.genre_id, name: genre.name }) // 선택
+    selectedGenres.value.push({ genre_id: genre.genre_id, name: genre.name }); // 선택
   } else {
-    selectedGenres.value.splice(index, 1) // 해제
+    selectedGenres.value.splice(index, 1); // 해제
   }
-}
+};
 
-// 선택된 장르 저장
 const saveGenres = async () => {
   try {
     await axios.post(
@@ -93,14 +105,12 @@ const saveGenres = async () => {
       router.push({ name: "MainPageView" }) // 저장 후 메인 페이지로 이동
     }
   } catch (err) {
-    console.error(err)
+    console.error(err);
   }
-}
+};
 
-
-// 컴포넌트 초기화 시 실행
-fetchGenres()
-fetchLikedGenres()
+fetchGenres();
+fetchLikedGenres();
 </script>
 
 <style scoped>
@@ -109,36 +119,49 @@ fetchLikedGenres()
   padding: 20px;
 }
 
-.genre-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  list-style: none;
-  padding: 0;
-}
-
-.genre-list li {
-  margin: 10px;
-  padding: 10px 20px;
+.genre-item {
   background: #252525;
-  color: #fff;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.genre-list li.selected {
-  background: #007bff;
-}
-
-.btn-save {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 1rem;
   color: white;
-  background: #007bff;
-  border: none;
-  border-radius: 4px;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
   cursor: pointer;
+  user-select: none;
+}
+
+.genre-item:hover {
+  transform: scale(1.05);
+  background: #007bff;
+  color: white;
+}
+
+.genre-item.selected {
+  background: #007bff;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.5);
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+@media (min-width: 768px) {
+  .genre-selection {
+    padding: 40px;
+  }
+
+  .genre-item {
+    padding: 20px;
+  }
+
+  .btn-primary {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+  }
 }
 </style>

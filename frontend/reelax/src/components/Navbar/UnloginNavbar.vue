@@ -5,7 +5,7 @@
     <RouterLink :to="{ name: 'LoginPageView' }" class="btn btn-primary">
       <FontAwesomeIcon icon="sign-in-alt" /> 로그인
     </RouterLink>
-    <RouterLink :to="{ name: 'SignupPageView' }" class="btn btn-secondary">
+    <RouterLink :to="{ name: 'LoginPageView' }" class="btn btn-secondary">
       <FontAwesomeIcon icon="user-plus" /> 회원가입
     </RouterLink>
   </BaseNavbar>
