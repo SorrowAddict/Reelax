@@ -9,7 +9,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Nginx 설정 파일
       - ./static:/static  # 정적 파일
-      - ./media:/app/media  # Django의 MEDIA_ROOT와 Nginx의 /media 경로 매핑
+      - ./backend/media:/app/backend/media  # Django의 MEDIA_ROOT와 Nginx의 /media 경로 매핑
     depends_on:
       - backend
       - frontend
@@ -17,7 +17,7 @@ services:
     - app-network
 
   backend:
-    image: yeseung1101/reelax-backend-v2:0.1.0
+    image: yeseung1101/reelax-backend-v1:latest
     container_name: backend
     # command: gunicorn --bind 0.0.0.0:8000 reelax.wsgi:application
     ports:
@@ -28,7 +28,7 @@ services:
     - app-network
 
   frontend:
-    image: yeseung1101/reelax-frontend-v2:0.1.0
+    image: yeseung1101/reelax-frontend-v1:latest
     container_name: frontend
     ports:
       - "5173:5173"
