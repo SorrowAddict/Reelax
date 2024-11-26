@@ -5,7 +5,7 @@ import { useAccountStore } from './account'
 import { useRouter } from 'vue-router'
 
 export const usePlaylistStore = defineStore('playlist', () => {
-  const BASE_URL = 'http://43.203.255.151:8000/api/v1/movies'
+  const BASE_URL = 'http://43.203.255.151/api/v1/movies'
   const accountStore = useAccountStore()
   const router = useRouter()
   const playlist = ref({})
