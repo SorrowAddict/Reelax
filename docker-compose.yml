@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"  # HTTP 포트
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Nginx 설정 파일
+      - ./static:/static  # 정적 파일
+    depends_on:
+      - backend
+      - frontend
+    networks:
+    - app-network
+
+  backend:
+    image: yeseung1101/reelax-backend-v3:0.1.0
+    container_name: backend
+    # command: gunicorn --bind 0.0.0.0:8000 reelax.wsgi:application
+    ports:
+      - "8000:8000"
+    depends_on:
+      - frontend
+
+  frontend:
+    image: yeseung1101/reelax-frontend:0.1.0
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    # command: npm run dev
+    stdin_open: true
+    tty: true
+
+networks:
+  app-network:
+    driver: bridge
