@@ -51,10 +51,8 @@
             </span>
           </div>
           <div class="liked_genre">
-            <div v-if="currentUserInfo.liked_genres.length === 0">
-              
-            </div>
-            <div v-for="genre in currentUserInfo.liked_genres" :key="genre.genre_id"># {{ genre.name }}</div>
+            <div v-if="currentUserInfo.liked_genres.length !== 0" v-for="genre in currentUserInfo.liked_genres" :key="genre.genre_id"># {{ genre.name }}</div>
+            <div v-else>좋아한 장르가 없습니다. 관심있는 장르를 선택하러 가보세요!</div>
             <div v-if="isOwnProfile" class="add-genre" @click="goToGenreSelection"><font-awesome-icon :icon="['far', 'square-plus']" /></div>
           </div>
           
