@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import axios from 'axios'
 
 export const useAccountStore = defineStore('account', () => {
-  const BASE_URL = 'http://43.203.255.151/api/v1'
+  const BASE_URL = 'http://43.203.255.151:8000/api/v1'
   const token = ref(null)
   const userInfo = ref(null)
   const loggedInUserInfo = ref(null)
@@ -93,6 +93,7 @@ export const useAccountStore = defineStore('account', () => {
         router.push({ name: 'MainPageView' })
       }
     } catch (err) {
+      alert('이메일이나 비밀번호를 다시 확인해주세요.')
       console.error('Log in failed:', err)
     }
   }

@@ -9,7 +9,7 @@ from allauth.socialaccount.models import SocialAccount
 import requests
 
 state = settings.STATE
-BASE_URL = 'http://localhost:8000/api/v1/'
+BASE_URL = 'http://43.203.255.151:8000/api/v1/'
 GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
 
 # 구글 로그인

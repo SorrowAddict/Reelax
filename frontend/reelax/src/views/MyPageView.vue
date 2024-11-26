@@ -206,7 +206,7 @@ const loadUserInfo = async () => {
   // 프로필 이미지 설정
   const user = currentUserInfo.value
   profileImage.value = user?.profile_image
-    ? `http://43.203.255.151:8000${user.profile_image}`
+    ? `http://43.203.255.151${user.profile_image}`
     : defaultProfileImage
 }
 
@@ -258,7 +258,7 @@ const uploadProfileImage = async (event) => {
         }
       }
     )
-    profileImage.value = `http://43.203.255.151:8000${response.data.profile_image}`
+    profileImage.value = `http://43.203.255.151${response.data.profile_image}`
     accountStore.loggedInUserInfo.profile_image = response.data.profile_image
     alert('프로필 이미지가 성공적으로 업데이트되었습니다.')
   } catch (error) {
