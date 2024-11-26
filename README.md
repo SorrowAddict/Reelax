@@ -88,7 +88,7 @@
   <img src="https://img.shields.io/badge/axios-5A29E4?style=flat-square&logo=axios&logoColor=white"> 
   <img src="https://img.shields.io/badge/npm-CB3837?style=flat-square&logo=npm&logoColor=white">
   <img src="https://img.shields.io/badge/postgresql-336791?style=flat-square&logo=postgresql&logoColor=white">
-  <!-- <br> -->
+  <br>
 
   <img src="https://img.shields.io/badge/linux-FCC624?style=flat-square&logo=linux&logoColor=black"> 
   <img src="https://img.shields.io/badge/amazon ec2-FF9900?style=flat-square&logo=amazonec2&logoColor=black">  
@@ -97,14 +97,16 @@
   <img src="https://img.shields.io/badge/docker-2496ED?style=flat-square&logo=docker&logoColor=white">
   <img src="https://img.shields.io/badge/dockerhub-2496ED?style=flat-square&logo=docker&logoColor=white">
   <br>
-
-
-  <!-- <img src="https://img.shields.io/badge/mysql-4479A1?style=flat-square&logo=mysql&logoColor=white"> -->
-  <!-- <img src="https://img.shields.io/badge/mariaDB-003545?style=flat-square&logo=mariaDB&logoColor=white"> -->
   <br>
 </div>
 
 ---
+
+## 📆 프로젝트 일정 관리
+
+![alt text](etc/assets/image/jira.png)
+
+![alt text](etc/assets/image/notion_TDL.png)
 
 ## 🗂 ERD
 
@@ -112,23 +114,17 @@
 
 ## 🗂️ 프로젝트 구성
 
-### 💥 시스템 아키텍처
-
-![alt text](etc/assets/image/system_architecture.png)
-
 ### 🎨 와이어 프레임
 
 ![alt text](etc/assets/image/frame.png)
 
+### 💥 시스템 아키텍처
+
+![alt text](etc/assets/image/system_architecture.png)
+
 ### 📜 API 명세서
 
 ![alt text](etc/assets/image/API_docs.png)
-
-### 📆 프로젝트 일정 관리
-
-![alt text](etc/assets/image/jira.png)
-
-![alt text](etc/assets/image/notion_TDL.png)
 
 ### ❓ 영화 추천 알고리즘에 대한 기술적 설명
 
