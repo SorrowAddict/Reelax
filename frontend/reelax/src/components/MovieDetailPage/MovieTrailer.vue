@@ -1,43 +1,46 @@
 <template>
   <div class="movie-trailer-container">
-    <div v-if="movieTrailer" class="movie-trailer-block">
-      <!-- 영화 예고편 -->
-      <iframe
-        class="movie-trailer"
-        :src="trailerUrl"
-        frameborder="0"
-        allow="autoplay; encrypted-media;"
-        allowfullscreen
-      ></iframe>
+    <div v-if="!isLoading">
+      <div v-if="movieTrailer" class="movie-trailer-block">
+        <!-- 영화 예고편 -->
+        <iframe
+          class="movie-trailer"
+          :src="trailerUrl"
+          frameborder="0"
+          allow="autoplay; encrypted-media;"
+          allowfullscreen
+        ></iframe>
 
-      <!-- 검은색 그라데이션 -->
-      <div class="movie-trailer-overlay"></div>
+        <!-- 검은색 그라데이션 -->
+        <div class="movie-trailer-overlay"></div>
 
-      <!-- 영화 상세 정보 카드 -->
-      <div class="movie-detail-card-overlay">
-        <MovieDetailCard
-          :movie="movie"
-          :userInfo="userInfo"
-          data-aos="fade-up"
-        />
+        <!-- 영화 상세 정보 카드 -->
+        <div class="movie-detail-card-overlay">
+          <MovieDetailCard
+            :movie="movie"
+            :userInfo="userInfo"
+            data-aos="fade-up"
+          />
+        </div>
+      </div>
+      <div v-else class="movie-trailer-block">
+        <!-- 영화 상세 정보 카드 -->
+        <div class="movie-detail-card-overlay">
+          <MovieDetailCard
+            :movie="movie"
+            :userInfo="userInfo"
+            data-aos="fade-up"
+          />
+        </div>
       </div>
     </div>
-    <div v-else class="movie-trailer-block">
-      <!-- 영화 상세 정보 카드 -->
-      <div class="movie-detail-card-overlay">
-        <MovieDetailCard
-          :movie="movie"
-          :userInfo="userInfo"
-          data-aos="fade-up"
-        />
-      </div>
-    </div>
+    
   </div>
 </template>
 
 <script setup>
 import axios from 'axios'
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import MovieDetailCard from '@/components/MovieDetailPage/MovieDetailCard.vue'
 
 const props = defineProps({
@@ -50,6 +53,11 @@ const trailerUrl = computed(() => {
   if (movieTrailer.value) {
     return `https://www.youtube.com/embed/${movieTrailer.value.id.videoId}?autoplay=1&mute=1&controls=0`
   }
+})
+const isLoading = ref(true)
+
+watch(movieTrailer, (newValue, oladValue) => {
+  isLoading.value = false
 })
 const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY2
 onMounted(() => {
@@ -75,6 +83,33 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* 스피너 애니메이션 */
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ccc; /* 회색 테두리 */
+  border-top: 5px solid #007bff; /* 파란색 테두리 */
+  border-radius: 50%; /* 원 모양 */
+  animation: spin 1s linear infinite;
+}
+
+/* 애니메이션 키프레임 */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .movie-trailer-container {
   position: relative;
   width: 100%;

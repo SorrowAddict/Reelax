@@ -68,10 +68,51 @@ export const usePlaylistStore = defineStore('playlist', () => {
       })
   }
 
+  const listDelete = function (user_id, playlist_id) {
+    axios({
+      method: 'delete',
+      url: `${BASE_URL}/playlists/${playlist_id}/`,
+      headers: {
+        Authorization: `Bearer ${accountStore.token}`
+      },
+    })
+      .then((res) => {
+        alert('성공적으로 삭제 되었습니다.')
+        router.push({ name: 'MyPlaylistView', params: { id: user_id }})
+        console.log('삭제 성공!')
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const listDeleteMovie = function (user_id, playlist_id, movies) {
+    axios({
+      method: 'delete',
+      url: `${BASE_URL}/playlists/${playlist_id}/movies/`,
+      headers: {
+        Authorization: `Bearer ${accountStore.token}`
+      },
+      data: {
+        movies
+      }
+    })
+      .then((res) => {
+        alert('성공적으로 삭제 되었습니다.')
+        window.location.reload()
+        console.log('삭제 성공!')
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   return {
     getPlaylist,
     playlist,
     createPlaylist,
-    addMovieToPlaylist
+    addMovieToPlaylist,
+    listDelete,
+    listDeleteMovie
   }
 }, { persist: true })
