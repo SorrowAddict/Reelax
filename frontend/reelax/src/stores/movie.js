@@ -19,7 +19,7 @@ export const useMovieStore = defineStore('movie', () => {
   const direcDetail = ref(null)
   const actorDetail = ref(null)
 
-  const BASE_URL = 'http://127.0.0.1:8000/api/v1/movies'
+  const BASE_URL = 'http://43.203.255.151:8000/api/v1/movies'
   const accountStore = useAccountStore()
   
   // 평점 TOP 10 가져오기

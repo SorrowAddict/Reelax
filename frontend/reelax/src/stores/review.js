@@ -5,7 +5,7 @@ import { useAccountStore } from './account'
 import { useRouter } from 'vue-router'
 
 export const useReviewStore = defineStore('review', () => {
-  const BASE_URL = 'http://127.0.0.1:8000/api/v1/movies'
+  const BASE_URL = 'http://43.203.255.151:8000/api/v1/movies'
   const accountStore = useAccountStore()
   const router = useRouter()
   const movieReview = ref({})

@@ -20,7 +20,7 @@ from allauth.socialaccount.models import SocialAccount
 from http.cookies import SimpleCookie
 
 state = settings.STATE
-BASE_URL = 'http://localhost:8000/api/v1/'
+BASE_URL = 'http://43.203.255.151:8000/api/v1/'
 GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
 
 class GoogleLogin(SocialLoginView):
@@ -81,7 +81,7 @@ def google_callback(request):
     client_id = settings.SOCIAL_AUTH_GOOGLE_CLIENT_ID
     client_secret = settings.SOCIAL_AUTH_GOOGLE_SECRET
     code = request.GET.get("code")
-    frontend_url = "http://localhost:5173/google/callback/"  # 프론트엔드 Google Callback View 경로
+    frontend_url = "http://43.203.255.151:5173/google/callback/"  # 프론트엔드 Google Callback View 경로
 
     # 1. Access Token 요청
     token_req = requests.post(

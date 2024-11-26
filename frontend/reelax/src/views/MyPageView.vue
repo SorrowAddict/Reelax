@@ -206,7 +206,7 @@ const loadUserInfo = async () => {
   // 프로필 이미지 설정
   const user = currentUserInfo.value
   profileImage.value = user?.profile_image
-    ? `http://localhost:8000${user.profile_image}`
+    ? `http://43.203.255.151${user.profile_image}`
     : defaultProfileImage
 }
 
@@ -249,7 +249,7 @@ const uploadProfileImage = async (event) => {
 
   try {
     const response = await axios.put(
-      'http://localhost:8000/api/v1/accounts/profile/update-image/',
+      'http://43.203.255.151:8000/api/v1/accounts/profile/update-image/',
       formData,
       {
         headers: {
@@ -258,7 +258,7 @@ const uploadProfileImage = async (event) => {
         }
       }
     )
-    profileImage.value = `http://localhost:8000${response.data.profile_image}`
+    profileImage.value = `http://43.203.255.151${response.data.profile_image}`
     accountStore.loggedInUserInfo.profile_image = response.data.profile_image
     alert('프로필 이미지가 성공적으로 업데이트되었습니다.')
   } catch (error) {
@@ -283,7 +283,7 @@ const updateNickname = async () => {
   if (!nickname.value.trim()) return
   try {
     const response = await axios.patch(
-      'http://localhost:8000/api/v1/accounts/user/',
+      'http://43.203.255.151:8000/api/v1/accounts/user/',
       { nickname: nickname.value },
       {
         headers: {

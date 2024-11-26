@@ -42,8 +42,10 @@
 import { onMounted } from 'vue';
 import CreatePlaylistModal from './CreatePlaylistModal.vue';
 import { usePlaylistStore } from '@/stores/playlist';
+import { useAccountStore } from '@/stores/account';
 
 const playlistStore = usePlaylistStore();
+const accountStore = useAccountStore()
 
 defineProps({
   movie: Object,
@@ -57,7 +59,9 @@ const addMovieToPlaylist = function (playlist_id, movie_id) {
 };
 
 onMounted(() => {
-  playlistStore.getPlaylist();
+  if (accountStore.isLogin) {
+    playlistStore.getPlaylist();
+  }
 });
 </script>
 

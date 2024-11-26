@@ -14,6 +14,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 소스 코드 복사
 COPY . /app/
 
+# entrypoint.sh 복사 및 실행 권한 부여
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 8000
 
 # 환경 변수 설정 (RDS에 대한 설정 필요시 추가)
@@ -22,4 +26,4 @@ ENV DATABASE_URL=postgresql://postgres:pwd1234!@reelax.cnuo8ouyklem.ap-northeast
 # gunicorn을 사용하여 Django 애플리케이션 실행
 # CMD ["gunicorn", "--bind", "0.0.0.0:8000", "reelax.wsgi:application"]
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["sh", "/app/entrypoint.sh"]
