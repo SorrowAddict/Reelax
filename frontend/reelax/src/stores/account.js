@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import axios from 'axios'
 
 export const useAccountStore = defineStore('account', () => {
-  const BASE_URL = 'http://127.0.0.1:8000/api/v1'
+  const BASE_URL = 'http://43.203.255.151/api/v1'
   const token = ref(null)
   const userInfo = ref(null)
   const loggedInUserInfo = ref(null)

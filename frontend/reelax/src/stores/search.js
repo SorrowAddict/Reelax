@@ -8,7 +8,7 @@ export const useSearchStore = defineStore('search', () => {
   const searchError = ref(null)
   const searchType = ref('movies')
 
-  const BASE_URL = 'http://127.0.0.1:8000/api/v1/movies'
+  const BASE_URL = 'http://43.203.255.151/api/v1/movies'
 
   // 검색 요청
   const fetchSearchResults = function (query, type = 'movies') {
