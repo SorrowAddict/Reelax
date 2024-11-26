@@ -9,9 +9,13 @@ python manage.py makemigrations
 echo "Applying database migrations..."
 python manage.py migrate --noinput
 
+python manage.py collectstatic --noinput
+
 # 데이터 로드
 echo "Loading fixture data from genre_fixture.json..."
 python manage.py loaddata genre_fixture.json
+echo "Loading fixture data from movie_fixture.json..."
+python manage.py loaddata movie_fixture.json
 
 # Gunicorn 서버 시작
 echo "Starting Gunicorn..."
