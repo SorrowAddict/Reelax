@@ -124,6 +124,12 @@
 
 ![alt text](etc/assets/image/API_docs.png)
 
+### 📆 프로젝트 일정 관리
+
+![alt text](etc/assets/image/jira.png)
+
+![alt text](etc/assets/image/notion_TDL.png)
+
 ### ❓ 영화 추천 알고리즘에 대한 기술적 설명
 
 - 사용자의 영화, 감독, 배우, 장르 경험 데이터를 기반으로 한 랜덤 선택 알고리즘
