@@ -41,7 +41,7 @@ import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const store = useAccountStore()
-const defaultProfileImage = `http://localhost:8000/media/profile_images/default_profile.jpg` // 기본 프로필 이미지 경로
+const defaultProfileImage = `http://43.203.255.151/media/profile_images/default_profile.jpg` // 기본 프로필 이미지 경로
 const profileImage = ref(defaultProfileImage) // 프로필 이미지 URL
 const router = useRouter()
 
@@ -81,7 +81,7 @@ watch(
   () => store.loggedInUserInfo?.profile_image,
   (newImage) => {
     profileImage.value = newImage
-      ? `http://localhost:8000${newImage}`
+      ? `http://43.203.255.151${newImage}`
       : defaultProfileImage
   }
 )
