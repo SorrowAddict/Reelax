@@ -34,16 +34,18 @@ import { useRouter } from "vue-router";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-onMounted(() => {
+const store = useAccountStore();
+const router = useRouter();
+
+onMounted(async () => {
   AOS.init({
     duration: 400,
     easing: "ease-in-out",
     once: false,
-  });
+  })
+  await store.getUserId()
+  await store.getLoggedInUserInfo()
 });
-
-const store = useAccountStore();
-const router = useRouter();
 
 const BASE_URL = store.BASE_URL;
 const genres = ref([]); // 모든 장르
