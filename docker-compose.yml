@@ -17,7 +17,7 @@ services:
     - app-network
 
   backend:
-    image: yeseung1101/reelax-backend-v1:latest
+    image: yeseung1101/reelax-backend:0.1.0
     container_name: backend
     # command: gunicorn --bind 0.0.0.0:8000 reelax.wsgi:application
     ports:
@@ -28,7 +28,7 @@ services:
     - app-network
 
   frontend:
-    image: yeseung1101/reelax-frontend-v1:latest
+    image: yeseung1101/reelax-frontend:0.1.0
     container_name: frontend
     ports:
       - "5173:5173"
