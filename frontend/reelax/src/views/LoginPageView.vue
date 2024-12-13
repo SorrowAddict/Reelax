@@ -102,7 +102,7 @@ export default {
       })
     }
     const googleLogin = () => {
-      const GOOGLE_LOGIN_URL = "http://localhost:8000/api/v1/accounts/google/login"
+      const GOOGLE_LOGIN_URL = `${accountStore.BASE_URL}/api/v1/accounts/google/login`
       window.location.href = GOOGLE_LOGIN_URL
     }
 

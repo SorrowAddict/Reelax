@@ -180,6 +180,7 @@ const router = useRouter()
 const defaultProfileImage = '/media/profile_images/default_profile.jpg'
 const profileImage = ref(null)
 const isOwnProfile = ref(null)
+const BASE_URL = `${import.meta.env.VITE_BASE_URL}`
 
 // 닉네임 수정 상태
 const isEditingNickname = ref(false)
@@ -206,7 +207,7 @@ const loadUserInfo = async () => {
   // 프로필 이미지 설정
   const user = currentUserInfo.value
   profileImage.value = user?.profile_image
-    ? `http://localhost:8000${user.profile_image}`
+    ? `${BASE_URL}${user.profile_image}`
     : defaultProfileImage
 }
 
@@ -229,7 +230,7 @@ onMounted(async () => {
   if (isOwnProfile.value !== undefined) {
     await loadUserInfo()
   }
-  console.log(currentUserInfo.value)
+  // console.log(currentUserInfo.value)
 })
 
 // 프로필 이미지 업로드
@@ -249,7 +250,7 @@ const uploadProfileImage = async (event) => {
 
   try {
     const response = await axios.put(
-      'http://localhost:8000/api/v1/accounts/profile/update-image/',
+      `${BASE_URL}/api/v1/accounts/profile/update-image/`,
       formData,
       {
         headers: {
@@ -258,7 +259,7 @@ const uploadProfileImage = async (event) => {
         }
       }
     )
-    profileImage.value = `http://localhost:8000${response.data.profile_image}`
+    profileImage.value = `${BASE_URL}${response.data.profile_image}`
     accountStore.loggedInUserInfo.profile_image = response.data.profile_image
     alert('프로필 이미지가 성공적으로 업데이트되었습니다.')
   } catch (error) {
@@ -283,7 +284,7 @@ const updateNickname = async () => {
   if (!nickname.value.trim()) return
   try {
     const response = await axios.patch(
-      'http://localhost:8000/api/v1/accounts/user/',
+      `${BASE_URL}/api/v1/accounts/user/`,
       { nickname: nickname.value },
       {
         headers: {
