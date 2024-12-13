@@ -9,11 +9,11 @@
     <div v-else>
       <div class="row">
         <!-- 영화 카드 -->
-        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4" v-for="(movie, index) in searchResults" :key="index" data-aos="fade-up">
-          <router-link :to="{ name: 'MovieDetailView', params: { id: movie.id } }" class="movie-card">
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4" v-for="(item, index) in searchResults" :key="index" data-aos="fade-up">
+          <router-link :to="getRouterLink(item)" class="movie-card">
             <!-- 영화 포스터 -->
             <img
-              :src="getPosterUrl(movie.poster_path, movie.profile_path)"
+              :src="getPosterUrl(item.poster_path, item.profile_path)"
               alt="Movie Poster"
               class="img-fluid rounded shadow-sm movie-poster"
             />
@@ -54,6 +54,21 @@ const getPosterUrl = (posterPath, profilePath) => {
     return `${baseUrl}${profilePath}`
   }
   return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNNLEL-qmmLeFR1nxJuepFOgPYfnwHR56vcw&s'
+}
+
+// 검색 타입에 따라 router path를 다르게 설정하는 함수
+const getRouterLink = (item) => {
+  if (route.query.type === 'movies') {
+    return { name: 'MovieDetailView', params: { id: item.id }}
+  }
+  else if (route.query.type === 'people') {
+    if (item.known_for_department === 'Directing') {
+      return { name: 'DirecDetailView', params: { direc_id: item.id }}
+    }
+    else if (item.known_for_department === 'Acting') {
+      return { name: 'ActorDetailView', params: { actor_id: item.id }}
+    }
+  }
 }
 
 // 라우트 변경 감지 및 검색 실행

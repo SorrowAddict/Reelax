@@ -24,7 +24,7 @@ export const useSearchStore = defineStore('search', () => {
     })
       .then((res) => {
         searchResults.value = res.data.results
-      })
+      }) 
       .catch((err) => {
         searchError.value = err.response?.data?.error || 'An unexpected error occurred'
         console.error('Error details:', err.response?.data)
