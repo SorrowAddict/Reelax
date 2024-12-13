@@ -5,7 +5,8 @@ import { useAccountStore } from './account'
 import { useRouter } from 'vue-router'
 
 export const useLikeStore = defineStore('like', () => {
-  const BASE_URL = 'http://localhost:8000/api/v1/movies'
+  const BASE_URL = `${import.meta.env.VITE_BASE_URL}/api/v1/movies`
+  // const BASE_URL = 'http://localhost:8000/api/v1/movies'
   // const BASE_URL = 'http://43.203.255.151:8000/api/v1/movies'
   const accountStore = useAccountStore()
   const router = useRouter()
