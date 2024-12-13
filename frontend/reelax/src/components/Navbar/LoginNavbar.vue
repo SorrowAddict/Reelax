@@ -8,7 +8,7 @@
     <!-- 프로필 이미지 및 모달 -->
     <div class="profile-container">
       <img
-        :src="`http://43.203.255.151:8000${store.loggedInUserInfo?.profile_image || '/media/profile_images/default_profile.jpg'}`"
+        :src="`http://localhost:8000${store.loggedInUserInfo?.profile_image || '/media/profile_images/default_profile.jpg'}`"
         alt="User Profile"
         class="profile-image"
         @error="onImageError"
@@ -41,7 +41,8 @@ import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const store = useAccountStore()
-const defaultProfileImage = `http://43.203.255.151:8000/media/profile_images/default_profile.jpg` // 기본 프로필 이미지 경로
+const defaultProfileImage = `http://localhost:8000/media/profile_images/default_profile.jpg` // 기본 프로필 이미지 경로
+// const defaultProfileImage = `http://43.203.255.151:8000/media/profile_images/default_profile.jpg` // 기본 프로필 이미지 경로
 const profileImage = ref(defaultProfileImage) // 프로필 이미지 URL
 const router = useRouter()
 
@@ -81,7 +82,7 @@ watch(
   () => store.loggedInUserInfo?.profile_image,
   (newImage) => {
     profileImage.value = newImage
-      ? `http://43.203.255.151:8000${newImage}`
+      ? `http://localhost:8000${newImage}`
       : defaultProfileImage
   }
 )

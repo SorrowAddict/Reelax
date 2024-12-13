@@ -1,5 +1,5 @@
 <template>
-  <div v-if="userInfo">
+  <div v-if="movie">
     <div>
       <h1>{{ movie.title }}</h1>
     </div>
@@ -74,6 +74,7 @@ const props = defineProps({
   movie: Object,
   userInfo: Object
 })
+
 const likeStore = useLikeStore()
 const accountStore = useAccountStore()
 const router = useRouter()

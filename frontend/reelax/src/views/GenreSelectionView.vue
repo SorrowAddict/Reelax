@@ -45,6 +45,8 @@ onMounted(async () => {
   })
   await store.getUserId()
   await store.getLoggedInUserInfo()
+  console.log(store.userId)
+  console.log(store.loggedInUserInfo)
 });
 
 const BASE_URL = store.BASE_URL;
@@ -109,8 +111,8 @@ const saveGenres = async () => {
   }
 };
 
-fetchGenres();
-fetchLikedGenres();
+fetchGenres()
+fetchLikedGenres()
 </script>
 
 <style scoped>
